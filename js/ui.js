@@ -104,17 +104,23 @@ export function bindUIEvents() {
     renderAll();
   });
 
-  document.getElementById("btn-plant-seed").addEventListener("click", () => {
-    const result = plantSeed(el.farmSeedSelect.value);
-    addLog(result.message);
-    renderAll();
-  });
+  const plantSeedButton = document.getElementById("btn-plant-seed");
+  if (plantSeedButton) {
+    plantSeedButton.addEventListener("click", () => {
+      const result = plantSeed(el.farmSeedSelect.value);
+      addLog(result.message);
+      renderAll();
+    });
+  }
 
-  document.getElementById("btn-farm-harvest").addEventListener("click", () => {
-    const result = harvestFarm();
-    addLog(result.message);
-    renderAll();
-  });
+  const farmHarvestButton = document.getElementById("btn-farm-harvest");
+  if (farmHarvestButton) {
+    farmHarvestButton.addEventListener("click", () => {
+      const result = harvestFarm();
+      addLog(result.message);
+      renderAll();
+    });
+  }
 
   document.getElementById("btn-save-note").addEventListener("click", () => {
     setHousingNote(el.housingNote.value);
