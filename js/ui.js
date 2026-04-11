@@ -286,21 +286,24 @@ function renderScene() {
   document.body.classList.add(`time-${mood.key}`);
 
   if (el.sceneMoodBanner) el.sceneMoodBanner.textContent = mood.banner;
-  if (el.timeVisualBadge) el.timeVisualBadge.textContent = `${mood.label} 분위기 · ${scene.title}`;
+  if (el.timeVisualBadge) {
+    el.timeVisualBadge.textContent = `${mood.label} 분위기 · ${scene.title}`;
+    el.timeVisualBadge.className = `time-visual-badge time-${mood.key}`;
+  }
   if (el.sceneBackgroundLayer) {
     el.sceneBackgroundLayer.className = `scene-background-layer time-${mood.key}`;
   }
 
   if (el.sceneDetail) {
     if (currentScene === "town") {
-      el.sceneDetail.textContent = "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다. 시간대에 따라 광장의 분위기도 조금씩 달라집니다.";
+      el.sceneDetail.textContent = "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다. 시간대가 바뀌면 광장의 하늘빛과 전체 배경 톤도 함께 달라집니다.";
     } else if (currentScene === "farm") {
-      el.sceneDetail.textContent = `밭 풍경 · ${getFarmStatus().text}`;
+      el.sceneDetail.textContent = `밭 풍경 · ${getFarmStatus().text} 시간대에 따라 밭의 색감도 달라집니다.`;
     } else {
       const placedNames = getPlacedHousingNames();
       el.sceneDetail.textContent = placedNames.length
         ? `현재 집 안에는 ${placedNames.join(", ")}이(가) 배치되어 있습니다.`
-        : "아직 집 안이 비어 있습니다. 가구를 배치하면 시간대에 따라 더 다른 분위기를 느낄 수 있습니다.";
+        : "아직 집 안이 비어 있습니다. 가구를 배치하면 시간대에 따라 더 다른 집 분위기를 느낄 수 있습니다.";
     }
   }
 
