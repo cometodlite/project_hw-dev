@@ -1,4 +1,4 @@
-import { state, updateCurrency, increaseSkill, increaseActivityCount } from "./state.js";
+import { state, updateCurrency, increaseSkill, increaseActivityCount, syncUnlocks } from "./state.js";
 
 function findItem(itemId) {
   return state.data.items.find((item) => item.id === itemId);
@@ -18,6 +18,14 @@ export function removeInventoryItem(itemId, amount = 1) {
   }
 }
 
+function getUnlockedSeeds(items) {
+  return items.filter((item) => {
+    if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
+    if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
+    return true;
+  });
+}
+
 function pickWeightedEntry(entries) {
   const totalWeight = entries.reduce((sum, entry) => sum + entry.weight, 0);
   let random = Math.random() * totalWeight;
@@ -26,6 +34,17 @@ function pickWeightedEntry(entries) {
     if (random <= 0) return entry;
   }
   return entries[entries.length - 1];
+}
+
+function applySkillBonusToEntries(entries, skillLevel, rareBoostPerStep = 2, threshold = 5) {
+  return entries.map((entry) => {
+    if (entry.rarity !== "rare" || skillLevel < threshold) return { ...entry };
+    const bonusSteps = Math.floor((skillLevel - threshold) / 5) + 1;
+    return {
+      ...entry,
+      weight: entry.weight + bonusSteps * rareBoostPerStep
+    };
+  });
 }
 
 export function initInventory() {}
@@ -52,35 +71,52 @@ export function renderInventory(container) {
   }
 }
 
-function resolveReward(tableKey) {
-  const table = state.data.lifeTables?.[tableKey] || [];
+function resolveReward(tableKey, skillKey) {
+  const skillLevel = state.player.lifeSkills[skillKey] || 1;
+  const table = applySkillBonusToEntries(state.data.lifeTables?.[tableKey] || [], skillLevel);
   const picked = pickWeightedEntry(table);
   const item = findItem(picked.itemId);
-  const amount = Math.floor(Math.random() * (picked.maxAmount - picked.minAmount + 1)) + picked.minAmount;
+
+  let minAmount = picked.minAmount;
+  let maxAmount = picked.maxAmount;
+
+  if (skillKey === "fishing" && skillLevel >= 5) {
+    maxAmount += 1;
+  }
+  if (skillKey === "gathering" && skillLevel >= 10 && picked.rarity === "common") {
+    minAmount += 1;
+  }
+
+  const amount = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
   addInventoryItem(picked.itemId, amount);
   return { item, amount, rarity: picked.rarity };
 }
 
 export function gatherReward() {
-  const reward = resolveReward("gathering");
-  const bonusCoin = reward.rarity === "rare" ? 22 : 12;
+  const reward = resolveReward("gathering", "gathering");
+  const skillLevel = state.player.lifeSkills.gathering || 1;
+  const bonusCoin = (reward.rarity === "rare" ? 22 : 12) + (skillLevel >= 5 ? 3 : 0);
   updateCurrency({ coin: bonusCoin });
   increaseSkill("gathering", 1);
   increaseActivityCount("gatheringCount", 1);
+  syncUnlocks();
   return { label: reward.item.name, amount: reward.amount, rarity: reward.rarity, coin: bonusCoin };
 }
 
 export function fishReward() {
-  const reward = resolveReward("fishing");
-  const bonusCoin = reward.rarity === "rare" ? 28 : 18;
+  const reward = resolveReward("fishing", "fishing");
+  const skillLevel = state.player.lifeSkills.fishing || 1;
+  const bonusCoin = (reward.rarity === "rare" ? 28 : 18) + (skillLevel >= 5 ? 4 : 0);
   updateCurrency({ coin: bonusCoin });
   increaseSkill("fishing", 1);
   increaseActivityCount("fishingCount", 1);
+  syncUnlocks();
   return { label: reward.item.name, amount: reward.amount, rarity: reward.rarity, coin: bonusCoin };
 }
 
 export function getSeedItems() {
-  return state.data.items.filter((item) => item.type === "seed");
+  const seeds = state.data.items.filter((item) => item.type === "seed");
+  return getUnlockedSeeds(seeds);
 }
 
 export function getFarmStatus() {
@@ -122,10 +158,20 @@ export function plantSeed(seedId) {
 
   const now = Date.now();
   removeInventoryItem(seedId, 1);
+
+  const farmingSkill = state.player.lifeSkills.farming || 1;
+  let growthSeconds = seed.growthSeconds || 30;
+  if (farmingSkill >= 5) {
+    growthSeconds = Math.max(5, growthSeconds - 3);
+  }
+  if (farmingSkill >= 10) {
+    growthSeconds = Math.max(5, growthSeconds - 2);
+  }
+
   state.player.farmPlot = {
     plantedSeedId: seedId,
     plantedAt: now,
-    readyAt: now + (seed.growthSeconds || 30) * 1000
+    readyAt: now + growthSeconds * 1000
   };
 
   return { ok: true, message: `${seed.name}을(를) 심었습니다.` };
@@ -144,13 +190,29 @@ export function harvestFarm() {
 
   const seed = findItem(plot.plantedSeedId);
   const harvestItem = findItem(seed.harvestItemId);
-  const amount = Math.floor(Math.random() * ((seed.harvestMax || 2) - (seed.harvestMin || 1) + 1)) + (seed.harvestMin || 1);
 
+  let harvestMin = seed.harvestMin || 1;
+  let harvestMax = seed.harvestMax || 2;
+  const farmingSkill = state.player.lifeSkills.farming || 1;
+  if (farmingSkill >= 5) {
+    harvestMin += 1;
+  }
+  if (farmingSkill >= 10) {
+    harvestMax += 1;
+  }
+
+  const amount = Math.floor(Math.random() * (harvestMax - harvestMin + 1)) + harvestMin;
   addInventoryItem(seed.harvestItemId, amount);
+
+  if (seed.bonusHarvestItemId && farmingSkill >= 10 && Math.random() < 0.25) {
+    addInventoryItem(seed.bonusHarvestItemId, 1);
+  }
+
   state.player.farmPlot = { plantedSeedId: null, plantedAt: null, readyAt: null };
-  updateCurrency({ coin: 16 + amount * 3 });
+  updateCurrency({ coin: 16 + amount * 3 + (farmingSkill >= 5 ? 4 : 0) });
   increaseSkill("farming", 1);
   increaseActivityCount("farmingCount", 1);
+  syncUnlocks();
 
   return { ok: true, message: `${harvestItem.name} ${amount}개를 수확했습니다.`, itemName: harvestItem.name, amount };
 }

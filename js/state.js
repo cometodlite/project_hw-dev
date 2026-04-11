@@ -24,6 +24,10 @@ export const DEFAULT_PLAYER_STATE = {
     fishingCount: 0,
     farmingCount: 0
   },
+  unlocks: {
+    appleSeedUnlocked: false,
+    goldenSeedUnlocked: false
+  },
   farmPlot: {
     plantedSeedId: null,
     plantedAt: null,
@@ -87,4 +91,9 @@ export function increaseSkill(skillKey, amount = 1) {
 
 export function increaseActivityCount(activityKey, amount = 1) {
   state.player.activityStats[activityKey] = (state.player.activityStats[activityKey] || 0) + amount;
+}
+
+export function syncUnlocks() {
+  state.player.unlocks.appleSeedUnlocked = state.player.lifeSkills.farming >= 5;
+  state.player.unlocks.goldenSeedUnlocked = state.player.lifeSkills.farming >= 10;
 }

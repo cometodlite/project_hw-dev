@@ -1,12 +1,18 @@
 import { state, addLog } from "./state.js";
 import { renderAll } from "./ui.js";
 
+function isVisibleInShop(item) {
+  if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
+  if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
+  return true;
+}
+
 export function initShop() {}
 
 export function renderShop(container) {
   container.innerHTML = "";
 
-  for (const item of state.data.shop) {
+  for (const item of state.data.shop.filter(isVisibleInShop)) {
     const row = document.createElement("div");
     row.className = "shop-item";
     row.innerHTML = `

@@ -85,6 +85,7 @@ export function bindUIEvents() {
   document.getElementById("btn-gather").addEventListener("click", () => {
     const reward = gatherReward();
     addLog(`채집 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
+    populateSeedSelect();
     renderAll();
   });
 
@@ -118,6 +119,7 @@ export function bindUIEvents() {
     farmHarvestButton.addEventListener("click", () => {
       const result = harvestFarm();
       addLog(result.message);
+      populateSeedSelect();
       renderAll();
     });
   }
@@ -155,6 +157,7 @@ function renderActivityStats() {
   if (!el.activityList) return;
   const stats = state.player.activityStats;
   const skills = state.player.lifeSkills;
+  const unlocks = state.player.unlocks;
   el.activityList.innerHTML = `
     <div class="stat-row"><strong>채집 숙련도</strong><span>${skills.gathering}</span></div>
     <div class="stat-row"><strong>낚시 숙련도</strong><span>${skills.fishing}</span></div>
@@ -162,6 +165,8 @@ function renderActivityStats() {
     <div class="stat-row"><strong>채집 횟수</strong><span>${stats.gatheringCount}</span></div>
     <div class="stat-row"><strong>낚시 횟수</strong><span>${stats.fishingCount}</span></div>
     <div class="stat-row"><strong>수확 횟수</strong><span>${stats.farmingCount}</span></div>
+    <div class="stat-row"><strong>사과 묘목 해금</strong><span>${unlocks.appleSeedUnlocked ? "완료" : "농사 5 필요"}</span></div>
+    <div class="stat-row"><strong>황금 씨앗 해금</strong><span>${unlocks.goldenSeedUnlocked ? "완료" : "농사 10 필요"}</span></div>
   `;
 }
 
@@ -178,7 +183,7 @@ export function renderStatus() {
 
   const life = state.player.lifeSkills;
   if (el.lifeSummary) {
-    el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+    el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming} · 농사 5에서 사과 묘목, 농사 10에서 황금 씨앗 해금`;
   }
 
   if (el.farmStatus) {

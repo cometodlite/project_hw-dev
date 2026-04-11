@@ -121,6 +121,18 @@
     "harvestMax": 2
   },
   {
+    "id": "golden_seed",
+    "name": "황금 씨앗",
+    "description": "숙련된 농부만 다룰 수 있는 특별한 씨앗",
+    "type": "seed",
+    "sellPrice": 0,
+    "growthSeconds": 36,
+    "harvestItemId": "apple",
+    "harvestMin": 2,
+    "harvestMax": 3,
+    "bonusHarvestItemId": "golden_apple"
+  },
+  {
     "id": "tea-set",
     "name": "티 세트",
     "description": "집 안 분위기를 따뜻하게 만들어 주는 가구",

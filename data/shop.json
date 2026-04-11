@@ -16,9 +16,16 @@
   {
     "id": "apple_seed",
     "name": "사과 묘목",
-    "description": "성장 30초 · 수확 1~2개",
+    "description": "농사 숙련도 5 해금 · 성장 30초 · 수확 1~2개",
     "currency": "coin",
     "price": 32
+  },
+  {
+    "id": "golden_seed",
+    "name": "황금 씨앗",
+    "description": "농사 숙련도 10 해금 · 성장 36초 · 황금 사과 확률",
+    "currency": "coin",
+    "price": 60
   },
   {
     "id": "tea-set",
