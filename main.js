@@ -1,0 +1,50 @@
+import { state, setDataFilesLoaded } from "./js/state.js";
+import { initUI, bindUIEvents, renderAll } from "./js/ui.js";
+import { loadGame, saveGame, resetGame } from "./js/save.js";
+import { startClock } from "./js/time.js";
+import { initAudio } from "./js/audio.js";
+import { initInventory } from "./js/inventory.js";
+import { initShop } from "./js/shop.js";
+
+async function loadJson(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`데이터를 불러오지 못했습니다: ${path}`);
+  }
+  return response.json();
+}
+
+async function bootstrap() {
+  try {
+    const [items, shop, bgmSchedule] = await Promise.all([
+      loadJson("./data/items.json"),
+      loadJson("./data/shop.json"),
+      loadJson("./data/bgmSchedule.json")
+    ]);
+
+    state.data.items = items;
+    state.data.shop = shop;
+    state.data.bgmSchedule = bgmSchedule;
+    setDataFilesLoaded(true);
+
+    loadGame();
+    initUI();
+    initInventory();
+    initShop();
+    initAudio();
+    bindUIEvents({ saveGame, loadGame, resetGame });
+    startClock();
+    renderAll();
+  } catch (error) {
+    console.error(error);
+    document.body.innerHTML = `
+      <main style="padding:24px;font-family:sans-serif;">
+        <h1>PROJECT: HW</h1>
+        <p>초기화 중 오류가 발생했습니다.</p>
+        <pre>${error.message}</pre>
+      </main>
+    `;
+  }
+}
+
+bootstrap();

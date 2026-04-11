@@ -1,0 +1,199 @@
+:root {
+  --bg: #f5f1ea;
+  --panel: rgba(255,255,255,0.72);
+  --panel-strong: rgba(255,255,255,0.86);
+  --text: #3f3a34;
+  --muted: #756c63;
+  --accent: #9cc6b0;
+  --accent-strong: #73aa90;
+  --danger: #c97b7b;
+  --border: rgba(120, 105, 90, 0.14);
+  --shadow: 0 18px 40px rgba(92, 76, 64, 0.10);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.75), transparent 35%),
+    linear-gradient(180deg, #efe6db 0%, #f5f1ea 100%);
+  color: var(--text);
+}
+
+button, textarea, input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--accent);
+  color: #203329;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease, background 0.2s ease;
+  box-shadow: 0 8px 18px rgba(124, 168, 145, 0.25);
+}
+button:hover { transform: translateY(-1px); background: var(--accent-strong); }
+button:active { transform: translateY(0); }
+button.danger { background: #e5c7c7; color: #5a2d2d; box-shadow: none; }
+
+textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 12px;
+  background: rgba(255,255,255,0.85);
+  resize: vertical;
+  min-height: 160px;
+}
+
+#app {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 18px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.status-card, .card {
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 24px;
+}
+
+.status-card {
+  padding: 14px 16px;
+}
+
+.status-card .label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 18px;
+}
+
+.sidebar, .content {
+  min-width: 0;
+}
+
+.card {
+  padding: 18px;
+}
+
+.stack {
+  display: grid;
+  gap: 10px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.toggle {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+}
+
+.hero {
+  margin-bottom: 18px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.88), rgba(250,245,238,0.75)),
+    url("./assets/images/backgrounds/.gitkeep");
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.inventory-list {
+  display: grid;
+  gap: 10px;
+}
+
+.inventory-item, .shop-item, .log-item {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.log-list {
+  display: grid;
+  gap: 10px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.log-item small {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+h2, h3 {
+  margin-top: 0;
+}
+
+@media (max-width: 960px) {
+  .topbar,
+  .main-grid,
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #app {
+    padding: 16px;
+  }
+}

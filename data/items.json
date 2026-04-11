@@ -1,0 +1,62 @@
+[
+  {
+    "id": "herb",
+    "name": "허브",
+    "description": "향이 좋은 기본 채집 재료",
+    "type": "gather"
+  },
+  {
+    "id": "flower",
+    "name": "들꽃",
+    "description": "집 꾸미기나 제작에 쓸 수 있는 꽃",
+    "type": "gather"
+  },
+  {
+    "id": "wood",
+    "name": "나뭇가지",
+    "description": "간단한 생활 제작 재료",
+    "type": "material"
+  },
+  {
+    "id": "fish",
+    "name": "작은 물고기",
+    "description": "낚시로 얻을 수 있는 기본 수산물",
+    "type": "fish"
+  },
+  {
+    "id": "shrimp",
+    "name": "새우",
+    "description": "요리 재료로 사용할 수 있는 작은 새우",
+    "type": "fish"
+  },
+  {
+    "id": "wheat",
+    "name": "밀",
+    "description": "농사로 수확할 수 있는 기본 작물",
+    "type": "farm"
+  },
+  {
+    "id": "apple",
+    "name": "사과",
+    "description": "상큼한 과일",
+    "type": "farm"
+  },
+  {
+    "id": "tea-set",
+    "name": "티 세트",
+    "description": "집 안 분위기를 따뜻하게 만들어 주는 가구",
+    "type": "housing"
+  },
+  {
+    "id": "soft-lamp",
+    "name": "포근한 램프",
+    "description": "은은한 빛을 내는 장식용 조명",
+    "type": "housing"
+  },
+  {
+    "id": "sunrise-curtain",
+    "name": "일출 커튼",
+    "description": "아침 분위기를 닮은 커튼",
+    "type": "housing"
+  }
+]

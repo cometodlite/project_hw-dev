@@ -1,0 +1,23 @@
+[
+  {
+    "id": "tea-set",
+    "name": "티 세트",
+    "description": "하우징용 가구",
+    "currency": "coin",
+    "price": 120
+  },
+  {
+    "id": "soft-lamp",
+    "name": "포근한 램프",
+    "description": "조명 가구",
+    "currency": "coin",
+    "price": 180
+  },
+  {
+    "id": "sunrise-curtain",
+    "name": "일출 커튼",
+    "description": "특별 꾸미기 아이템",
+    "currency": "bling",
+    "price": 12
+  }
+]

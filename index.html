@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROJECT: HW</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Healing World</p>
+        <h1>PROJECT: HW</h1>
+        <p class="subtitle">힐링 생활형 RPG 웹게임 프로토타입</p>
+      </div>
+
+      <div class="status-grid">
+        <div class="status-card">
+          <span class="label">현재 시간</span>
+          <strong id="current-time">--:--</strong>
+        </div>
+        <div class="status-card">
+          <span class="label">코인</span>
+          <strong id="coin-value">0</strong>
+        </div>
+        <div class="status-card">
+          <span class="label">블링</span>
+          <strong id="bling-value">0</strong>
+        </div>
+        <div class="status-card">
+          <span class="label">현재 BGM</span>
+          <strong id="bgm-title">없음</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="sidebar card">
+        <h2>메뉴</h2>
+        <div class="stack">
+          <button id="btn-save">저장</button>
+          <button id="btn-load">불러오기</button>
+          <button id="btn-reset" class="danger">새 게임</button>
+        </div>
+
+        <h3>설정</h3>
+        <label class="toggle">
+          <input type="checkbox" id="bgm-enabled" checked />
+          <span>시간대별 BGM 시스템 사용</span>
+        </label>
+
+        <h3>빠른 재화</h3>
+        <div class="grid-2">
+          <button id="btn-add-coin">코인 +100</button>
+          <button id="btn-add-bling">블링 +10</button>
+        </div>
+      </aside>
+
+      <section class="content">
+        <section class="hero card">
+          <h2>마을 광장</h2>
+          <p id="time-period-text">시간대를 불러오는 중입니다.</p>
+          <p id="weather-text">오늘도 편안한 하루를 보낼 수 있을 것 같습니다.</p>
+        </section>
+
+        <section class="actions-grid">
+          <article class="card">
+            <h3>생활 활동</h3>
+            <div class="stack">
+              <button id="btn-gather">채집하기</button>
+              <button id="btn-fish">낚시하기</button>
+              <button id="btn-farm">농사 수확</button>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>상점</h3>
+            <div id="shop-list" class="stack"></div>
+          </article>
+
+          <article class="card">
+            <h3>인벤토리</h3>
+            <div id="inventory-list" class="inventory-list"></div>
+          </article>
+
+          <article class="card">
+            <h3>하우징 메모</h3>
+            <textarea id="housing-note" rows="8" placeholder="내 집에 두고 싶은 가구나 분위기를 적어보세요."></textarea>
+            <button id="btn-save-note">메모 저장</button>
+          </article>
+        </section>
+
+        <section class="card">
+          <h3>알림</h3>
+          <div id="log-list" class="log-list"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
