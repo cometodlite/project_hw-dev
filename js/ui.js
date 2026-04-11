@@ -48,10 +48,13 @@ export function bindUIEvents() {
     renderAll();
   });
 
-  document.getElementById("btn-open-inventory").addEventListener?.("click", () => {
-    addLog("인벤토리를 확인했습니다.");
-    renderAll();
-  });
+  const inventoryButton = document.getElementById("btn-open-inventory");
+  if (inventoryButton) {
+    inventoryButton.addEventListener("click", () => {
+      addLog("인벤토리를 확인했습니다.");
+      renderAll();
+    });
+  }
 
   document.getElementById("btn-gather").addEventListener("click", () => {
     const reward = gatherReward();
