@@ -133,6 +133,7 @@ export function bindUIEvents() {
       currentScene = button.dataset.view;
       if (currentScene === "farm") currentSideTab = "life";
       if (currentScene === "home") currentSideTab = "housing";
+      if (currentScene === "town") currentSideTab = currentSideTab === "housing" ? "inventory" : currentSideTab;
       syncSceneButtons();
       syncSideTabs();
       renderAll();

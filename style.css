@@ -296,3 +296,116 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
 .time-day .hero { box-shadow: 0 20px 40px rgba(210, 180, 120, 0.16); }
 .time-evening .hero { box-shadow: 0 20px 40px rgba(212, 143, 98, 0.18); }
 .time-night .hero { box-shadow: 0 20px 40px rgba(90, 99, 148, 0.22); }
+
+
+.mobile-tab-hint {
+  display: none;
+  width: 100%;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1180px) {
+  .left-panel, .right-panel, .bottom-log, .hero {
+    border-radius: 22px;
+  }
+
+  .left-panel {
+    order: 1;
+  }
+
+  .center-panel {
+    order: 2;
+  }
+
+  .right-panel {
+    order: 3;
+  }
+
+  .tab-row {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgba(245, 241, 234, 0.94);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    backdrop-filter: blur(8px);
+  }
+
+  .side-tab {
+    flex: 1 1 calc(50% - 8px);
+    min-height: 44px;
+  }
+
+  .mobile-tab-hint {
+    display: block;
+  }
+
+  .log-list {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 700px) {
+  #app {
+    padding: 12px;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .status-card {
+    padding: 12px 14px;
+  }
+
+  .dashboard-grid {
+    gap: 14px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .scene-card {
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .tab-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .side-tab, .tab-button, button, select {
+    min-height: 46px;
+  }
+
+  .grid-2, .housing-grid, .scene-visual {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-list,
+  .log-list {
+    gap: 8px;
+  }
+
+  .bottom-log {
+    min-height: 0;
+  }
+
+  .left-panel .stack,
+  .right-panel .stack {
+    gap: 8px;
+  }
+
+  .hero-top {
+    gap: 12px;
+  }
+
+  .scene-banner {
+    font-size: 0.95rem;
+  }
+}
