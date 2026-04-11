@@ -558,39 +558,104 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
   background: rgba(255, 242, 232, 0.8);
 }
 
-.time-night .scene-banner,
-.time-night .time-visual-badge {
-  background: rgba(239, 242, 255, 0.22);
-  color: #eef1ff;
-  border-color: rgba(220, 228, 255, 0.18);
+
+
+
+
+
+.hero,
+.scene-card,
+.scene-banner,
+.time-visual-badge,
+.status-card,
+.inventory-item,
+.shop-item,
+.log-item,
+.stat-row,
+.housing-slot,
+.mini-note {
+  color: var(--text);
 }
 
-.time-night .scene-card,
+.scene-background-layer.time-night {
+  filter: saturate(0.95) brightness(0.78);
+}
+
+.time-night .hero {
+  border-color: rgba(120, 130, 180, 0.22);
+}
+
+.time-night .scene-banner,
+.time-night .time-visual-badge {
+  background: rgba(20, 28, 46, 0.42);
+  color: #f3f6ff;
+  border-color: rgba(210, 220, 255, 0.18);
+}
+
+.time-night .scene-card {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(220, 228, 255, 0.12);
+  color: #1f2430;
+}
+
+.time-night .scene-card strong,
+.time-night #scene-description,
+.time-night #scene-detail,
+.time-night #farm-visual-status,
+.time-night #home-visual-status,
+.time-night #life-summary,
+.time-night #radio-track-title {
+  color: #1f2430;
+}
+
 .time-night .mini-chip,
 .time-night .housing-slot,
 .time-night .inventory-item,
 .time-night .shop-item,
 .time-night .log-item,
-.time-night .stat-row {
-  background: rgba(255,255,255,0.14);
-  color: #f5f7ff;
-  border-color: rgba(230, 235, 255, 0.16);
+.time-night .stat-row,
+.time-night .mini-note {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(210, 220, 255, 0.16);
+  color: #253044;
 }
 
-.time-night .mini-note,
-.time-night #scene-description,
-.time-night #scene-detail,
-.time-night #farm-visual-status,
-.time-night #home-visual-status,
+.time-night .status-card {
+  background: rgba(255,255,255,0.84);
+  color: #253044;
+}
+
 .time-night .status-card .label,
 .time-night .eyebrow,
 .time-night .subtitle {
-  color: #e6ebff;
+  color: #61708a;
 }
 
-.time-night body,
-.time-night #app,
-.time-night .status-card,
-.time-night .card {
-  color: #f5f7ff;
+.time-night h1,
+.time-night h2,
+.time-night h3 {
+  color: #f3f6ff;
+}
+
+.time-night .left-panel h2,
+.time-night .left-panel h3,
+.time-night .right-panel h2,
+.time-night .right-panel h3,
+.time-night .center-panel h2,
+.time-night .center-panel h3 {
+  color: #eef3ff;
+}
+
+.time-night .left-panel,
+.time-night .right-panel,
+.time-night .bottom-log {
+  background: rgba(255,255,255,0.78);
+  color: #253044;
+}
+
+.time-night .left-panel h2,
+.time-night .left-panel h3,
+.time-night .right-panel h3,
+.time-night .bottom-log h3 {
+  color: #253044;
 }
