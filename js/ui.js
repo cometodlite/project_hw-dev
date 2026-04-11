@@ -39,6 +39,19 @@ const SCENE_META = {
   }
 };
 
+function getTimeMood() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour <= 8) return { key: "dawn", label: "부드러운 아침빛이 천천히 공간을 감싸고 있습니다." };
+  if (hour >= 9 && hour <= 16) return { key: "day", label: "따뜻한 낮 햇살이 공간 전체를 환하게 비추고 있습니다." };
+  if (hour >= 17 && hour <= 20) return { key: "evening", label: "노을빛이 스며들며 하루가 차분하게 마무리되고 있습니다." };
+  return { key: "night", label: "고요한 밤공기가 주변을 조용히 채우고 있습니다." };
+}
+
+function getPlacedHousingNames() {
+  const ids = state.player.housing?.slots?.filter(Boolean) || [];
+  return ids.map((id) => state.data.items.find((item) => item.id === id)?.name || id);
+}
+
 export function initUI() {
   el.currentTime = document.getElementById("current-time");
   el.coinValue = document.getElementById("coin-value");
@@ -59,6 +72,11 @@ export function initUI() {
   el.housingSummary = document.getElementById("housing-summary");
   el.sceneTitle = document.getElementById("scene-title");
   el.sceneDescription = document.getElementById("scene-description");
+  el.sceneDetail = document.getElementById("scene-detail");
+  el.sceneMoodBanner = document.getElementById("scene-mood-banner");
+  el.farmVisualStatus = document.getElementById("farm-visual-status");
+  el.homeVisualStatus = document.getElementById("home-visual-status");
+  el.homeItemChips = document.getElementById("home-item-chips");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -77,9 +95,7 @@ function populateSeedSelect() {
 function refreshHousingUI() {
   renderHousingSlots(el.housingSlots);
   populateHousingItemSelect(el.housingItemSelect);
-  if (el.housingSummary) {
-    el.housingSummary.textContent = getHousingSummary();
-  }
+  if (el.housingSummary) el.housingSummary.textContent = getHousingSummary();
 }
 
 function bindHousingPlacementButton(buttonId, slotIndex) {
@@ -98,6 +114,8 @@ function syncSceneButtons() {
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === currentScene);
   });
+  document.body.classList.remove("scene-town", "scene-farm", "scene-home");
+  document.body.classList.add(`scene-${currentScene}`);
 }
 
 function syncSideTabs() {
@@ -129,18 +147,8 @@ export function bindUIEvents() {
     });
   });
 
-  document.getElementById("btn-save")?.addEventListener("click", () => {
-    saveGame();
-    renderAll();
-  });
-
-  document.getElementById("btn-load")?.addEventListener("click", () => {
-    loadGame();
-    populateSeedSelect();
-    refreshHousingUI();
-    renderAll();
-  });
-
+  document.getElementById("btn-save")?.addEventListener("click", () => { saveGame(); renderAll(); });
+  document.getElementById("btn-load")?.addEventListener("click", () => { loadGame(); populateSeedSelect(); refreshHousingUI(); renderAll(); });
   document.getElementById("btn-reset")?.addEventListener("click", () => {
     const confirmed = window.confirm("정말 새 게임 상태로 초기화하시겠습니까?");
     if (!confirmed) return;
@@ -157,17 +165,8 @@ export function bindUIEvents() {
     renderAll();
   });
 
-  document.getElementById("btn-add-coin")?.addEventListener("click", () => {
-    updateCurrency({ coin: 100 });
-    addLog("코인 100을 획득했습니다.");
-    renderAll();
-  });
-
-  document.getElementById("btn-add-bling")?.addEventListener("click", () => {
-    updateCurrency({ bling: 10 });
-    addLog("블링 10을 획득했습니다.");
-    renderAll();
-  });
+  document.getElementById("btn-add-coin")?.addEventListener("click", () => { updateCurrency({ coin: 100 }); addLog("코인 100을 획득했습니다."); renderAll(); });
+  document.getElementById("btn-add-bling")?.addEventListener("click", () => { updateCurrency({ bling: 10 }); addLog("블링 10을 획득했습니다."); renderAll(); });
 
   document.getElementById("btn-gather")?.addEventListener("click", () => {
     currentScene = "town";
@@ -188,11 +187,8 @@ export function bindUIEvents() {
 
   document.getElementById("btn-sell-all")?.addEventListener("click", () => {
     const result = sellForagedItems();
-    if (result.earned <= 0) {
-      addLog("판매할 생활 수집품이 없습니다.");
-    } else {
-      addLog(`수집품 판매 완료: ${result.sold.join(", ")} · 총 ${result.earned} 코인`);
-    }
+    if (result.earned <= 0) addLog("판매할 생활 수집품이 없습니다.");
+    else addLog(`수집품 판매 완료: ${result.sold.join(", ")} · 총 ${result.earned} 코인`);
     renderAll();
   });
 
@@ -234,15 +230,8 @@ export function bindUIEvents() {
     renderAll();
   });
 
-  document.getElementById("btn-radio-play")?.addEventListener("click", () => {
-    playRadio();
-    renderAll();
-  });
-
-  document.getElementById("btn-radio-stop")?.addEventListener("click", () => {
-    stopRadio();
-    renderAll();
-  });
+  document.getElementById("btn-radio-play")?.addEventListener("click", () => { playRadio(); renderAll(); });
+  document.getElementById("btn-radio-stop")?.addEventListener("click", () => { stopRadio(); renderAll(); });
 }
 
 function renderActivityStats() {
@@ -266,32 +255,63 @@ function renderScene() {
   const scene = SCENE_META[currentScene] || SCENE_META.town;
   if (el.sceneTitle) el.sceneTitle.textContent = scene.title;
   if (el.sceneDescription) el.sceneDescription.textContent = scene.description;
+
+  const mood = getTimeMood();
+  document.body.classList.remove("time-dawn", "time-day", "time-evening", "time-night");
+  document.body.classList.add(`time-${mood.key}`);
+
+  if (el.sceneMoodBanner) el.sceneMoodBanner.textContent = mood.label;
+
+  if (el.sceneDetail) {
+    if (currentScene === "town") {
+      el.sceneDetail.textContent = "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다.";
+    } else if (currentScene === "farm") {
+      el.sceneDetail.textContent = getFarmStatus().text;
+    } else {
+      const placedNames = getPlacedHousingNames();
+      el.sceneDetail.textContent = placedNames.length
+        ? `현재 집 안에는 ${placedNames.join(", ")}이(가) 배치되어 있습니다.`
+        : "아직 집 안이 비어 있습니다. 가구를 배치해 보세요.";
+    }
+  }
+
+  if (el.farmVisualStatus) {
+    const farmStatus = getFarmStatus();
+    el.farmVisualStatus.textContent = currentScene === "farm"
+      ? `밭 시각화 · ${farmStatus.text}`
+      : `밭 요약 · ${farmStatus.text}`;
+  }
+
+  if (el.homeVisualStatus) {
+    const placedNames = getPlacedHousingNames();
+    el.homeVisualStatus.textContent = placedNames.length
+      ? `현재 집 분위기: ${placedNames.join(", ")}`
+      : "현재 집 분위기: 배치된 가구가 없습니다.";
+  }
+
+  if (el.homeItemChips) {
+    const placedNames = getPlacedHousingNames();
+    el.homeItemChips.innerHTML = placedNames.length
+      ? placedNames.map((name) => `<span class="mini-chip">${name}</span>`).join("")
+      : '<span class="mini-chip">비어 있음</span>';
+  }
 }
 
 export function renderStatus() {
   el.currentTime.textContent = state.ui.currentTime || "--:--";
   el.coinValue.textContent = `${state.player.coin}`;
   el.blingValue.textContent = `${state.player.bling}`;
-  el.bgmTitle.textContent = state.player.settings.bgmEnabled
-    ? (state.player.currentTrackTitle || "없음")
-    : "사용 안 함";
+  el.bgmTitle.textContent = state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
   el.timePeriodText.textContent = state.player.currentPeriodLabel || "시간대를 계산하는 중입니다.";
   el.bgmEnabled.checked = Boolean(state.player.settings.bgmEnabled);
 
   const life = state.player.lifeSkills;
-  if (el.lifeSummary) {
-    el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
-  }
-
-  if (el.farmStatus) {
-    el.farmStatus.textContent = getFarmStatus().text;
-  }
+  if (el.lifeSummary) el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+  if (el.farmStatus) el.farmStatus.textContent = getFarmStatus().text;
 
   if (el.radioTrackTitle) {
     const radio = getRadioState();
-    el.radioTrackTitle.textContent = radio.isRadioPlaying
-      ? `현재 라디오: ${radio.title}`
-      : "현재 라디오: 꺼짐";
+    el.radioTrackTitle.textContent = radio.isRadioPlaying ? `현재 라디오: ${radio.title}` : "현재 라디오: 꺼짐";
   }
 
   renderScene();

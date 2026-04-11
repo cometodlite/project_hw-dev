@@ -248,3 +248,51 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
     grid-template-columns: 1fr;
   }
 }
+
+
+.scene-banner {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.scene-detail {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.mini-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mini-chip {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+
+.scene-town .hero {
+  background: linear-gradient(135deg, rgba(255,250,244,0.92), rgba(248,241,231,0.78));
+}
+
+.scene-farm .hero {
+  background: linear-gradient(135deg, rgba(244,255,245,0.92), rgba(235,245,229,0.78));
+}
+
+.scene-home .hero {
+  background: linear-gradient(135deg, rgba(255,248,240,0.92), rgba(245,236,228,0.82));
+}
+
+.time-dawn .hero { box-shadow: 0 20px 40px rgba(156, 140, 202, 0.16); }
+.time-day .hero { box-shadow: 0 20px 40px rgba(210, 180, 120, 0.16); }
+.time-evening .hero { box-shadow: 0 20px 40px rgba(212, 143, 98, 0.18); }
+.time-night .hero { box-shadow: 0 20px 40px rgba(90, 99, 148, 0.22); }
