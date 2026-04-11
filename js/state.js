@@ -28,6 +28,9 @@ export const DEFAULT_PLAYER_STATE = {
     appleSeedUnlocked: false,
     goldenSeedUnlocked: false
   },
+  housing: {
+    slots: [null, null, null, null]
+  },
   farmPlot: {
     plantedSeedId: null,
     plantedAt: null,

@@ -226,3 +226,31 @@ select {
   background: var(--panel-strong);
   border: 1px solid var(--border);
 }
+
+
+.housing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.housing-slot {
+  min-height: 110px;
+  border-radius: 18px;
+  border: 1px dashed var(--border);
+  background: rgba(255,255,255,0.55);
+  padding: 12px;
+  display: grid;
+  align-content: space-between;
+  gap: 8px;
+}
+
+.housing-slot strong {
+  font-size: 0.95rem;
+}
+
+.housing-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}

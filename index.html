@@ -103,9 +103,19 @@
           </article>
 
           <article class="card">
-            <h3>하우징 메모</h3>
-            <textarea id="housing-note" rows="8" placeholder="내 집에 두고 싶은 가구나 분위기를 적어보세요."></textarea>
-            <button id="btn-save-note">메모 저장</button>
+            <h3>하우징</h3>
+            <div id="housing-slots" class="housing-grid"></div>
+            <div class="stack">
+              <select id="housing-item-select"></select>
+              <div class="grid-2">
+                <button id="btn-place-slot-1">1번 칸에 배치</button>
+                <button id="btn-place-slot-2">2번 칸에 배치</button>
+                <button id="btn-place-slot-3">3번 칸에 배치</button>
+                <button id="btn-place-slot-4">4번 칸에 배치</button>
+              </div>
+              <button id="btn-clear-housing">배치 초기화</button>
+            </div>
+            <div id="housing-summary" class="mini-note">집 안이 비어 있습니다.</div>
           </article>
         </section>
 

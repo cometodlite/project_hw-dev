@@ -1,6 +1,6 @@
 import { state, DEFAULT_PLAYER_STATE, addLog, syncUnlocks } from "./state.js";
 
-const SAVE_KEY = "project-hw-save-v3";
+const SAVE_KEY = "project-hw-save-v4";
 
 export function saveGame() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state.player));
@@ -39,6 +39,13 @@ export function loadGame() {
       unlocks: {
         ...DEFAULT_PLAYER_STATE.unlocks,
         ...(parsed.unlocks || {})
+      },
+      housing: {
+        ...DEFAULT_PLAYER_STATE.housing,
+        ...(parsed.housing || {}),
+        slots: Array.isArray(parsed?.housing?.slots)
+          ? parsed.housing.slots.slice(0, 4).concat(Array(Math.max(0, 4 - parsed.housing.slots.length)).fill(null))
+          : structuredClone(DEFAULT_PLAYER_STATE.housing.slots)
       },
       farmPlot: {
         ...DEFAULT_PLAYER_STATE.farmPlot,
