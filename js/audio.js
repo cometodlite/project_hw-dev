@@ -35,13 +35,13 @@ function ensureBgmAudio(period) {
   const trackPath = period.file || null;
   if (!trackPath) return null;
 
-  if (!bgmAudio || bgmAudio.dataset?.trackId !== period.id) {
+  if (!bgmAudio || bgmAudio._hwTrackId !== period.id) {
     if (bgmAudio) {
       bgmAudio.pause();
       bgmAudio = null;
     }
     bgmAudio = createAudio(trackPath, true, 0.45);
-    bgmAudio.dataset = { trackId: period.id };
+    bgmAudio._hwTrackId = period.id;
   }
   return bgmAudio;
 }
