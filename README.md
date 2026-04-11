@@ -58,3 +58,9 @@ GitHub Pages에 그대로 올릴 수 있는 정적 웹 구조입니다.
 ## 최신 수정
 - `Attempted to assign to readonly property` 오류 수정
 - `audio.dataset`에 직접 객체를 대입하던 부분을 내부 커스텀 속성(`_hwTrackId`) 사용으로 변경
+
+
+## 추가 안정화 수정
+- `Audio` 객체에 커스텀 속성을 직접 붙이지 않도록 변경
+- 현재 로드된 BGM 식별값을 별도 변수로 관리
+- Safari / iOS 계열 브라우저에서 발생할 수 있는 읽기 전용 속성 오류 가능성 축소

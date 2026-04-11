@@ -1,6 +1,7 @@
 import { state, addLog } from "./state.js";
 
 let currentTrackId = null;
+let loadedBgmTrackId = null;
 let bgmAudio = null;
 let radioAudio = null;
 let isRadioPlaying = false;
@@ -14,7 +15,7 @@ function createAudio(src, loop = true, volume = 0.7) {
 
 function fadeAudio(audio, targetVolume, duration = 800) {
   if (!audio) return;
-  const startVolume = audio.volume;
+  const startVolume = Number(audio.volume || 0);
   const stepTime = 50;
   const steps = Math.max(1, Math.floor(duration / stepTime));
   let currentStep = 0;
@@ -35,14 +36,15 @@ function ensureBgmAudio(period) {
   const trackPath = period.file || null;
   if (!trackPath) return null;
 
-  if (!bgmAudio || bgmAudio._hwTrackId !== period.id) {
+  if (!bgmAudio || loadedBgmTrackId !== period.id) {
     if (bgmAudio) {
       bgmAudio.pause();
-      bgmAudio = null;
+      bgmAudio.currentTime = 0;
     }
     bgmAudio = createAudio(trackPath, true, 0.45);
-    bgmAudio._hwTrackId = period.id;
+    loadedBgmTrackId = period.id;
   }
+
   return bgmAudio;
 }
 
@@ -106,6 +108,7 @@ export function stopRadio() {
   }
 
   if (bgmAudio && state.player.settings.bgmEnabled) {
+    bgmAudio.volume = 0.0;
     bgmAudio.play().catch(() => {});
     fadeAudio(bgmAudio, 0.45, 700);
   }
