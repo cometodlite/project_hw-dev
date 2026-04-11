@@ -1,6 +1,6 @@
 import { state, DEFAULT_PLAYER_STATE, addLog } from "./state.js";
 
-const SAVE_KEY = "project-hw-save-v1";
+const SAVE_KEY = "project-hw-save-v2";
 
 export function saveGame() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state.player));
@@ -26,6 +26,18 @@ export function loadGame() {
       inventory: {
         ...DEFAULT_PLAYER_STATE.inventory,
         ...(parsed.inventory || {})
+      },
+      lifeSkills: {
+        ...DEFAULT_PLAYER_STATE.lifeSkills,
+        ...(parsed.lifeSkills || {})
+      },
+      activityStats: {
+        ...DEFAULT_PLAYER_STATE.activityStats,
+        ...(parsed.activityStats || {})
+      },
+      farmPlot: {
+        ...DEFAULT_PLAYER_STATE.farmPlot,
+        ...(parsed.farmPlot || {})
       }
     };
     addLog("저장 데이터를 불러왔습니다.");

@@ -1,5 +1,26 @@
 [
   {
+    "id": "carrot_seed",
+    "name": "당근 씨앗",
+    "description": "성장 20초 · 수확 2~4개",
+    "currency": "coin",
+    "price": 24
+  },
+  {
+    "id": "wheat_seed",
+    "name": "밀 씨앗",
+    "description": "성장 15초 · 수확 2~3개",
+    "currency": "coin",
+    "price": 18
+  },
+  {
+    "id": "apple_seed",
+    "name": "사과 묘목",
+    "description": "성장 30초 · 수확 1~2개",
+    "currency": "coin",
+    "price": 32
+  },
+  {
     "id": "tea-set",
     "name": "티 세트",
     "description": "하우징용 가구",

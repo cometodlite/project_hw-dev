@@ -1,5 +1,14 @@
 import { state, addLog, updateCurrency, setHousingNote, setBgmEnabled } from "./state.js";
-import { renderInventory, gatherReward, fishReward, farmReward } from "./inventory.js";
+import {
+  renderInventory,
+  gatherReward,
+  fishReward,
+  getSeedItems,
+  getFarmStatus,
+  plantSeed,
+  harvestFarm,
+  sellForagedItems
+} from "./inventory.js";
 import { renderShop } from "./shop.js";
 import { saveGame, loadGame, resetGame } from "./save.js";
 import { playRadio, stopRadio, getRadioState } from "./audio.js";
@@ -18,6 +27,19 @@ export function initUI() {
   el.housingNote = document.getElementById("housing-note");
   el.bgmEnabled = document.getElementById("bgm-enabled");
   el.radioTrackTitle = document.getElementById("radio-track-title");
+  el.lifeSummary = document.getElementById("life-summary");
+  el.activityList = document.getElementById("activity-list");
+  el.farmSeedSelect = document.getElementById("farm-seed-select");
+  el.farmStatus = document.getElementById("farm-status");
+  populateSeedSelect();
+}
+
+function populateSeedSelect() {
+  if (!el.farmSeedSelect) return;
+  const seeds = getSeedItems();
+  el.farmSeedSelect.innerHTML = seeds.map((seed) =>
+    `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`
+  ).join("");
 }
 
 export function bindUIEvents() {
@@ -28,6 +50,7 @@ export function bindUIEvents() {
 
   document.getElementById("btn-load").addEventListener("click", () => {
     loadGame();
+    populateSeedSelect();
     renderAll();
   });
 
@@ -35,6 +58,7 @@ export function bindUIEvents() {
     const confirmed = window.confirm("정말 새 게임 상태로 초기화하시겠습니까?");
     if (!confirmed) return;
     resetGame();
+    populateSeedSelect();
     renderAll();
   });
 
@@ -60,19 +84,35 @@ export function bindUIEvents() {
 
   document.getElementById("btn-gather").addEventListener("click", () => {
     const reward = gatherReward();
-    addLog(`채집 성공: ${reward.label} ${reward.amount}개를 획득했습니다.`);
+    addLog(`채집 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
     renderAll();
   });
 
   document.getElementById("btn-fish").addEventListener("click", () => {
     const reward = fishReward();
-    addLog(`낚시 성공: ${reward.label} ${reward.amount}개를 획득했습니다.`);
+    addLog(`낚시 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
     renderAll();
   });
 
-  document.getElementById("btn-farm").addEventListener("click", () => {
-    const reward = farmReward();
-    addLog(`농사 수확: ${reward.label} ${reward.amount}개를 획득했습니다.`);
+  document.getElementById("btn-sell-all").addEventListener("click", () => {
+    const result = sellForagedItems();
+    if (result.earned <= 0) {
+      addLog("판매할 생활 수집품이 없습니다.");
+    } else {
+      addLog(`수집품 판매 완료: ${result.sold.join(", ")} · 총 ${result.earned} 코인`);
+    }
+    renderAll();
+  });
+
+  document.getElementById("btn-plant-seed").addEventListener("click", () => {
+    const result = plantSeed(el.farmSeedSelect.value);
+    addLog(result.message);
+    renderAll();
+  });
+
+  document.getElementById("btn-farm-harvest").addEventListener("click", () => {
+    const result = harvestFarm();
+    addLog(result.message);
     renderAll();
   });
 
@@ -105,6 +145,20 @@ export function bindUIEvents() {
   }
 }
 
+function renderActivityStats() {
+  if (!el.activityList) return;
+  const stats = state.player.activityStats;
+  const skills = state.player.lifeSkills;
+  el.activityList.innerHTML = `
+    <div class="stat-row"><strong>채집 숙련도</strong><span>${skills.gathering}</span></div>
+    <div class="stat-row"><strong>낚시 숙련도</strong><span>${skills.fishing}</span></div>
+    <div class="stat-row"><strong>농사 숙련도</strong><span>${skills.farming}</span></div>
+    <div class="stat-row"><strong>채집 횟수</strong><span>${stats.gatheringCount}</span></div>
+    <div class="stat-row"><strong>낚시 횟수</strong><span>${stats.fishingCount}</span></div>
+    <div class="stat-row"><strong>수확 횟수</strong><span>${stats.farmingCount}</span></div>
+  `;
+}
+
 export function renderStatus() {
   el.currentTime.textContent = state.ui.currentTime || "--:--";
   el.coinValue.textContent = `${state.player.coin}`;
@@ -115,6 +169,15 @@ export function renderStatus() {
   el.timePeriodText.textContent = state.player.currentPeriodLabel || "시간대를 계산하는 중입니다.";
   el.housingNote.value = state.player.housingNote || "";
   el.bgmEnabled.checked = Boolean(state.player.settings.bgmEnabled);
+
+  const life = state.player.lifeSkills;
+  if (el.lifeSummary) {
+    el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+  }
+
+  if (el.farmStatus) {
+    el.farmStatus.textContent = getFarmStatus().text;
+  }
 
   if (el.radioTrackTitle) {
     const radio = getRadioState();
@@ -139,5 +202,6 @@ export function renderAll() {
   renderStatus();
   renderInventory(el.inventoryList);
   renderShop(el.shopList);
+  renderActivityStats();
   renderLog();
 }

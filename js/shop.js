@@ -1,9 +1,7 @@
 import { state, addLog } from "./state.js";
 import { renderAll } from "./ui.js";
 
-export function initShop() {
-  // placeholder
-}
+export function initShop() {}
 
 export function renderShop(container) {
   container.innerHTML = "";
@@ -24,8 +22,7 @@ export function renderShop(container) {
 
   container.querySelectorAll("[data-buy-id]").forEach((button) => {
     button.addEventListener("click", () => {
-      const targetId = button.dataset.buyId;
-      buyItem(targetId);
+      buyItem(button.dataset.buyId);
     });
   });
 }

@@ -69,10 +69,21 @@
           <article class="card">
             <h3>생활 활동</h3>
             <div class="stack">
-              <button id="btn-gather">채집하기</button>
-              <button id="btn-fish">낚시하기</button>
-              <button id="btn-farm">농사 수확</button>
+              <button id="btn-gather">숲에서 채집하기</button>
+              <button id="btn-fish">연못에서 낚시하기</button>
+              <button id="btn-sell-all">수집품 판매하기</button>
             </div>
+            <div class="mini-note" id="life-summary">생활 숙련도 정보를 불러오는 중입니다.</div>
+          </article>
+
+          <article class="card">
+            <h3>농사</h3>
+            <div class="stack">
+              <select id="farm-seed-select"></select>
+              <button id="btn-plant-seed">씨앗 심기</button>
+              <button id="btn-farm-harvest">수확하기</button>
+            </div>
+            <div id="farm-status" class="mini-note">밭 상태를 불러오는 중입니다.</div>
           </article>
 
           <article class="card">
@@ -83,6 +94,11 @@
           <article class="card">
             <h3>인벤토리</h3>
             <div id="inventory-list" class="inventory-list"></div>
+          </article>
+
+          <article class="card">
+            <h3>활동 기록</h3>
+            <div id="activity-list" class="inventory-list"></div>
           </article>
 
           <article class="card">

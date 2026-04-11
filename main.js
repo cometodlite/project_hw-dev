@@ -1,6 +1,6 @@
 import { state, setDataFilesLoaded } from "./js/state.js";
 import { initUI, bindUIEvents, renderAll } from "./js/ui.js";
-import { loadGame, saveGame, resetGame } from "./js/save.js";
+import { loadGame } from "./js/save.js";
 import { startClock } from "./js/time.js";
 import { initAudio } from "./js/audio.js";
 import { initInventory } from "./js/inventory.js";
@@ -16,15 +16,17 @@ async function loadJson(path) {
 
 async function bootstrap() {
   try {
-    const [items, shop, bgmSchedule] = await Promise.all([
+    const [items, shop, bgmSchedule, lifeTables] = await Promise.all([
       loadJson("./data/items.json"),
       loadJson("./data/shop.json"),
-      loadJson("./data/bgmSchedule.json")
+      loadJson("./data/bgmSchedule.json"),
+      loadJson("./data/lifeTables.json")
     ]);
 
     state.data.items = items;
     state.data.shop = shop;
     state.data.bgmSchedule = bgmSchedule;
+    state.data.lifeTables = lifeTables;
     setDataFilesLoaded(true);
 
     loadGame();
@@ -32,7 +34,7 @@ async function bootstrap() {
     initInventory();
     initShop();
     initAudio();
-    bindUIEvents({ saveGame, loadGame, resetGame });
+    bindUIEvents();
     startClock();
     renderAll();
   } catch (error) {
