@@ -41,10 +41,32 @@ const SCENE_META = {
 
 function getTimeMood() {
   const hour = new Date().getHours();
-  if (hour >= 5 && hour <= 8) return { key: "dawn", label: "부드러운 아침빛이 천천히 공간을 감싸고 있습니다." };
-  if (hour >= 9 && hour <= 16) return { key: "day", label: "따뜻한 낮 햇살이 공간 전체를 환하게 비추고 있습니다." };
-  if (hour >= 17 && hour <= 20) return { key: "evening", label: "노을빛이 스며들며 하루가 차분하게 마무리되고 있습니다." };
-  return { key: "night", label: "고요한 밤공기가 주변을 조용히 채우고 있습니다." };
+  if (hour >= 5 && hour <= 8) {
+    return {
+      key: "dawn",
+      label: "아침",
+      banner: "부드러운 아침빛이 천천히 공간을 감싸고 있습니다."
+    };
+  }
+  if (hour >= 9 && hour <= 16) {
+    return {
+      key: "day",
+      label: "낮",
+      banner: "따뜻한 낮 햇살이 공간 전체를 환하게 비추고 있습니다."
+    };
+  }
+  if (hour >= 17 && hour <= 20) {
+    return {
+      key: "evening",
+      label: "저녁",
+      banner: "노을빛이 스며들며 하루가 차분하게 마무리되고 있습니다."
+    };
+  }
+  return {
+    key: "night",
+    label: "밤",
+    banner: "고요한 밤공기가 주변을 조용히 채우고 있습니다."
+  };
 }
 
 function getPlacedHousingNames() {
@@ -77,6 +99,8 @@ export function initUI() {
   el.farmVisualStatus = document.getElementById("farm-visual-status");
   el.homeVisualStatus = document.getElementById("home-visual-status");
   el.homeItemChips = document.getElementById("home-item-chips");
+  el.sceneBackgroundLayer = document.getElementById("scene-background-layer");
+  el.timeVisualBadge = document.getElementById("time-visual-badge");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -261,18 +285,22 @@ function renderScene() {
   document.body.classList.remove("time-dawn", "time-day", "time-evening", "time-night");
   document.body.classList.add(`time-${mood.key}`);
 
-  if (el.sceneMoodBanner) el.sceneMoodBanner.textContent = mood.label;
+  if (el.sceneMoodBanner) el.sceneMoodBanner.textContent = mood.banner;
+  if (el.timeVisualBadge) el.timeVisualBadge.textContent = `${mood.label} 분위기 · ${scene.title}`;
+  if (el.sceneBackgroundLayer) {
+    el.sceneBackgroundLayer.className = `scene-background-layer time-${mood.key}`;
+  }
 
   if (el.sceneDetail) {
     if (currentScene === "town") {
-      el.sceneDetail.textContent = "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다.";
+      el.sceneDetail.textContent = "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다. 시간대에 따라 광장의 분위기도 조금씩 달라집니다.";
     } else if (currentScene === "farm") {
-      el.sceneDetail.textContent = getFarmStatus().text;
+      el.sceneDetail.textContent = `밭 풍경 · ${getFarmStatus().text}`;
     } else {
       const placedNames = getPlacedHousingNames();
       el.sceneDetail.textContent = placedNames.length
         ? `현재 집 안에는 ${placedNames.join(", ")}이(가) 배치되어 있습니다.`
-        : "아직 집 안이 비어 있습니다. 가구를 배치해 보세요.";
+        : "아직 집 안이 비어 있습니다. 가구를 배치하면 시간대에 따라 더 다른 분위기를 느낄 수 있습니다.";
     }
   }
 
