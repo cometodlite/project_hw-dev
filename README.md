@@ -47,3 +47,9 @@ GitHub Pages에 그대로 올릴 수 있는 정적 웹 구조입니다.
 ## 수정 사항
 - `btn-open-inventory` 누락으로 발생하던 초기화 오류 수정
 - 인벤토리 버튼 이벤트 바인딩 안전 처리
+
+
+## 라디오 시스템 추가
+- 업로드된 `DIVE DIVERS` 음원을 `assets/audio/radio/dive-divers.mp3`로 포함
+- 라디오 재생 / 정지 버튼 추가
+- 라디오 재생 중에는 일반 시간대 BGM보다 우선 재생

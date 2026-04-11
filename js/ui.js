@@ -1,7 +1,8 @@
 import { state, addLog, updateCurrency, setHousingNote, setBgmEnabled } from "./state.js";
-import { renderInventory, addRandomItemToInventory, gatherReward, fishReward, farmReward } from "./inventory.js";
+import { renderInventory, gatherReward, fishReward, farmReward } from "./inventory.js";
 import { renderShop } from "./shop.js";
 import { saveGame, loadGame, resetGame } from "./save.js";
+import { playRadio, stopRadio, getRadioState } from "./audio.js";
 
 const el = {};
 
@@ -16,6 +17,7 @@ export function initUI() {
   el.logList = document.getElementById("log-list");
   el.housingNote = document.getElementById("housing-note");
   el.bgmEnabled = document.getElementById("bgm-enabled");
+  el.radioTrackTitle = document.getElementById("radio-track-title");
 }
 
 export function bindUIEvents() {
@@ -36,6 +38,14 @@ export function bindUIEvents() {
     renderAll();
   });
 
+  const inventoryButton = document.getElementById("btn-open-inventory");
+  if (inventoryButton) {
+    inventoryButton.addEventListener("click", () => {
+      addLog("인벤토리를 확인했습니다.");
+      renderAll();
+    });
+  }
+
   document.getElementById("btn-add-coin").addEventListener("click", () => {
     updateCurrency({ coin: 100 });
     addLog("코인 100을 획득했습니다.");
@@ -47,14 +57,6 @@ export function bindUIEvents() {
     addLog("블링 10을 획득했습니다.");
     renderAll();
   });
-
-  const inventoryButton = document.getElementById("btn-open-inventory");
-  if (inventoryButton) {
-    inventoryButton.addEventListener("click", () => {
-      addLog("인벤토리를 확인했습니다.");
-      renderAll();
-    });
-  }
 
   document.getElementById("btn-gather").addEventListener("click", () => {
     const reward = gatherReward();
@@ -85,6 +87,22 @@ export function bindUIEvents() {
     addLog(`시간대별 BGM 시스템을 ${event.target.checked ? "활성화" : "비활성화"}했습니다.`);
     renderAll();
   });
+
+  const radioPlay = document.getElementById("btn-radio-play");
+  if (radioPlay) {
+    radioPlay.addEventListener("click", () => {
+      playRadio();
+      renderAll();
+    });
+  }
+
+  const radioStop = document.getElementById("btn-radio-stop");
+  if (radioStop) {
+    radioStop.addEventListener("click", () => {
+      stopRadio();
+      renderAll();
+    });
+  }
 }
 
 export function renderStatus() {
@@ -97,6 +115,13 @@ export function renderStatus() {
   el.timePeriodText.textContent = state.player.currentPeriodLabel || "시간대를 계산하는 중입니다.";
   el.housingNote.value = state.player.housingNote || "";
   el.bgmEnabled.checked = Boolean(state.player.settings.bgmEnabled);
+
+  if (el.radioTrackTitle) {
+    const radio = getRadioState();
+    el.radioTrackTitle.textContent = radio.isRadioPlaying
+      ? `현재 라디오: ${radio.title}`
+      : "현재 라디오: 꺼짐";
+  }
 }
 
 export function renderLog() {

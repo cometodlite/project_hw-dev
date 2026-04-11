@@ -5,7 +5,8 @@
     "endHour": 4,
     "label": "고요한 별빛",
     "title": "고요한 별빛",
-    "description": "세상이 조용해지는 깊은 밤입니다."
+    "description": "세상이 조용해지는 깊은 밤입니다.",
+    "file": "./assets/audio/bgm/quiet-night.mp3"
   },
   {
     "id": "morning-start",
@@ -13,7 +14,8 @@
     "endHour": 6,
     "label": "아침의 시작",
     "title": "아침의 시작",
-    "description": "부드럽게 하루가 깨어나는 시간입니다."
+    "description": "부드럽게 하루가 깨어나는 시간입니다.",
+    "file": "./assets/audio/bgm/morning-start.mp3"
   },
   {
     "id": "sunrise",
@@ -21,7 +23,8 @@
     "endHour": 8,
     "label": "아름다운 일출",
     "title": "아름다운 일출",
-    "description": "햇살이 마을을 비추기 시작합니다."
+    "description": "햇살이 마을을 비추기 시작합니다.",
+    "file": "./assets/audio/bgm/beautiful-sunrise.mp3"
   },
   {
     "id": "daylight",
@@ -29,7 +32,8 @@
     "endHour": 11,
     "label": "맑은 하루",
     "title": "맑은 하루",
-    "description": "생활 활동을 시작하기 좋은 시간입니다."
+    "description": "생활 활동을 시작하기 좋은 시간입니다.",
+    "file": "./assets/audio/bgm/clear-day.mp3"
   },
   {
     "id": "afternoon",
@@ -37,7 +41,8 @@
     "endHour": 16,
     "label": "햇살 아래 산책",
     "title": "햇살 아래 산책",
-    "description": "평온하고 따뜻한 오후가 이어집니다."
+    "description": "평온하고 따뜻한 오후가 이어집니다.",
+    "file": "./assets/audio/bgm/clear-day.mp3"
   },
   {
     "id": "sunset",
@@ -45,7 +50,8 @@
     "endHour": 18,
     "label": "노을빛 거리",
     "title": "노을빛 거리",
-    "description": "하늘이 천천히 주황빛으로 물들고 있습니다."
+    "description": "하늘이 천천히 주황빛으로 물들고 있습니다.",
+    "file": "./assets/audio/bgm/sunset-street.mp3"
   },
   {
     "id": "evening",
@@ -53,7 +59,8 @@
     "endHour": 21,
     "label": "따뜻한 저녁",
     "title": "따뜻한 저녁",
-    "description": "오늘의 하루를 차분히 정리하는 시간입니다."
+    "description": "오늘의 하루를 차분히 정리하는 시간입니다.",
+    "file": "./assets/audio/bgm/warm-evening.mp3"
   },
   {
     "id": "night",
@@ -61,6 +68,7 @@
     "endHour": 23,
     "label": "조용한 밤",
     "title": "조용한 밤",
-    "description": "편안한 휴식이 어울리는 밤입니다."
+    "description": "편안한 휴식이 어울리는 밤입니다.",
+    "file": "./assets/audio/bgm/quiet-night.mp3"
   }
 ]

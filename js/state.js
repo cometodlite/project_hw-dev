@@ -10,6 +10,8 @@ export const DEFAULT_PLAYER_STATE = {
   settings: {
     bgmEnabled: true
   },
+  radioEnabled: false,
+  radioTrackTitle: "",
   log: [
     {
       text: "PROJECT: HW에 오신 것을 환영합니다.",
