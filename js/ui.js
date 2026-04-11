@@ -21,6 +21,23 @@ import {
 } from "./housing.js";
 
 const el = {};
+let currentScene = "town";
+let currentSideTab = "inventory";
+
+const SCENE_META = {
+  town: {
+    title: "마을 광장",
+    description: "사람들이 천천히 오가는 평온한 마을 광장입니다."
+  },
+  farm: {
+    title: "조용한 밭",
+    description: "씨앗을 심고 수확을 기다리는 작은 밭입니다."
+  },
+  home: {
+    title: "아늑한 집",
+    description: "가구를 배치하고 쉬어갈 수 있는 개인 공간입니다."
+  }
+};
 
 export function initUI() {
   el.currentTime = document.getElementById("current-time");
@@ -40,17 +57,21 @@ export function initUI() {
   el.housingSlots = document.getElementById("housing-slots");
   el.housingItemSelect = document.getElementById("housing-item-select");
   el.housingSummary = document.getElementById("housing-summary");
+  el.sceneTitle = document.getElementById("scene-title");
+  el.sceneDescription = document.getElementById("scene-description");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
+  syncSceneButtons();
+  syncSideTabs();
 }
 
 function populateSeedSelect() {
   if (!el.farmSeedSelect) return;
   const seeds = getSeedItems();
-  el.farmSeedSelect.innerHTML = seeds.map((seed) =>
-    `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`
-  ).join("");
+  el.farmSeedSelect.innerHTML = seeds.length
+    ? seeds.map((seed) => `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`).join("")
+    : '<option value="">사용 가능한 씨앗이 없습니다</option>';
 }
 
 function refreshHousingUI() {
@@ -67,11 +88,47 @@ function bindHousingPlacementButton(buttonId, slotIndex) {
   button.addEventListener("click", () => {
     const result = placeHousingItem(slotIndex, el.housingItemSelect?.value);
     addLog(result.message);
+    currentScene = "home";
+    currentSideTab = "housing";
     renderAll();
   });
 }
 
+function syncSceneButtons() {
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.view === currentScene);
+  });
+}
+
+function syncSideTabs() {
+  document.querySelectorAll(".side-tab").forEach((button) => {
+    button.classList.toggle("active", button.dataset.sideTab === currentSideTab);
+  });
+  document.querySelectorAll(".side-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.sidePanel === currentSideTab);
+  });
+}
+
 export function bindUIEvents() {
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentScene = button.dataset.view;
+      if (currentScene === "farm") currentSideTab = "life";
+      if (currentScene === "home") currentSideTab = "housing";
+      syncSceneButtons();
+      syncSideTabs();
+      renderAll();
+    });
+  });
+
+  document.querySelectorAll(".side-tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentSideTab = button.dataset.sideTab;
+      syncSideTabs();
+      renderAll();
+    });
+  });
+
   document.getElementById("btn-save")?.addEventListener("click", () => {
     saveGame();
     renderAll();
@@ -93,13 +150,12 @@ export function bindUIEvents() {
     renderAll();
   });
 
-  const inventoryButton = document.getElementById("btn-open-inventory");
-  if (inventoryButton) {
-    inventoryButton.addEventListener("click", () => {
-      addLog("인벤토리를 확인했습니다.");
-      renderAll();
-    });
-  }
+  document.getElementById("btn-open-inventory")?.addEventListener("click", () => {
+    currentSideTab = "inventory";
+    syncSideTabs();
+    addLog("인벤토리를 확인했습니다.");
+    renderAll();
+  });
 
   document.getElementById("btn-add-coin")?.addEventListener("click", () => {
     updateCurrency({ coin: 100 });
@@ -114,15 +170,19 @@ export function bindUIEvents() {
   });
 
   document.getElementById("btn-gather")?.addEventListener("click", () => {
+    currentScene = "town";
     const reward = gatherReward();
     addLog(`채집 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
     populateSeedSelect();
+    syncSceneButtons();
     renderAll();
   });
 
   document.getElementById("btn-fish")?.addEventListener("click", () => {
+    currentScene = "town";
     const reward = fishReward();
     addLog(`낚시 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
+    syncSceneButtons();
     renderAll();
   });
 
@@ -137,21 +197,29 @@ export function bindUIEvents() {
   });
 
   document.getElementById("btn-plant-seed")?.addEventListener("click", () => {
+    currentScene = "farm";
     const result = plantSeed(el.farmSeedSelect?.value);
     addLog(result.message);
+    syncSceneButtons();
     renderAll();
   });
 
   document.getElementById("btn-farm-harvest")?.addEventListener("click", () => {
+    currentScene = "farm";
     const result = harvestFarm();
     addLog(result.message);
     populateSeedSelect();
+    syncSceneButtons();
     renderAll();
   });
 
   document.getElementById("btn-clear-housing")?.addEventListener("click", () => {
+    currentScene = "home";
+    currentSideTab = "housing";
     const result = clearHousingSlots();
     addLog(result.message);
+    syncSceneButtons();
+    syncSideTabs();
     renderAll();
   });
 
@@ -194,6 +262,12 @@ function renderActivityStats() {
   `;
 }
 
+function renderScene() {
+  const scene = SCENE_META[currentScene] || SCENE_META.town;
+  if (el.sceneTitle) el.sceneTitle.textContent = scene.title;
+  if (el.sceneDescription) el.sceneDescription.textContent = scene.description;
+}
+
 export function renderStatus() {
   el.currentTime.textContent = state.ui.currentTime || "--:--";
   el.coinValue.textContent = `${state.player.coin}`;
@@ -206,7 +280,7 @@ export function renderStatus() {
 
   const life = state.player.lifeSkills;
   if (el.lifeSummary) {
-    el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming} · 농사 5에서 사과 묘목, 농사 10에서 황금 씨앗 해금`;
+    el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
   }
 
   if (el.farmStatus) {
@@ -220,12 +294,14 @@ export function renderStatus() {
       : "현재 라디오: 꺼짐";
   }
 
+  renderScene();
   refreshHousingUI();
+  syncSceneButtons();
+  syncSideTabs();
 }
 
 export function renderLog() {
   el.logList.innerHTML = "";
-
   for (const row of state.player.log) {
     const item = document.createElement("div");
     item.className = "log-item";
