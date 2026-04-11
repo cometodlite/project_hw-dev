@@ -287,7 +287,6 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
 .time-dawn .hero { box-shadow: 0 20px 40px rgba(156, 140, 202, 0.16); }
 .time-day .hero { box-shadow: 0 20px 40px rgba(210, 180, 120, 0.16); }
 .time-evening .hero { box-shadow: 0 20px 40px rgba(212, 143, 98, 0.18); }
-.time-night .hero { box-shadow: 0 20px 40px rgba(90, 99, 148, 0.22); }
 
 
 .mobile-tab-hint {
@@ -581,81 +580,147 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
   filter: saturate(0.95) brightness(0.78);
 }
 
-.time-night .hero {
-  border-color: rgba(120, 130, 180, 0.22);
+
+
+
+
+
+
+
+
+
+
+
+
+html, body {
+  color: var(--text) !important;
+}
+
+body,
+#app,
+.topbar,
+.left-panel,
+.right-panel,
+.center-panel,
+.bottom-log,
+.status-card,
+.card,
+.scene-card,
+.scene-banner,
+.time-visual-badge,
+.inventory-item,
+.shop-item,
+.log-item,
+.stat-row,
+.housing-slot,
+.mini-note,
+#scene-description,
+#scene-detail,
+#farm-visual-status,
+#home-visual-status,
+#life-summary,
+#radio-track-title,
+#weather-text,
+#time-period-text,
+p,
+small,
+strong,
+span,
+h1,
+h2,
+h3 {
+  color: var(--text);
+}
+
+.status-card,
+.card,
+.scene-card,
+.inventory-item,
+.shop-item,
+.log-item,
+.stat-row,
+.housing-slot,
+.mini-note {
+  background-color: rgba(255,255,255,0.84);
+}
+
+.scene-banner,
+.time-visual-badge {
+  background-color: rgba(255,255,255,0.78);
+}
+
+.scene-background-layer {
+  opacity: 1 !important;
+  z-index: 0 !important;
+}
+
+.hero > * {
+  z-index: 1 !important;
+}
+
+.time-night .scene-background-layer {
+  filter: brightness(0.72) saturate(0.96) !important;
+}
+
+.time-evening .scene-background-layer {
+  filter: brightness(0.95) saturate(1.03) !important;
+}
+
+.time-day .scene-background-layer {
+  filter: brightness(1.02) saturate(1.02) !important;
+}
+
+.time-dawn .scene-background-layer {
+  filter: brightness(1.00) saturate(1.01) !important;
 }
 
 .time-night .scene-banner,
 .time-night .time-visual-badge {
-  background: rgba(20, 28, 46, 0.42);
-  color: #f3f6ff;
-  border-color: rgba(210, 220, 255, 0.18);
+  background-color: rgba(255,255,255,0.72) !important;
+  color: var(--text) !important;
+  border-color: rgba(120, 105, 90, 0.14) !important;
 }
 
-.time-night .scene-card {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(220, 228, 255, 0.12);
-  color: #1f2430;
-}
-
-.time-night .scene-card strong,
-.time-night #scene-description,
-.time-night #scene-detail,
-.time-night #farm-visual-status,
-.time-night #home-visual-status,
-.time-night #life-summary,
-.time-night #radio-track-title {
-  color: #1f2430;
-}
-
-.time-night .mini-chip,
-.time-night .housing-slot,
+.time-night .status-card,
+.time-night .card,
+.time-night .scene-card,
 .time-night .inventory-item,
 .time-night .shop-item,
 .time-night .log-item,
 .time-night .stat-row,
+.time-night .housing-slot,
 .time-night .mini-note {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(210, 220, 255, 0.16);
-  color: #253044;
-}
-
-.time-night .status-card {
-  background: rgba(255,255,255,0.84);
-  color: #253044;
+  background-color: rgba(255,255,255,0.82) !important;
+  color: var(--text) !important;
+  border-color: rgba(120, 105, 90, 0.14) !important;
 }
 
 .time-night .status-card .label,
 .time-night .eyebrow,
 .time-night .subtitle {
-  color: #61708a;
+  color: var(--muted) !important;
 }
 
-.time-night h1,
-.time-night h2,
-.time-night h3 {
-  color: #f3f6ff;
+#scene-background-layer.time-night {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(207, 221, 255, 0.28), transparent 18%),
+    linear-gradient(180deg, rgba(48, 58, 92, 0.98), rgba(86, 90, 122, 0.92)) !important;
 }
 
-.time-night .left-panel h2,
-.time-night .left-panel h3,
-.time-night .right-panel h2,
-.time-night .right-panel h3,
-.time-night .center-panel h2,
-.time-night .center-panel h3 {
-  color: #eef3ff;
+#scene-background-layer.time-evening {
+  background:
+    radial-gradient(circle at 80% 18%, rgba(255, 186, 137, 0.92), transparent 22%),
+    linear-gradient(180deg, rgba(255, 222, 205, 0.98), rgba(237, 210, 193, 0.92)) !important;
 }
 
-.time-night .left-panel,
-.time-night .right-panel,
-.time-night .bottom-log {
-  background: rgba(255,255,255,0.78);
-  color: #253044;
+#scene-background-layer.time-day {
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 244, 196, 0.95), transparent 24%),
+    linear-gradient(180deg, rgba(230, 244, 255, 0.98), rgba(240, 235, 219, 0.92)) !important;
 }
 
-.time-night .left-panel h2,
-.time-night .left-panel h3,
-.time-night .right-panel h3,
-.time-night .bottom-log h3 {
-  color: #253044;
+#scene-background-layer.time-dawn {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 234, 194, 0.88), transparent 22%),
+    linear-gradient(180deg, rgba(255, 239, 214, 0.98), rgba(242, 226, 209, 0.94)) !important;
 }
