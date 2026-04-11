@@ -101,6 +101,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
 }
 
 .hero {
+  background: transparent !important;
   margin-bottom: 18px;
   min-height: 420px;
   background:
@@ -280,17 +281,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
   font-size: 0.88rem;
 }
 
-.scene-town .hero {
-  background: linear-gradient(135deg, rgba(255,250,244,0.92), rgba(248,241,231,0.78));
-}
 
-.scene-farm .hero {
-  background: linear-gradient(135deg, rgba(244,255,245,0.92), rgba(235,245,229,0.78));
-}
 
-.scene-home .hero {
-  background: linear-gradient(135deg, rgba(255,248,240,0.92), rgba(245,236,228,0.82));
-}
 
 .time-dawn .hero { box-shadow: 0 20px 40px rgba(156, 140, 202, 0.16); }
 .time-day .hero { box-shadow: 0 20px 40px rgba(210, 180, 120, 0.16); }
@@ -417,6 +409,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
 }
 
 .scene-background-layer {
+  z-index: 0;
+  opacity: 1;
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -426,6 +420,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
 }
 
 .hero > * {
+  position: relative;
+  z-index: 1;
   position: relative;
   z-index: 1;
 }
@@ -538,4 +534,63 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
     white-space: normal;
     text-align: center;
   }
+}
+
+
+.scene-card,
+.scene-banner,
+.time-visual-badge {
+  backdrop-filter: blur(6px);
+}
+
+.time-dawn .scene-banner,
+.time-dawn .time-visual-badge {
+  background: rgba(255, 248, 236, 0.78);
+}
+
+.time-day .scene-banner,
+.time-day .time-visual-badge {
+  background: rgba(255, 255, 245, 0.8);
+}
+
+.time-evening .scene-banner,
+.time-evening .time-visual-badge {
+  background: rgba(255, 242, 232, 0.8);
+}
+
+.time-night .scene-banner,
+.time-night .time-visual-badge {
+  background: rgba(239, 242, 255, 0.22);
+  color: #eef1ff;
+  border-color: rgba(220, 228, 255, 0.18);
+}
+
+.time-night .scene-card,
+.time-night .mini-chip,
+.time-night .housing-slot,
+.time-night .inventory-item,
+.time-night .shop-item,
+.time-night .log-item,
+.time-night .stat-row {
+  background: rgba(255,255,255,0.14);
+  color: #f5f7ff;
+  border-color: rgba(230, 235, 255, 0.16);
+}
+
+.time-night .mini-note,
+.time-night #scene-description,
+.time-night #scene-detail,
+.time-night #farm-visual-status,
+.time-night #home-visual-status,
+.time-night .status-card .label,
+.time-night .eyebrow,
+.time-night .subtitle {
+  color: #e6ebff;
+}
+
+.time-night body,
+.time-night #app,
+.time-night .status-card,
+.time-night .card {
+  color: #f5f7ff;
 }
