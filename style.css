@@ -559,3 +559,294 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.2rem); }
     max-height: none;
   }
 }
+
+
+/* No-page-scroll leaning compact layout tuning */
+body {
+  overflow: hidden;
+}
+
+#app {
+  max-width: 1450px;
+  height: 100vh;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  gap: 12px;
+  margin-bottom: 12px;
+  flex: 0 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+}
+
+.status-grid {
+  gap: 10px;
+}
+
+.status-card {
+  padding: 12px 14px;
+  min-height: 0;
+}
+
+.dashboard-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 12px;
+}
+
+.card {
+  padding: 14px;
+}
+
+.left-panel,
+.right-panel,
+.center-panel {
+  min-height: 0 !important;
+  height: 100%;
+}
+
+.left-panel {
+  max-height: 100%;
+  padding: 14px;
+}
+
+.right-panel {
+  max-height: 100%;
+  padding: 14px;
+}
+
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.quick-section + .quick-section {
+  margin-top: 14px;
+}
+
+.utility-group {
+  margin-top: 10px;
+  padding: 10px 12px;
+}
+
+.hero {
+  min-height: 0 !important;
+  flex: 1 1 auto;
+  padding: 14px;
+}
+
+.hero-top {
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.hero-title-block h2 {
+  margin: 8px 0 6px;
+  font-size: clamp(1.6rem, 2vw, 2.1rem);
+}
+
+.hero-title-block p {
+  margin: 0 0 6px;
+}
+
+.time-visual-badge {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.hero-highlight {
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.hero-highlight-main strong {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.hero-highlight-main p {
+  line-height: 1.45;
+}
+
+.badge-chip {
+  padding: 8px 10px;
+  font-size: 0.88rem;
+}
+
+.scene-visual.upgraded {
+  gap: 10px;
+  grid-template-columns: 1.05fr 1fr 1fr;
+}
+
+.scene-panel {
+  min-height: 140px;
+  padding: 12px;
+}
+
+.scene-panel.large {
+  min-height: 140px;
+}
+
+.scene-panel.radio-panel {
+  min-height: 120px;
+}
+
+.panel-head {
+  margin-bottom: 8px;
+}
+
+.radio-controls {
+  gap: 8px;
+}
+
+.radio-controls button {
+  padding: 10px 12px;
+  flex: 1 1 130px;
+}
+
+.mini-chip {
+  padding: 6px 9px;
+  font-size: 0.82rem;
+}
+
+.right-panel {
+  min-height: 0;
+}
+
+.side-panel {
+  margin-top: 10px;
+}
+
+[data-side-panel="inventory"] #inventory-list.compact,
+[data-side-panel="life"] #activity-list,
+[data-side-panel="shop"] #shop-list {
+  max-height: none;
+  flex: 1 1 auto;
+}
+
+#inventory-list.compact,
+#activity-list,
+#shop-list {
+  gap: 8px;
+}
+
+.inventory-item,
+.shop-item,
+.log-item,
+.stat-row,
+.housing-slot,
+.mini-note {
+  padding: 10px 12px;
+}
+
+.inventory-item div,
+.shop-item div {
+  line-height: 1.25;
+}
+
+.inventory-item small,
+.shop-item small,
+.stat-row {
+  font-size: 0.88rem;
+}
+
+.housing-grid {
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.housing-slot {
+  min-height: 88px;
+}
+
+.compact-log {
+  margin-top: 10px;
+  padding: 10px 14px;
+  flex: 0 0 auto;
+}
+
+.log-summary {
+  min-height: 24px;
+}
+
+.summary-hint {
+  font-size: 0.84rem;
+}
+
+#log-panel .log-list.compact {
+  max-height: 120px;
+}
+
+.section-head {
+  margin-bottom: 8px;
+}
+
+.section-tip {
+  font-size: 0.82rem;
+}
+
+.tab-row {
+  gap: 6px;
+}
+
+.tab-button,
+.side-tab {
+  padding: 10px 12px;
+}
+
+@media (max-width: 1120px) {
+  body {
+    overflow: auto;
+  }
+
+  #app {
+    height: auto;
+    overflow: visible;
+  }
+
+  .dashboard-grid {
+    flex: none;
+  }
+}
+
+@media (max-width: 760px) {
+  #app {
+    padding: 10px;
+  }
+
+  .topbar {
+    margin-bottom: 10px;
+  }
+
+  .card,
+  .left-panel,
+  .right-panel,
+  .hero {
+    padding: 12px;
+  }
+
+  .status-card {
+    padding: 10px 12px;
+  }
+
+  .scene-panel {
+    min-height: 0;
+  }
+
+  .compact-log {
+    margin-top: 8px;
+  }
+}
