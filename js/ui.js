@@ -101,7 +101,6 @@ export function initUI() {
   el.homeItemChips = document.getElementById("home-item-chips");
   el.sceneBackgroundLayer = document.getElementById("scene-background-layer");
   el.timeVisualBadge = document.getElementById("time-visual-badge");
-  el.backgroundDebugText = document.getElementById("background-debug-text");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -326,11 +325,6 @@ function renderScene() {
     el.timeVisualBadge.className = `time-visual-badge time-${mood.key}`;
   }
   applySceneBackground(currentScene, mood.key);
-  if (el.backgroundDebugText) {
-    const appliedScene = el.sceneBackgroundLayer?.getAttribute("data-scene") || currentScene;
-    const appliedTime = el.sceneBackgroundLayer?.getAttribute("data-time") || mood.key;
-    el.backgroundDebugText.textContent = `DEBUG · scene=${appliedScene} / time=${appliedTime}`;
-  }
 
   if (el.sceneDetail) {
     if (currentScene === "town") {
