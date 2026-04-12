@@ -1,118 +1,3 @@
-
-function isFivePanelMobile() {
-  return window.innerWidth <= 760 ||
-    (window.innerWidth <= 1024 &&
-     window.matchMedia("(orientation: portrait)").matches &&
-     window.matchMedia("(pointer: coarse)").matches);
-}
-
-function syncMobilePanels() {
-  const app = document.getElementById("mobile-5panel-app");
-  if (!app) return;
-
-  document.querySelectorAll(".mobile-panel").forEach((panel) => {
-    const isActive = panel.dataset.mobilePanel === currentMobilePanel;
-    panel.classList.toggle("active", isActive);
-    panel.style.display = isActive ? "block" : "none";
-  });
-
-  document.querySelectorAll(".mobile-hcsim-reset-button").forEach((button) => {
-    const panel = button.dataset.mobileTab || "status";
-    button.classList.toggle("active", panel === currentMobilePanel);
-  });
-}
-
-function syncMobileBagTabs() {
-  document.querySelectorAll(".mobile-subtab").forEach((button) => {
-    button.classList.toggle("active", button.dataset.mobileBagTab === currentMobileBagTab);
-  });
-  document.querySelectorAll(".mobile-bag-view").forEach((panel) => {
-    const isActive = panel.dataset.mobileBagView === currentMobileBagTab;
-    panel.classList.toggle("active", isActive);
-    panel.style.display = isActive ? "grid" : "none";
-  });
-}
-
-
-function setMobilePanel(panel) {
-  currentMobilePanel = panel || "status";
-  syncMobilePanels();
-  if (currentMobilePanel === "bag") {
-    syncMobileBagTabs();
-  }
-}
-
-function renderMobileStatusPanel() {
-  if (el.mobileStatusSceneTitle) el.mobileStatusSceneTitle.textContent = SCENE_META[currentScene]?.title || "마을 광장";
-  if (el.mobileStatusSceneDetail) el.mobileStatusSceneDetail.textContent = el.sceneDetail?.textContent || "공간 정보를 불러오는 중입니다.";
-  if (el.mobileStatusLife) el.mobileStatusLife.textContent = el.lifeSummary?.textContent || "불러오는 중입니다.";
-  if (el.mobileStatusHome) el.mobileStatusHome.textContent = el.homeVisualStatus?.textContent || "불러오는 중입니다.";
-  if (el.mobileStatusBgm) el.mobileStatusBgm.textContent = state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
-}
-
-function renderMobileActionPanel() {
-  if (!el.mobileFarmSeedSelect) return;
-  const seeds = getSeedItems();
-  el.mobileFarmSeedSelect.innerHTML = seeds.length
-    ? seeds.map((seed) => `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`).join("")
-    : '<option value="">사용 가능한 씨앗이 없습니다</option>';
-  if (el.mobileFarmStatus) el.mobileFarmStatus.textContent = getFarmStatus().text;
-}
-
-function renderMobileBagPanel() {
-  if (el.mobileBagInventoryList) {
-    const entries = Object.entries(state.player.inventory || {});
-    el.mobileBagInventoryList.innerHTML = entries.length
-      ? entries.map(([itemId, count]) => {
-          const item = state.data.items.find((entry) => entry.id === itemId);
-          return `<div class="mobile-bag-item"><strong>${item?.name || itemId}</strong><div>${item?.description || "설명 없음"}</div><small>수량 ${count} · 판매 ${item?.sellPrice ?? 0} 코인</small></div>`;
-        }).join("")
-      : '<div class="mobile-bag-item">보유 중인 아이템이 없습니다.</div>';
-  }
-
-  renderHousingSlots(el.mobileHousingSlots);
-  populateHousingItemSelect(el.mobileHousingItemSelect);
-  if (el.mobileHousingSummary) el.mobileHousingSummary.textContent = getHousingSummary();
-  syncMobileBagTabs();
-}
-
-function renderMobileShopPanel() {
-  if (!el.mobileShopList) return;
-  const visible = state.data.shop.filter((item) => {
-    if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
-    if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
-    return true;
-  });
-
-  el.mobileShopList.innerHTML = visible.length
-    ? visible.map((item) => `
-      <div class="mobile-shop-item">
-        <div>
-          <strong>${item.name}</strong>
-          <div>${item.description}</div>
-          <small>${item.currency === "coin" ? "코인" : "블링"} ${item.price}</small>
-        </div>
-        <button data-mobile-buy-id="${item.id}">구매</button>
-      </div>
-    `).join("")
-    : '<div class="mobile-shop-item"><div>구매 가능한 아이템이 없습니다.</div></div>';
-
-  document.querySelectorAll("[data-mobile-buy-id]").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelector(`[data-buy-id="${button.dataset.mobileBuyId}"]`)?.click();
-      renderMobileShopPanel();
-    });
-  });
-}
-
-function renderMobileLogPanel() {
-  if (!el.mobileLogList) return;
-  const rows = (state.player.log || []).slice(0, 12);
-  el.mobileLogList.innerHTML = rows.length
-    ? rows.map((row) => `<div class="mobile-log-item"><strong>${row.time}</strong><div>${row.text}</div></div>`).join("")
-    : '<div class="mobile-log-item">최근 알림이 없습니다.</div>';
-}
-
 import { state, addLog, updateCurrency, setBgmEnabled } from "./state.js";
 import {
   renderInventory,
@@ -191,6 +76,122 @@ function getPlacedHousingNames() {
   return ids.map((id) => state.data.items.find((item) => item.id === id)?.name || id);
 }
 
+
+function isFivePanelMobile() {
+  return window.innerWidth <= 760 ||
+    (window.innerWidth <= 1024 &&
+     window.matchMedia("(orientation: portrait)").matches &&
+     window.matchMedia("(pointer: coarse)").matches);
+}
+
+function setMobilePanel(panel) {
+  currentMobilePanel = panel || "status";
+  document.querySelectorAll(".mobile-panel").forEach((node) => {
+    const active = node.dataset.mobilePanel === currentMobilePanel;
+    node.classList.toggle("active", active);
+    node.style.display = active ? "block" : "none";
+  });
+  document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.m5Panel === currentMobilePanel);
+  });
+}
+
+function setMobileBagTab(tab) {
+  currentMobileBagTab = tab || "inventory";
+  document.querySelectorAll(".mobile-subtab").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mobileBagTab === currentMobileBagTab);
+  });
+  document.querySelectorAll(".mobile-bag-view").forEach((node) => {
+    const active = node.dataset.mobileBagView === currentMobileBagTab;
+    node.classList.toggle("active", active);
+    node.style.display = active ? "grid" : "none";
+  });
+}
+
+function renderM5Status() {
+  if (el.m5StatusSceneTitle) el.m5StatusSceneTitle.textContent = SCENE_META[currentScene]?.title || "마을 광장";
+  if (el.m5StatusSceneDetail) el.m5StatusSceneDetail.textContent = el.sceneDetail?.textContent || "공간 정보를 불러오는 중입니다.";
+  if (el.m5StatusLife) el.m5StatusLife.textContent = el.lifeSummary?.textContent || "불러오는 중입니다.";
+  if (el.m5StatusHome) el.m5StatusHome.textContent = el.homeVisualStatus?.textContent || "불러오는 중입니다.";
+  if (el.m5StatusBgm) el.m5StatusBgm.textContent = state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
+}
+
+function renderM5Action() {
+  if (!el.m5SeedSelect) return;
+  const seeds = getSeedItems();
+  el.m5SeedSelect.innerHTML = seeds.length
+    ? seeds.map((seed) => `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`).join("")
+    : '<option value="">사용 가능한 씨앗이 없습니다</option>';
+  if (el.m5FarmStatus) el.m5FarmStatus.textContent = getFarmStatus().text;
+}
+
+function renderM5Bag() {
+  if (el.m5BagInventoryList) {
+    const entries = Object.entries(state.player.inventory || {});
+    el.m5BagInventoryList.innerHTML = entries.length
+      ? entries.map(([itemId, count]) => {
+          const item = state.data.items.find((entry) => entry.id === itemId);
+          return `<div class="mobile-bag-item"><strong>${item?.name || itemId}</strong><div>${item?.description || "설명 없음"}</div><small>수량 ${count} · 판매 ${item?.sellPrice ?? 0} 코인</small></div>`;
+        }).join("")
+      : '<div class="mobile-bag-item">보유 중인 아이템이 없습니다.</div>';
+  }
+
+  renderHousingSlots(el.m5HousingSlots);
+  populateHousingItemSelect(el.m5HousingItemSelect);
+  if (el.m5HousingSummary) el.m5HousingSummary.textContent = getHousingSummary();
+  setMobileBagTab(currentMobileBagTab);
+}
+
+function renderM5Shop() {
+  if (!el.m5ShopList) return;
+  const visible = state.data.shop.filter((item) => {
+    if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
+    if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
+    return true;
+  });
+
+  el.m5ShopList.innerHTML = visible.length
+    ? visible.map((item) => `
+      <div class="mobile-shop-item">
+        <div>
+          <strong>${item.name}</strong>
+          <div>${item.description}</div>
+          <small>${item.currency === "coin" ? "코인" : "블링"} ${item.price}</small>
+        </div>
+        <button data-m5-buy-id="${item.id}">구매</button>
+      </div>
+    `).join("")
+    : '<div class="mobile-shop-item"><div>구매 가능한 아이템이 없습니다.</div></div>';
+
+  document.querySelectorAll("[data-m5-buy-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelector(`[data-buy-id="${button.dataset.m5BuyId}"]`)?.click();
+      renderM5Shop();
+      renderM5Bag();
+      renderM5Log();
+      renderM5Status();
+    });
+  });
+}
+
+function renderM5Log() {
+  if (!el.m5LogList) return;
+  const rows = (state.player.log || []).slice(0, 12);
+  el.m5LogList.innerHTML = rows.length
+    ? rows.map((row) => `<div class="mobile-log-item"><strong>${row.time}</strong><div>${row.text}</div></div>`).join("")
+    : '<div class="mobile-log-item">최근 알림이 없습니다.</div>';
+}
+
+function renderAllM5Panels() {
+  renderM5Status();
+  renderM5Action();
+  renderM5Bag();
+  renderM5Shop();
+  renderM5Log();
+  setMobilePanel(currentMobilePanel);
+  setMobileBagTab(currentMobileBagTab);
+}
+
 export function initUI() {
   el.currentTime = document.getElementById("current-time");
   el.coinValue = document.getElementById("coin-value");
@@ -220,19 +221,19 @@ export function initUI() {
   el.timeVisualBadge = document.getElementById("time-visual-badge");
   el.sceneSpotlightText = document.getElementById("scene-spotlight-text");
   el.logPanel = document.getElementById("log-panel");
-  el.mobileStatusSceneTitle = document.getElementById("mobile-status-scene-title");
-  el.mobileStatusSceneDetail = document.getElementById("mobile-status-scene-detail");
-  el.mobileStatusLife = document.getElementById("mobile-status-life");
-  el.mobileStatusHome = document.getElementById("mobile-status-home");
-  el.mobileStatusBgm = document.getElementById("mobile-status-bgm");
-  el.mobileFarmSeedSelect = document.getElementById("mobile-farm-seed-select");
-  el.mobileFarmStatus = document.getElementById("mobile-farm-status");
-  el.mobileBagInventoryList = document.getElementById("mobile-bag-inventory-list");
-  el.mobileHousingSlots = document.getElementById("mobile-housing-slots");
-  el.mobileHousingItemSelect = document.getElementById("mobile-housing-item-select");
-  el.mobileHousingSummary = document.getElementById("mobile-housing-summary");
-  el.mobileShopList = document.getElementById("mobile-shop-list");
-  el.mobileLogList = document.getElementById("mobile-log-list");
+  el.m5StatusSceneTitle = document.getElementById("m5-status-scene-title");
+  el.m5StatusSceneDetail = document.getElementById("m5-status-scene-detail");
+  el.m5StatusLife = document.getElementById("m5-status-life");
+  el.m5StatusHome = document.getElementById("m5-status-home");
+  el.m5StatusBgm = document.getElementById("m5-status-bgm");
+  el.m5SeedSelect = document.getElementById("m5-seed-select");
+  el.m5FarmStatus = document.getElementById("m5-farm-status");
+  el.m5BagInventoryList = document.getElementById("m5-bag-inventory-list");
+  el.m5HousingSlots = document.getElementById("m5-housing-slots");
+  el.m5HousingItemSelect = document.getElementById("m5-housing-item-select");
+  el.m5HousingSummary = document.getElementById("m5-housing-summary");
+  el.m5ShopList = document.getElementById("m5-shop-list");
+  el.m5LogList = document.getElementById("m5-log-list");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -241,13 +242,7 @@ export function initUI() {
   if (el.logPanel) el.logPanel.open = false;
   currentMobilePanel = "status";
   currentMobileBagTab = "inventory";
-  renderMobileStatusPanel();
-  renderMobileActionPanel();
-  renderMobileBagPanel();
-  renderMobileShopPanel();
-  renderMobileLogPanel();
-  syncMobilePanels();
-  syncMobileBagTabs();
+  renderAllM5Panels();
 }
 
 function populateSeedSelect() {
@@ -295,57 +290,55 @@ function syncSideTabs() {
 
 export function bindUIEvents() {
 
-document.querySelectorAll(".mobile-hcsim-reset-button").forEach((button) => {
+document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
   button.addEventListener("click", () => {
-    currentMobilePanel = button.dataset.mobileTab || "status";
-    if (currentMobilePanel === "bag") currentSideTab = "inventory";
-    if (currentMobilePanel === "shop") currentSideTab = "shop";
-    if (currentMobilePanel === "log") currentSideTab = "life";
-    syncSideTabs();
-    syncMobilePanels();
-    renderAll();
-    if (!isFivePanelMobile()) {
-      const target = button.dataset.mobileTarget;
-      document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    const panel = button.dataset.m5Panel || "status";
+    setMobilePanel(panel);
+    renderAllM5Panels();
   });
 });
 
 document.querySelectorAll(".mobile-subtab").forEach((button) => {
   button.addEventListener("click", () => {
-    currentMobileBagTab = button.dataset.mobileBagTab;
-    syncMobileBagTabs();
+    setMobileBagTab(button.dataset.mobileBagTab);
   });
 });
 
-document.getElementById("mobile-btn-gather")?.addEventListener("click", () => {
+document.getElementById("m5-btn-gather")?.addEventListener("click", () => {
   document.getElementById("btn-gather")?.click();
+  renderAllM5Panels();
 });
-document.getElementById("mobile-btn-fish")?.addEventListener("click", () => {
+document.getElementById("m5-btn-fish")?.addEventListener("click", () => {
   document.getElementById("btn-fish")?.click();
+  renderAllM5Panels();
 });
-document.getElementById("mobile-btn-sell-all")?.addEventListener("click", () => {
+document.getElementById("m5-btn-sell")?.addEventListener("click", () => {
   document.getElementById("btn-sell-all")?.click();
+  renderAllM5Panels();
 });
-document.getElementById("mobile-btn-plant")?.addEventListener("click", () => {
-  if (el.mobileFarmSeedSelect && el.farmSeedSelect) el.farmSeedSelect.value = el.mobileFarmSeedSelect.value;
+document.getElementById("m5-btn-plant")?.addEventListener("click", () => {
+  if (el.m5SeedSelect && el.farmSeedSelect) el.farmSeedSelect.value = el.m5SeedSelect.value;
   document.getElementById("btn-plant-seed")?.click();
+  renderAllM5Panels();
 });
-document.getElementById("mobile-btn-harvest")?.addEventListener("click", () => {
+document.getElementById("m5-btn-harvest")?.addEventListener("click", () => {
   document.getElementById("btn-farm-harvest")?.click();
+  renderAllM5Panels();
 });
 
-document.querySelectorAll("[data-mobile-place-slot]").forEach((button) => {
+document.querySelectorAll("[data-m5-place-slot]").forEach((button) => {
   button.addEventListener("click", () => {
-    if (el.mobileHousingItemSelect && el.housingItemSelect) {
-      el.housingItemSelect.value = el.mobileHousingItemSelect.value;
+    if (el.m5HousingItemSelect && el.housingItemSelect) {
+      el.housingItemSelect.value = el.m5HousingItemSelect.value;
     }
-    document.getElementById(`btn-place-slot-${button.dataset.mobilePlaceSlot}`)?.click();
+    document.getElementById(`btn-place-slot-${button.dataset.m5PlaceSlot}`)?.click();
+    renderAllM5Panels();
   });
 });
 
-document.getElementById("mobile-btn-clear-housing")?.addEventListener("click", () => {
+document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () => {
   document.getElementById("btn-clear-housing")?.click();
+  renderAllM5Panels();
 });
 
 
@@ -362,6 +355,26 @@ document.querySelectorAll(".mobile-hcsim-reset-button").forEach((button) => {
     document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
     document.querySelectorAll(".mobile-hcsim-reset-button").forEach((entry) => {
+      entry.classList.toggle("active", entry === button);
+    });
+  });
+});
+
+
+
+document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = button.dataset.mobileTarget;
+    const tab = button.dataset.mobileTab;
+
+    if (tab) {
+      currentSideTab = tab;
+      syncSideTabs();
+    }
+
+    document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
       entry.classList.toggle("active", entry === button);
     });
   });
@@ -624,25 +637,13 @@ export function renderStatus() {
 
   renderScene();
   refreshHousingUI();
-  renderMobileStatusPanel();
-  renderMobileActionPanel();
-  renderMobileBagPanel();
-  renderMobileShopPanel();
-  renderMobileLogPanel();
-  syncMobilePanels();
-  syncMobileBagTabs();
+  renderAllM5Panels();
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
   currentMobilePanel = "status";
   currentMobileBagTab = "inventory";
-  renderMobileStatusPanel();
-  renderMobileActionPanel();
-  renderMobileBagPanel();
-  renderMobileShopPanel();
-  renderMobileLogPanel();
-  syncMobilePanels();
-  syncMobileBagTabs();
+  renderAllM5Panels();
 }
 
 export function renderLog() {

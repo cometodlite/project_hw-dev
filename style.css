@@ -1428,7 +1428,7 @@ body {
 }
 
 
-/* Mobile 5-panel phase 1 */
+/* Mobile 5-panel rebuild phase 1 */
 .mobile-5panel-app {
   display: none;
 }
@@ -1452,8 +1452,7 @@ body {
   padding: 12px;
 }
 
-.mobile-list,
-.mobile-status-list {
+.mobile-list {
   display: grid;
   gap: 10px;
 }
@@ -1496,11 +1495,11 @@ body {
 
 .mobile-bag-view {
   display: none;
-  gap: 10px;
 }
 
 .mobile-bag-view.active {
   display: grid;
+  gap: 10px;
 }
 
 .mobile-shop-item {
@@ -1510,14 +1509,14 @@ body {
   align-items: center;
 }
 
-.mobile-hcsim-reset-nav {
+.mobile-5panel-nav {
   display: none;
 }
 
 @media (max-width: 760px), (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
   body {
     overflow: auto !important;
-    padding-bottom: 84px !important;
+    padding-bottom: 86px !important;
   }
 
   .mobile-5panel-app {
@@ -1525,19 +1524,20 @@ body {
     margin-bottom: 10px;
   }
 
-  .dashboard-grid {
+  .dashboard-grid,
+  .mobile-hcsim-reset-nav {
     display: none !important;
-  }
-
-  .status-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
   }
 
   .topbar {
     grid-template-columns: 1fr !important;
     gap: 8px !important;
     margin-bottom: 8px !important;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
   }
 
   .status-card {
@@ -1558,7 +1558,14 @@ body {
     padding: 12px;
   }
 
-  .mobile-hcsim-reset-nav {
+  .mobile-only-scene-switch {
+    margin-top: 12px;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+
+  .mobile-5panel-nav {
     position: fixed;
     left: 0;
     right: 0;
@@ -1573,7 +1580,7 @@ body {
     z-index: 40;
   }
 
-  .mobile-hcsim-reset-button {
+  .mobile-5panel-button {
     min-height: 42px;
     padding: 6px 4px;
     font-size: 0.82rem;
@@ -1583,15 +1590,9 @@ body {
     border: 1px solid var(--border);
   }
 
-  .mobile-hcsim-reset-button.active {
+  .mobile-5panel-button.active {
     background: var(--accent);
     color: #203329;
-  }
-
-  .mobile-only-scene-switch {
-    margin-top: 12px;
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr);
   }
 
   .mobile-shop-item button {
@@ -1631,22 +1632,4 @@ body {
   .mobile-only-scene-switch {
     max-width: 360px;
   }
-}
-
-
-/* Phase1 fix: explicit panel visibility */
-.mobile-panel {
-  display: none;
-}
-
-.mobile-panel.active {
-  display: block;
-}
-
-.mobile-bag-view {
-  display: none;
-}
-
-.mobile-bag-view.active {
-  display: grid;
 }
