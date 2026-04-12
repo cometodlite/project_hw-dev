@@ -158,3 +158,9 @@ GitHub Pages에 그대로 올릴 수 있는 정적 웹 구조입니다.
 - index.html이 `style.v3.css`, `main.v3.js`를 직접 참조하도록 변경
 - JSON 데이터 로드에도 버전 쿼리 추가
 - GitHub Pages에서 이전 CSS/JS 캐시가 남는 문제를 줄이기 위한 배포용 수정
+
+
+## GitHub Pages 클린 배포본
+- 중복 파일(`style.v3.css`, `main.v3.js`) 제거
+- `index.html`은 `style.css?v=20260412b`, `main.js?v=20260412b`를 참조
+- 저장소 루트는 깔끔하게 유지하면서 캐시 무효화도 함께 적용
