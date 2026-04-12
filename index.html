@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260412n" />
+  <link rel="stylesheet" href="./style.css?v=20260412safe" />
 </head>
 <body>
   <div id="app">
@@ -36,7 +36,7 @@
     </header>
 
     <main class="dashboard-grid">
-      <aside class="left-panel card">
+      <aside class="left-panel card" id="mobile-actions-anchor">
         <section class="quick-section">
           <div class="section-head compact">
             <h2>빠른 행동</h2>
@@ -89,7 +89,7 @@
         </details>
       </aside>
 
-      <section class="center-panel">
+      <section class="center-panel" id="mobile-scene-anchor">
         <section class="hero card">
           <div id="scene-background-layer" class="scene-background-layer"></div>
 
@@ -167,7 +167,7 @@
         </details>
       </section>
 
-      <aside class="right-panel card">
+      <aside class="right-panel card" id="mobile-bag-anchor">
         <div class="tab-row">
           <button class="side-tab active" data-side-tab="inventory">인벤토리</button>
           <button class="side-tab" data-side-tab="life">생활</button>
@@ -220,21 +220,15 @@
       </aside>
     </main>
 
-    <nav class="mobile-bottom-nav">
-      <button class="mobile-nav-button active" data-mobile-sheet="scene">장면</button>
-      <button class="mobile-nav-button" data-mobile-sheet="actions">행동</button>
-      <button class="mobile-nav-button" data-mobile-sheet="inventory">가방</button>
-      <button class="mobile-nav-button" data-mobile-sheet="shop">상점</button>
-      <button class="mobile-nav-button" data-mobile-sheet="more">더보기</button>
+    <nav class="mobile-safe-nav">
+      <button class="mobile-safe-button" data-mobile-jump="#mobile-scene-anchor">장면</button>
+      <button class="mobile-safe-button" data-mobile-jump="#mobile-actions-anchor">행동</button>
+      <button class="mobile-safe-button" data-mobile-jump="#mobile-bag-anchor">가방</button>
+      <button class="mobile-safe-button" data-mobile-open-tab="shop">상점</button>
+      <button class="mobile-safe-button" data-mobile-open-more="true">더보기</button>
     </nav>
-
-    <section id="mobile-sheet" class="mobile-sheet" aria-hidden="true">
-      <div class="mobile-sheet-handle" id="mobile-sheet-handle" role="button" aria-label="패널 닫기"></div>
-      <div id="mobile-sheet-content" class="mobile-sheet-content"></div>
-    </section>
-    <div id="mobile-sheet-backdrop" class="mobile-sheet-backdrop" hidden></div>
   </div>
 
-  <script type="module" src="./main.js?v=20260412n"></script>
+  <script type="module" src="./main.js?v=20260412safe"></script>
 </body>
 </html>
