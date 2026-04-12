@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260413reset1" />
+  <link rel="stylesheet" href="./style.css?v=20260413p1" />
 </head>
 <body>
   <div id="app">
@@ -34,6 +34,112 @@
         </div>
       </div>
     </header>
+
+    
+<section class="mobile-5panel-app" id="mobile-5panel-app">
+  <section class="mobile-panel active" data-mobile-panel="status">
+    <div class="mobile-panel-card">
+      <div class="section-head">
+        <h3>상태</h3>
+        <span class="section-tip">현재 상태 요약</span>
+      </div>
+      <div class="mobile-status-list">
+        <div class="mobile-list-card">
+          <strong>현재 공간</strong>
+          <div id="mobile-status-scene-title">마을 광장</div>
+          <small id="mobile-status-scene-detail">공간 정보를 불러오는 중입니다.</small>
+        </div>
+        <div class="mobile-list-card">
+          <strong>생활 숙련도</strong>
+          <div id="mobile-status-life">불러오는 중입니다.</div>
+        </div>
+        <div class="mobile-list-card">
+          <strong>집 분위기</strong>
+          <div id="mobile-status-home">불러오는 중입니다.</div>
+        </div>
+        <div class="mobile-list-card">
+          <strong>현재 BGM</strong>
+          <div id="mobile-status-bgm">불러오는 중입니다.</div>
+        </div>
+      </div>
+      <div class="mobile-scene-switch view-switch mobile-only-scene-switch">
+        <button class="tab-button active" data-view="town">마을</button>
+        <button class="tab-button" data-view="farm">밭</button>
+        <button class="tab-button" data-view="home">집</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mobile-panel" data-mobile-panel="action">
+    <div class="mobile-panel-card">
+      <div class="section-head">
+        <h3>행동</h3>
+        <span class="section-tip">즉시 실행</span>
+      </div>
+      <div class="stack">
+        <button id="mobile-btn-gather">숲에서 채집하기</button>
+        <button id="mobile-btn-fish">연못에서 낚시하기</button>
+        <button id="mobile-btn-sell-all">수집품 판매하기</button>
+        <select id="mobile-farm-seed-select"></select>
+        <div class="grid-2">
+          <button id="mobile-btn-plant">씨앗 심기</button>
+          <button id="mobile-btn-harvest">수확하기</button>
+        </div>
+        <div id="mobile-farm-status" class="mini-note">밭 상태를 불러오는 중입니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mobile-panel" data-mobile-panel="bag">
+    <div class="mobile-panel-card">
+      <div class="section-head">
+        <h3>가방</h3>
+        <span class="section-tip">보유 자산 관리</span>
+      </div>
+      <div class="mobile-subtabs">
+        <button class="mobile-subtab active" data-mobile-bag-tab="inventory">인벤토리</button>
+        <button class="mobile-subtab" data-mobile-bag-tab="housing">하우징</button>
+      </div>
+      <div class="mobile-bag-view active" data-mobile-bag-view="inventory">
+        <div id="mobile-bag-inventory-list" class="mobile-list"></div>
+      </div>
+      <div class="mobile-bag-view" data-mobile-bag-view="housing">
+        <div id="mobile-housing-slots" class="housing-grid"></div>
+        <div class="stack">
+          <select id="mobile-housing-item-select"></select>
+          <div class="grid-2">
+            <button data-mobile-place-slot="1">1번 칸</button>
+            <button data-mobile-place-slot="2">2번 칸</button>
+            <button data-mobile-place-slot="3">3번 칸</button>
+            <button data-mobile-place-slot="4">4번 칸</button>
+          </div>
+          <button id="mobile-btn-clear-housing">배치 초기화</button>
+        </div>
+        <div id="mobile-housing-summary" class="mini-note">집 안이 비어 있습니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mobile-panel" data-mobile-panel="shop">
+    <div class="mobile-panel-card">
+      <div class="section-head">
+        <h3>상점</h3>
+        <span class="section-tip">구매 가능한 아이템</span>
+      </div>
+      <div id="mobile-shop-list" class="mobile-list"></div>
+    </div>
+  </section>
+
+  <section class="mobile-panel" data-mobile-panel="log">
+    <div class="mobile-panel-card">
+      <div class="section-head">
+        <h3>기록</h3>
+        <span class="section-tip">최근 알림</span>
+      </div>
+      <div id="mobile-log-list" class="mobile-list"></div>
+    </div>
+  </section>
+</section>
 
     <main class="dashboard-grid">
       <aside class="left-panel card" id="mobile-actions-anchor">
@@ -222,13 +328,13 @@
 
     <nav class="mobile-hcsim-nav" aria-label="모바일 바로가기">
       <button class="mobile-hcsim-button active" data-mobile-target="#mobile-scene-anchor" data-mobile-tab="">장면</button>
-      <button class="mobile-hcsim-button" data-mobile-target="#mobile-actions-anchor" data-mobile-tab="">행동</button>
-      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="inventory">가방</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-actions-anchor" data-mobile-tab="action">행동</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="bag">가방</button>
       <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="shop">상점</button>
-      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="life">더보기</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="log">기록</button>
     </nav>
   </div>
 
-  <script type="module" src="./main.js?v=20260413reset1"></script>
+  <script type="module" src="./main.js?v=20260413p1"></script>
 </body>
 </html>
