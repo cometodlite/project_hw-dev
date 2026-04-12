@@ -1,4 +1,59 @@
 
+
+function openMobileActionSheet() {
+  if (!isMobileLayout() || !el.mobileActionSheet) return;
+  renderMobileActionSheet();
+  forceCloseMobileSheets();
+  el.mobileActionSheet.classList.add("open");
+  el.mobileActionSheet.setAttribute("aria-hidden", "false");
+  if (el.mobileActionBackdrop) el.mobileActionBackdrop.hidden = false;
+
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTab === "actions");
+  });
+}
+
+function closeMobileActionSheet() {
+  if (!el.mobileActionSheet) return;
+  forceCloseMobileSheets();
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTarget === "#mobile-scene-anchor" && !entry.dataset.mobileTab);
+  });
+}
+
+function openMobileShopSheet() {
+  if (!isMobileLayout() || !el.mobileShopSheet) return;
+  renderMobileShopSheet();
+  forceCloseMobileSheets();
+  el.mobileShopSheet.classList.add("open");
+  el.mobileShopSheet.setAttribute("aria-hidden", "false");
+  if (el.mobileShopBackdrop) el.mobileShopBackdrop.hidden = false;
+
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTab === "shop");
+  });
+
+  bindMobileShopButtons();
+}
+
+function closeMobileShopSheet() {
+  if (!el.mobileShopSheet) return;
+  forceCloseMobileSheets();
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTarget === "#mobile-scene-anchor" && !entry.dataset.mobileTab);
+  });
+}
+
+function bindMobileShopButtons() {
+  document.querySelectorAll("[data-mobile-buy-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelector(`[data-buy-id="${button.dataset.mobileBuyId}"]`)?.click();
+      renderMobileShopSheet();
+      bindMobileShopButtons();
+    });
+  });
+}
+
 function openMobileBagSheet() {
   if (!isMobileLayout() || !el.mobileBagSheet) return;
   renderMobileBagSheet();
@@ -70,18 +125,94 @@ function renderMobileMoreSheet() {
   }
 }
 
+
+function renderMobileActionSheet() {
+  if (el.mobileActionSeedSelect) {
+    el.mobileActionSeedSelect.innerHTML = (getSeedItems() || []).map((seed) =>
+      `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`
+    ).join("");
+  }
+  if (el.mobileActionFarmStatus) {
+    el.mobileActionFarmStatus.textContent = getFarmStatus().text;
+  }
+}
+
+function renderMobileBagSheet() {
+  if (!el.mobileBagList) return;
+  const entries = Object.entries(state.player.inventory || {});
+  el.mobileBagList.innerHTML = entries.length
+    ? entries.map(([itemId, count]) => {
+        const item = state.data.items.find((entry) => entry.id === itemId);
+        return `<div class="mobile-bag-item"><strong>${item?.name || itemId}</strong><div>${item?.description || "설명 없음"}</div><small>수량 ${count} · 판매 ${item?.sellPrice ?? 0} 코인</small></div>`;
+      }).join("")
+    : '<div class="mobile-bag-item">보유 중인 아이템이 없습니다.</div>';
+}
+
+function renderMobileShopSheet() {
+  if (!el.mobileShopList) return;
+  const visible = state.data.shop.filter((item) => {
+    if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
+    if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
+    return true;
+  });
+  el.mobileShopList.innerHTML = visible.length
+    ? visible.map((item) => `
+      <div class="mobile-shop-item">
+        <div>
+          <strong>${item.name}</strong>
+          <div>${item.description}</div>
+          <small>${item.currency === "coin" ? "코인" : "블링"} ${item.price}</small>
+        </div>
+        <button data-mobile-buy-id="${item.id}">구매</button>
+      </div>
+    `).join("")
+    : '<div class="mobile-shop-item"><div>구매 가능한 아이템이 없습니다.</div></div>';
+}
+
+function renderMobileMoreSheet() {
+  if (el.mobileMoreLifeSummary) {
+    const life = state.player.lifeSkills;
+    el.mobileMoreLifeSummary.textContent = `채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+  }
+
+  if (el.mobileMoreHomeSummary) {
+    const placed = (state.player.housing?.slots || []).filter(Boolean);
+    el.mobileMoreHomeSummary.textContent = placed.length
+      ? placed.map((id) => state.data.items.find((item) => item.id === id)?.name || id).join(", ")
+      : "배치된 가구가 없습니다.";
+  }
+
+  if (el.mobileMoreRadioSummary) {
+    const radio = getRadioState();
+    el.mobileMoreRadioSummary.textContent = radio.isRadioPlaying
+      ? `현재 재생: ${radio.title}`
+      : "현재 라디오: 꺼짐";
+  }
+
+  if (el.mobileMoreLogList) {
+    const rows = (state.player.log || []).slice(0, 6);
+    el.mobileMoreLogList.innerHTML = rows.length
+      ? rows.map((row) => `<div class="mobile-more-log-item"><small>${row.time}</small><div>${row.text}</div></div>`).join("")
+      : '<div class="mobile-more-log-item">최근 알림이 없습니다.</div>';
+  }
+}
+
 function forceCloseMobileSheets() {
-  if (el.mobileMoreSheet) {
-    el.mobileMoreSheet.classList.remove("open");
-    el.mobileMoreSheet.setAttribute("aria-hidden", "true");
-  }
-  if (el.mobileBagSheet) {
-    el.mobileBagSheet.classList.remove("open");
-    el.mobileBagSheet.setAttribute("aria-hidden", "true");
-  }
-  if (el.mobileMoreBackdrop) {
-    el.mobileMoreBackdrop.hidden = true;
-  }
+  [
+    [el.mobileMoreSheet, "mobileMoreSheet"],
+    [el.mobileBagSheet, "mobileBagSheet"],
+    [el.mobileActionSheet, "mobileActionSheet"],
+    [el.mobileShopSheet, "mobileShopSheet"]
+  ].forEach(([node]) => {
+    if (node) {
+      node.classList.remove("open");
+      node.setAttribute("aria-hidden", "true");
+    }
+  });
+
+  [el.mobileMoreBackdrop, el.mobileBagBackdrop, el.mobileActionBackdrop, el.mobileShopBackdrop].forEach((node) => {
+    if (node) node.hidden = true;
+  });
 }
 
 function openMobileMoreSheet() {
@@ -220,6 +351,13 @@ export function initUI() {
   el.mobileBagSheet = document.getElementById("mobile-bag-sheet");
   el.mobileBagBackdrop = document.getElementById("mobile-bag-backdrop");
   el.mobileBagList = document.getElementById("mobile-bag-list");
+  el.mobileActionSheet = document.getElementById("mobile-action-sheet");
+  el.mobileActionBackdrop = document.getElementById("mobile-action-backdrop");
+  el.mobileActionSeedSelect = document.getElementById("mobile-action-seed-select");
+  el.mobileActionFarmStatus = document.getElementById("mobile-action-farm-status");
+  el.mobileShopSheet = document.getElementById("mobile-shop-sheet");
+  el.mobileShopBackdrop = document.getElementById("mobile-shop-backdrop");
+  el.mobileShopList = document.getElementById("mobile-shop-list");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -274,6 +412,50 @@ function syncSideTabs() {
 
 export function bindUIEvents() {
 
+document.getElementById("mobile-action-close")?.addEventListener("click", () => {
+  forceCloseMobileSheets();
+});
+
+document.getElementById("mobile-shop-close")?.addEventListener("click", () => {
+  forceCloseMobileSheets();
+});
+
+el.mobileActionBackdrop?.addEventListener("click", () => {
+  forceCloseMobileSheets();
+});
+
+el.mobileShopBackdrop?.addEventListener("click", () => {
+  forceCloseMobileSheets();
+});
+
+document.getElementById("mobile-action-gather")?.addEventListener("click", () => {
+  document.getElementById("btn-gather")?.click();
+  renderMobileActionSheet();
+});
+
+document.getElementById("mobile-action-fish")?.addEventListener("click", () => {
+  document.getElementById("btn-fish")?.click();
+  renderMobileActionSheet();
+});
+
+document.getElementById("mobile-action-sell")?.addEventListener("click", () => {
+  document.getElementById("btn-sell-all")?.click();
+  renderMobileActionSheet();
+});
+
+document.getElementById("mobile-action-plant")?.addEventListener("click", () => {
+  if (el.mobileActionSeedSelect && el.farmSeedSelect) {
+    el.farmSeedSelect.value = el.mobileActionSeedSelect.value;
+  }
+  document.getElementById("btn-plant-seed")?.click();
+  renderMobileActionSheet();
+});
+
+document.getElementById("mobile-action-harvest")?.addEventListener("click", () => {
+  document.getElementById("btn-farm-harvest")?.click();
+  renderMobileActionSheet();
+});
+
 window.addEventListener("resize", () => {
   if (!isMobileLayout()) {
     forceCloseMobileSheets();
@@ -316,13 +498,13 @@ document.getElementById("mobile-more-radio-stop")?.addEventListener("click", () 
   document.getElementById("btn-radio-stop")?.click();
 });
 
+
 document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
   button.addEventListener("click", () => {
     const target = button.dataset.mobileTarget;
     const tab = button.dataset.mobileTab;
 
     if (tab === "life") {
-      closeMobileBagSheet();
       openMobileMoreSheet();
       return;
     }
@@ -332,20 +514,24 @@ document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
       return;
     }
 
-    closeMobileMoreSheet();
-    closeMobileBagSheet();
-
-    if (tab) {
-      currentSideTab = tab;
-      syncSideTabs();
+    if (tab === "actions") {
+      openMobileActionSheet();
+      return;
     }
 
+    if (tab === "shop") {
+      openMobileShopSheet();
+      return;
+    }
+
+    forceCloseMobileSheets();
     document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
     document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
       entry.classList.toggle("active", entry === button);
     });
   });
+});
 });
 
 

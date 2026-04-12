@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260413a" />
+  <link rel="stylesheet" href="./style.css?v=20260413b" />
 </head>
 <body>
   <div id="app">
@@ -220,6 +220,36 @@
       </aside>
     </main>
 
+    <section id="mobile-action-sheet" class="mobile-more-sheet" aria-hidden="true">
+      <div class="mobile-more-sheet-card">
+        <div class="mobile-more-sheet-handle"></div>
+        <div class="mobile-more-sheet-head">
+          <strong>행동</strong>
+          <button type="button" id="mobile-action-close" class="mobile-more-close">닫기</button>
+        </div>
+        <div class="mobile-more-sheet-body">
+          <div class="mobile-more-block">
+            <strong>빠른 행동</strong>
+            <div class="mobile-sheet-button-grid">
+              <button id="mobile-action-gather">숲에서 채집하기</button>
+              <button id="mobile-action-fish">연못에서 낚시하기</button>
+              <button id="mobile-action-sell">수집품 판매하기</button>
+            </div>
+          </div>
+          <div class="mobile-more-block">
+            <strong>농사</strong>
+            <select id="mobile-action-seed-select"></select>
+            <div class="grid-2 mobile-more-radio-actions">
+              <button id="mobile-action-plant">씨앗 심기</button>
+              <button id="mobile-action-harvest">수확하기</button>
+            </div>
+            <div id="mobile-action-farm-status" class="mini-note" style="margin-top:8px;">불러오는 중입니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div id="mobile-action-backdrop" class="mobile-more-backdrop" hidden></div>
+
     <section id="mobile-bag-sheet" class="mobile-more-sheet" aria-hidden="true">
       <div class="mobile-more-sheet-card">
         <div class="mobile-more-sheet-handle"></div>
@@ -233,6 +263,20 @@
       </div>
     </section>
     <div id="mobile-bag-backdrop" class="mobile-more-backdrop" hidden></div>
+
+    <section id="mobile-shop-sheet" class="mobile-more-sheet" aria-hidden="true">
+      <div class="mobile-more-sheet-card">
+        <div class="mobile-more-sheet-handle"></div>
+        <div class="mobile-more-sheet-head">
+          <strong>상점</strong>
+          <button type="button" id="mobile-shop-close" class="mobile-more-close">닫기</button>
+        </div>
+        <div class="mobile-more-sheet-body">
+          <div id="mobile-shop-list" class="mobile-more-log-list">불러오는 중입니다.</div>
+        </div>
+      </div>
+    </section>
+    <div id="mobile-shop-backdrop" class="mobile-more-backdrop" hidden></div>
 
     <section id="mobile-more-sheet" class="mobile-more-sheet" aria-hidden="true">
       <div class="mobile-more-sheet-card">
@@ -284,6 +328,6 @@
     </nav>
   </div>
 
-  <script type="module" src="./main.js?v=20260413a"></script>
+  <script type="module" src="./main.js?v=20260413b"></script>
 </body>
 </html>
