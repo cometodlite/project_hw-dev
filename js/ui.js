@@ -24,7 +24,8 @@ function closeMobileBagSheet() {
 
 
 function isMobileLayout() {
-  return window.innerWidth <= 760;
+  return window.innerWidth <= 760 ||
+    (window.innerWidth <= 1024 && window.matchMedia("(orientation: portrait)").matches);
 }
 
 function openMobileMoreSheet() {

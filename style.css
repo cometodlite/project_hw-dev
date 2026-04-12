@@ -1497,3 +1497,194 @@ body {
     margin-top: 4px;
   }
 }
+
+
+/* iOS + iPadOS portrait HCSiM follow-up fix */
+@media (max-width: 760px), (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
+  body {
+    overflow: auto !important;
+    padding-bottom: 82px !important;
+  }
+
+  #app {
+    height: auto !important;
+    overflow: visible !important;
+    padding: 8px !important;
+  }
+
+  .topbar {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .left-panel {
+    display: none !important;
+  }
+
+  .right-panel {
+    display: none !important;
+  }
+
+  .center-panel {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .hero {
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 10px !important;
+  }
+
+  .hero-top {
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .hero-title-block h2 {
+    font-size: 1.16rem !important;
+    margin: 6px 0 4px !important;
+  }
+
+  .hero-title-block p {
+    font-size: 0.9rem !important;
+    line-height: 1.38 !important;
+    margin-bottom: 4px !important;
+  }
+
+  #weather-text {
+    display: none !important;
+  }
+
+  .time-visual-badge {
+    font-size: 0.82rem !important;
+    padding: 7px 9px !important;
+  }
+
+  .view-switch {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .hero-highlight {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+    padding: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .badge-chip {
+    font-size: 0.84rem !important;
+    padding: 7px 8px !important;
+  }
+
+  .scene-visual.upgraded {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .scene-panel,
+  .scene-panel.large,
+  .scene-panel.radio-panel {
+    min-height: 0 !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .radio-controls {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .radio-controls button {
+    min-height: 40px !important;
+  }
+
+  .compact-log {
+    margin-top: 8px !important;
+    padding: 8px 10px !important;
+  }
+
+  .mobile-hcsim-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(245,241,234,0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 40;
+  }
+
+  .mobile-hcsim-button {
+    min-height: 40px;
+    padding: 6px 4px;
+    font-size: 0.82rem;
+    box-shadow: none;
+    background: rgba(255,255,255,0.88);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .mobile-hcsim-button.active {
+    background: var(--accent);
+    color: #203329;
+  }
+
+  .mobile-more-sheet,
+  #mobile-bag-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 42;
+    padding: 0 8px calc(8px + env(safe-area-inset-bottom));
+    pointer-events: none;
+    display: block;
+  }
+
+  .mobile-more-sheet.open,
+  #mobile-bag-sheet.open {
+    pointer-events: auto;
+  }
+
+  .mobile-more-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20,20,20,0.28);
+    z-index: 41;
+  }
+
+  .mobile-more-sheet-card {
+    background: rgba(250,247,241,0.98);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    box-shadow: 0 -18px 40px rgba(0,0,0,0.16);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .mobile-more-sheet-body {
+    max-height: 64vh;
+    overflow: auto;
+  }
+}
