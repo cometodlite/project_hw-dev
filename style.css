@@ -1133,3 +1133,238 @@ body {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+
+/* Safe mobile compact pass */
+@media (max-width: 760px) {
+  #app {
+    padding: 8px !important;
+  }
+
+  .topbar {
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .eyebrow {
+    margin: 0 0 4px !important;
+    font-size: 0.88rem !important;
+  }
+
+  h1 {
+    font-size: 2rem !important;
+    line-height: 1.02 !important;
+  }
+
+  .subtitle {
+    font-size: 0.84rem !important;
+    margin-top: 4px !important;
+  }
+
+  .status-grid {
+    gap: 6px !important;
+  }
+
+  .status-card {
+    padding: 9px 10px !important;
+    border-radius: 18px !important;
+  }
+
+  .status-card .label {
+    margin-bottom: 4px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .status-card strong {
+    font-size: 0.95rem !important;
+  }
+
+  .dashboard-grid {
+    gap: 8px !important;
+  }
+
+  .left-panel,
+  .center-panel,
+  .right-panel {
+    padding: 10px !important;
+  }
+
+  .mobile-fold,
+  .utility-group {
+    margin-bottom: 8px !important;
+    padding: 8px 10px !important;
+  }
+
+  .mobile-fold-summary,
+  .utility-group summary {
+    font-size: 0.96rem !important;
+  }
+
+  .section-tip {
+    font-size: 0.78rem !important;
+  }
+
+  .stack {
+    gap: 8px !important;
+  }
+
+  .grid-2 {
+    gap: 8px !important;
+  }
+
+  button,
+  select,
+  .tab-button,
+  .side-tab {
+    min-height: 40px !important;
+    padding: 8px 10px !important;
+  }
+
+  .hero {
+    padding: 10px !important;
+  }
+
+  .hero-top {
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .hero-title-block h2 {
+    font-size: 1.16rem !important;
+    margin: 6px 0 4px !important;
+  }
+
+  .hero-title-block p {
+    font-size: 0.9rem !important;
+    line-height: 1.38 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .time-visual-badge {
+    font-size: 0.82rem !important;
+    padding: 7px 9px !important;
+  }
+
+  .hero-highlight {
+    gap: 6px !important;
+    padding: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .hero-highlight-main strong {
+    font-size: 0.96rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .hero-highlight-main p {
+    font-size: 0.88rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .badge-chip {
+    font-size: 0.84rem !important;
+    padding: 7px 8px !important;
+  }
+
+  .scene-visual.upgraded {
+    gap: 8px !important;
+  }
+
+  .scene-panel,
+  .scene-panel.large,
+  .scene-panel.radio-panel {
+    padding: 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .panel-head {
+    margin-bottom: 4px !important;
+  }
+
+  .panel-head strong {
+    font-size: 0.98rem !important;
+  }
+
+  .muted {
+    font-size: 0.78rem !important;
+  }
+
+  #scene-spotlight-text,
+  #life-summary,
+  #radio-track-title {
+    font-size: 0.9rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .mini-chip {
+    padding: 5px 8px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .radio-controls {
+    gap: 6px !important;
+  }
+
+  .radio-controls button {
+    min-height: 40px !important;
+    padding: 8px 10px !important;
+  }
+
+  .compact-log {
+    margin-top: 8px !important;
+    padding: 8px 10px !important;
+  }
+
+  .log-summary {
+    min-height: 18px !important;
+  }
+
+  .summary-hint {
+    font-size: 0.76rem !important;
+  }
+
+  .tab-row {
+    gap: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .side-panel {
+    margin-top: 4px !important;
+  }
+
+  .inventory-item,
+  .shop-item,
+  .log-item,
+  .stat-row,
+  .housing-slot,
+  .mini-note {
+    padding: 9px 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .inventory-item strong,
+  .shop-item strong {
+    margin-bottom: 2px !important;
+    font-size: 0.96rem !important;
+  }
+
+  .inventory-item div,
+  .shop-item div {
+    font-size: 0.9rem !important;
+    line-height: 1.28 !important;
+  }
+
+  .inventory-item small,
+  .shop-item small {
+    font-size: 0.8rem !important;
+  }
+
+  .housing-grid {
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .housing-slot {
+    min-height: 72px !important;
+  }
+}
