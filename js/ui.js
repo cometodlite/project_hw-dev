@@ -289,8 +289,9 @@ function applySceneBackground(sceneKey, timeKey) {
   if (!el.sceneBackgroundLayer) return;
   const background = getSceneBackgroundStyle(sceneKey, timeKey);
   el.sceneBackgroundLayer.style.background = background;
-  el.sceneBackgroundLayer.dataset.scene = sceneKey;
-  el.sceneBackgroundLayer.dataset.time = timeKey;
+  el.sceneBackgroundLayer.className = `scene-background-layer time-${timeKey}`;
+  el.sceneBackgroundLayer.setAttribute("data-scene", sceneKey);
+  el.sceneBackgroundLayer.setAttribute("data-time", timeKey);
 }
 
 function renderActivityStats() {
@@ -326,7 +327,9 @@ function renderScene() {
   }
   applySceneBackground(currentScene, mood.key);
   if (el.backgroundDebugText) {
-    el.backgroundDebugText.textContent = `DEBUG · scene=${currentScene} / time=${mood.key}`;
+    const appliedScene = el.sceneBackgroundLayer?.getAttribute("data-scene") || currentScene;
+    const appliedTime = el.sceneBackgroundLayer?.getAttribute("data-time") || mood.key;
+    el.backgroundDebugText.textContent = `DEBUG · scene=${appliedScene} / time=${appliedTime}`;
   }
 
   if (el.sceneDetail) {

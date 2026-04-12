@@ -801,3 +801,64 @@ h3 {
     white-space: normal;
   }
 }
+
+
+.debug-badge {
+  background: rgba(17, 24, 39, 0.88) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+}
+
+#scene-background-layer.time-dawn {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 209, 120, 1) 0%, rgba(255, 209, 120, 0.76) 10%, transparent 24%),
+    linear-gradient(180deg, #ffe3bf 0%, #f4c89f 56%, #e9d7c5 100%) !important;
+}
+
+#scene-background-layer.time-day {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 242, 120, 1) 0%, rgba(255, 242, 120, 0.78) 10%, transparent 24%),
+    linear-gradient(180deg, #9fd3ff 0%, #cbeaff 38%, #efe4d2 100%) !important;
+}
+
+#scene-background-layer.time-evening {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 132, 56, 1) 0%, rgba(255, 132, 56, 0.78) 10%, transparent 24%),
+    linear-gradient(180deg, #ffb16c 0%, #ffc3a6 42%, #ebd2c2 100%) !important;
+}
+
+#scene-background-layer.time-night {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(219, 227, 255, 0.46) 0%, rgba(219, 227, 255, 0.22) 12%, transparent 24%),
+    linear-gradient(180deg, #142033 0%, #243c5d 45%, #4f617b 100%) !important;
+}
+
+.scene-town #scene-background-layer.time-day {
+  box-shadow: inset 0 0 0 9999px rgba(255, 246, 230, 0.03);
+}
+.scene-farm #scene-background-layer.time-day {
+  box-shadow: inset 0 0 0 9999px rgba(163, 220, 148, 0.10);
+}
+.scene-home #scene-background-layer.time-day {
+  box-shadow: inset 0 0 0 9999px rgba(244, 219, 196, 0.12);
+}
+
+.scene-town #scene-background-layer.time-evening {
+  box-shadow: inset 0 0 0 9999px rgba(255, 224, 203, 0.06);
+}
+.scene-farm #scene-background-layer.time-evening {
+  box-shadow: inset 0 0 0 9999px rgba(229, 201, 132, 0.12);
+}
+.scene-home #scene-background-layer.time-evening {
+  box-shadow: inset 0 0 0 9999px rgba(243, 204, 177, 0.12);
+}
+
+.scene-town #scene-background-layer.time-night {
+  box-shadow: inset 0 0 0 9999px rgba(120, 140, 190, 0.05);
+}
+.scene-farm #scene-background-layer.time-night {
+  box-shadow: inset 0 0 0 9999px rgba(88, 138, 118, 0.08);
+}
+.scene-home #scene-background-layer.time-night {
+  box-shadow: inset 0 0 0 9999px rgba(160, 124, 148, 0.08);
+}
