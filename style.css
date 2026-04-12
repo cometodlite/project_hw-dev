@@ -1135,33 +1135,31 @@ body {
 }
 
 
-/* Safe mobile compact pass */
+/* HCSiM stabilization phase 1: safe bottom nav only */
+.mobile-hcsim-nav {
+  display: none;
+}
+
 @media (max-width: 760px) {
+  body {
+    overflow: auto !important;
+    padding-bottom: 82px !important;
+  }
+
   #app {
+    height: auto !important;
+    overflow: visible !important;
     padding: 8px !important;
   }
 
   .topbar {
+    grid-template-columns: 1fr !important;
     gap: 8px !important;
     margin-bottom: 8px !important;
   }
 
-  .eyebrow {
-    margin: 0 0 4px !important;
-    font-size: 0.88rem !important;
-  }
-
-  h1 {
-    font-size: 2rem !important;
-    line-height: 1.02 !important;
-  }
-
-  .subtitle {
-    font-size: 0.84rem !important;
-    margin-top: 4px !important;
-  }
-
   .status-grid {
+    grid-template-columns: 1fr 1fr !important;
     gap: 6px !important;
   }
 
@@ -1180,13 +1178,19 @@ body {
   }
 
   .dashboard-grid {
+    grid-template-columns: 1fr !important;
     gap: 8px !important;
   }
 
   .left-panel,
   .center-panel,
   .right-panel {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
     padding: 10px !important;
+    scroll-margin-top: 8px;
   }
 
   .mobile-fold,
@@ -1195,36 +1199,14 @@ body {
     padding: 8px 10px !important;
   }
 
-  .mobile-fold-summary,
-  .utility-group summary {
-    font-size: 0.96rem !important;
-  }
-
-  .section-tip {
-    font-size: 0.78rem !important;
-  }
-
-  .stack {
-    gap: 8px !important;
-  }
-
-  .grid-2 {
-    gap: 8px !important;
-  }
-
-  button,
-  select,
-  .tab-button,
-  .side-tab {
-    min-height: 40px !important;
-    padding: 8px 10px !important;
-  }
-
   .hero {
+    min-height: 0 !important;
+    overflow: visible !important;
     padding: 10px !important;
   }
 
   .hero-top {
+    flex-direction: column !important;
     gap: 8px !important;
     margin-bottom: 8px !important;
   }
@@ -1240,12 +1222,32 @@ body {
     margin-bottom: 4px !important;
   }
 
+  #weather-text {
+    display: none !important;
+  }
+
   .time-visual-badge {
     font-size: 0.82rem !important;
     padding: 7px 9px !important;
   }
 
+  .view-switch {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  button,
+  select,
+  .tab-button,
+  .side-tab {
+    min-height: 40px !important;
+    padding: 8px 10px !important;
+  }
+
   .hero-highlight {
+    grid-template-columns: 1fr !important;
     gap: 6px !important;
     padding: 8px !important;
     margin-bottom: 8px !important;
@@ -1267,12 +1269,14 @@ body {
   }
 
   .scene-visual.upgraded {
+    grid-template-columns: 1fr !important;
     gap: 8px !important;
   }
 
   .scene-panel,
   .scene-panel.large,
   .scene-panel.radio-panel {
+    min-height: 0 !important;
     padding: 10px !important;
     border-radius: 16px !important;
   }
@@ -1281,33 +1285,14 @@ body {
     margin-bottom: 4px !important;
   }
 
-  .panel-head strong {
-    font-size: 0.98rem !important;
-  }
-
-  .muted {
-    font-size: 0.78rem !important;
-  }
-
-  #scene-spotlight-text,
-  #life-summary,
-  #radio-track-title {
-    font-size: 0.9rem !important;
-    line-height: 1.35 !important;
-  }
-
-  .mini-chip {
-    padding: 5px 8px !important;
-    font-size: 0.78rem !important;
-  }
-
   .radio-controls {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
     gap: 6px !important;
   }
 
   .radio-controls button {
     min-height: 40px !important;
-    padding: 8px 10px !important;
   }
 
   .compact-log {
@@ -1315,16 +1300,14 @@ body {
     padding: 8px 10px !important;
   }
 
-  .log-summary {
-    min-height: 18px !important;
-  }
-
-  .summary-hint {
-    font-size: 0.76rem !important;
-  }
-
   .tab-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 6px !important;
+    position: sticky !important;
+    top: 0 !important;
+    background: rgba(245,241,234,0.96) !important;
+    z-index: 5 !important;
     padding-bottom: 6px !important;
   }
 
@@ -1342,12 +1325,6 @@ body {
     border-radius: 16px !important;
   }
 
-  .inventory-item strong,
-  .shop-item strong {
-    margin-bottom: 2px !important;
-    font-size: 0.96rem !important;
-  }
-
   .inventory-item div,
   .shop-item div {
     font-size: 0.9rem !important;
@@ -1359,12 +1336,33 @@ body {
     font-size: 0.8rem !important;
   }
 
-  .housing-grid {
-    gap: 8px !important;
-    margin-bottom: 8px !important;
+  .mobile-hcsim-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(245,241,234,0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 40;
   }
 
-  .housing-slot {
-    min-height: 72px !important;
+  .mobile-hcsim-button {
+    min-height: 40px;
+    padding: 6px 4px;
+    font-size: 0.82rem;
+    box-shadow: none;
+    background: rgba(255,255,255,0.88);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .mobile-hcsim-button.active {
+    background: var(--accent);
+    color: #203329;
   }
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260412safe3" />
+  <link rel="stylesheet" href="./style.css?v=20260412h1" />
 </head>
 <body>
   <div id="app">
@@ -36,7 +36,7 @@
     </header>
 
     <main class="dashboard-grid">
-      <aside class="left-panel card">
+      <aside class="left-panel card" id="mobile-actions-anchor">
         <section class="quick-section">
           <div class="section-head compact">
             <h2>빠른 행동</h2>
@@ -89,7 +89,7 @@
         </details>
       </aside>
 
-      <section class="center-panel">
+      <section class="center-panel" id="mobile-scene-anchor">
         <section class="hero card">
           <div id="scene-background-layer" class="scene-background-layer"></div>
 
@@ -167,7 +167,7 @@
         </details>
       </section>
 
-      <aside class="right-panel card">
+      <aside class="right-panel card" id="mobile-bag-anchor">
         <div class="tab-row">
           <button class="side-tab active" data-side-tab="inventory">인벤토리</button>
           <button class="side-tab" data-side-tab="life">생활</button>
@@ -219,8 +219,16 @@
         </section>
       </aside>
     </main>
+
+    <nav class="mobile-hcsim-nav" aria-label="모바일 바로가기">
+      <button class="mobile-hcsim-button active" data-mobile-target="#mobile-scene-anchor" data-mobile-tab="">장면</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-actions-anchor" data-mobile-tab="">행동</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="inventory">가방</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="shop">상점</button>
+      <button class="mobile-hcsim-button" data-mobile-target="#mobile-bag-anchor" data-mobile-tab="life">더보기</button>
+    </nav>
   </div>
 
-  <script type="module" src="./main.js?v=20260412safe3"></script>
+  <script type="module" src="./main.js?v=20260412h1"></script>
 </body>
 </html>

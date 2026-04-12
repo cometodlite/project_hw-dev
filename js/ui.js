@@ -155,6 +155,26 @@ function syncSideTabs() {
 }
 
 export function bindUIEvents() {
+
+document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = button.dataset.mobileTarget;
+    const tab = button.dataset.mobileTab;
+
+    if (tab) {
+      currentSideTab = tab;
+      syncSideTabs();
+    }
+
+    document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+      entry.classList.toggle("active", entry === button);
+    });
+  });
+});
+
+
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
       currentScene = button.dataset.view;
