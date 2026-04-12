@@ -1876,3 +1876,121 @@ body {
     overflow: auto;
   }
 }
+
+
+/* Phase 5: iOS bag render + iPhone/iPad portrait split refinement */
+@media (max-width: 760px) {
+  /* iPhone: keep main scene shorter */
+  .hero-highlight-side {
+    display: none !important;
+  }
+
+  .scene-visual.upgraded {
+    display: block !important;
+  }
+
+  .scene-visual.upgraded > .scene-panel {
+    display: none !important;
+  }
+
+  .scene-visual.upgraded > .scene-panel.large {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .compact-log {
+    display: none !important;
+  }
+
+  .mobile-more-sheet-card,
+  #mobile-bag-sheet .mobile-more-sheet-card {
+    min-height: 180px;
+  }
+
+  #mobile-bag-list {
+    min-height: 120px;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
+  /* iPad portrait: split main and support info more clearly */
+  .topbar {
+    margin-bottom: 12px !important;
+  }
+
+  .status-grid {
+    grid-template-columns: repeat(4, minmax(120px, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .hero-title-block h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .hero-title-block p {
+    font-size: 0.98rem !important;
+  }
+
+  .view-switch {
+    max-width: 320px;
+  }
+
+  .hero-highlight {
+    grid-template-columns: 1.1fr 0.9fr !important;
+  }
+
+  .badge-chip {
+    font-size: 0.9rem !important;
+  }
+
+  .scene-visual.upgraded {
+    grid-template-columns: 1.1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .scene-panel.large {
+    grid-column: span 2 !important;
+  }
+
+  .scene-panel.radio-panel {
+    grid-column: span 2 !important;
+    min-height: 0 !important;
+  }
+
+  .compact-log {
+    display: none !important;
+  }
+
+  .right-panel {
+    padding-top: 10px !important;
+  }
+
+  .tab-row {
+    grid-template-columns: repeat(4, 1fr) !important;
+    position: static !important;
+    padding-bottom: 0 !important;
+  }
+
+  .inventory-item,
+  .shop-item {
+    padding: 10px 12px !important;
+  }
+
+  .shop-item {
+    grid-template-columns: 1fr auto;
+    display: grid !important;
+    align-items: center;
+  }
+
+  .shop-item button {
+    min-width: 72px;
+    min-height: 40px;
+    padding: 8px 12px !important;
+  }
+
+  .mobile-hcsim-nav {
+    position: sticky !important;
+    bottom: 0 !important;
+    margin-top: 10px !important;
+  }
+}

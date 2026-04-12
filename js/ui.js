@@ -1,6 +1,7 @@
 
 function openMobileBagSheet() {
   if (!isMobileLayout() || !el.mobileBagSheet) return;
+  renderMobileBagSheet();
   forceCloseMobileSheets();
   el.mobileBagSheet.classList.add("open");
   el.mobileBagSheet.setAttribute("aria-hidden", "false");
@@ -23,9 +24,51 @@ function closeMobileBagSheet() {
 
 function isMobileLayout() {
   return window.innerWidth <= 760 ||
-    (window.innerWidth <= 1024 && window.matchMedia("(orientation: portrait)").matches);
+    (window.innerWidth <= 1024 &&
+     window.matchMedia("(orientation: portrait)").matches &&
+     window.matchMedia("(pointer: coarse)").matches);
 }
 
+
+
+function renderMobileBagSheet() {
+  if (!el.mobileBagList) return;
+  const entries = Object.entries(state.player.inventory || {});
+  el.mobileBagList.innerHTML = entries.length
+    ? entries.map(([itemId, count]) => {
+        const item = state.data.items.find((entry) => entry.id === itemId);
+        return `<div class="mobile-bag-item"><strong>${item?.name || itemId}</strong><div>${item?.description || "설명 없음"}</div><small>수량 ${count} · 판매 ${item?.sellPrice ?? 0} 코인</small></div>`;
+      }).join("")
+    : '<div class="mobile-bag-item">보유 중인 아이템이 없습니다.</div>';
+}
+
+function renderMobileMoreSheet() {
+  if (el.mobileMoreLifeSummary) {
+    const life = state.player.lifeSkills;
+    el.mobileMoreLifeSummary.textContent = `채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+  }
+
+  if (el.mobileMoreHomeSummary) {
+    const placed = (state.player.housing?.slots || []).filter(Boolean);
+    el.mobileMoreHomeSummary.textContent = placed.length
+      ? placed.map((id) => state.data.items.find((item) => item.id === id)?.name || id).join(", ")
+      : "배치된 가구가 없습니다.";
+  }
+
+  if (el.mobileMoreRadioSummary) {
+    const radio = getRadioState();
+    el.mobileMoreRadioSummary.textContent = radio.isRadioPlaying
+      ? `현재 재생: ${radio.title}`
+      : "현재 라디오: 꺼짐";
+  }
+
+  if (el.mobileMoreLogList) {
+    const rows = (state.player.log || []).slice(0, 6);
+    el.mobileMoreLogList.innerHTML = rows.length
+      ? rows.map((row) => `<div class="mobile-more-log-item"><small>${row.time}</small><div>${row.text}</div></div>`).join("")
+      : '<div class="mobile-more-log-item">최근 알림이 없습니다.</div>';
+  }
+}
 
 function forceCloseMobileSheets() {
   if (el.mobileMoreSheet) {
@@ -43,6 +86,7 @@ function forceCloseMobileSheets() {
 
 function openMobileMoreSheet() {
   if (!isMobileLayout() || !el.mobileMoreSheet) return;
+  renderMobileMoreSheet();
   forceCloseMobileSheets();
   el.mobileMoreSheet.classList.add("open");
   el.mobileMoreSheet.setAttribute("aria-hidden", "false");
