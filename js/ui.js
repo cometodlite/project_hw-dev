@@ -1,4 +1,28 @@
 
+function openMobileBagSheet() {
+  if (!isMobileLayout() || !el.mobileBagSheet) return;
+  closeMobileMoreSheet();
+  el.mobileBagSheet.classList.add("open");
+  el.mobileBagSheet.setAttribute("aria-hidden", "false");
+  if (el.mobileBagBackdrop) el.mobileBagBackdrop.hidden = false;
+
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTab === "inventory");
+  });
+}
+
+function closeMobileBagSheet() {
+  if (!el.mobileBagSheet) return;
+  el.mobileBagSheet.classList.remove("open");
+  el.mobileBagSheet.setAttribute("aria-hidden", "true");
+  if (el.mobileBagBackdrop) el.mobileBagBackdrop.hidden = true;
+
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTarget === "#mobile-scene-anchor" && !entry.dataset.mobileTab);
+  });
+}
+
+
 function isMobileLayout() {
   return window.innerWidth <= 760;
 }
@@ -136,6 +160,9 @@ export function initUI() {
   el.mobileMoreHomeSummary = document.getElementById("mobile-more-home-summary");
   el.mobileMoreRadioSummary = document.getElementById("mobile-more-radio-summary");
   el.mobileMoreLogList = document.getElementById("mobile-more-log-list");
+  el.mobileBagSheet = document.getElementById("mobile-bag-sheet");
+  el.mobileBagBackdrop = document.getElementById("mobile-bag-backdrop");
+  el.mobileBagList = document.getElementById("mobile-bag-list");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -189,6 +216,14 @@ function syncSideTabs() {
 
 export function bindUIEvents() {
 
+document.getElementById("mobile-bag-close")?.addEventListener("click", () => {
+  closeMobileBagSheet();
+});
+
+el.mobileBagBackdrop?.addEventListener("click", () => {
+  closeMobileBagSheet();
+});
+
 document.getElementById("mobile-more-close")?.addEventListener("click", () => {
   closeMobileMoreSheet();
 });
@@ -223,11 +258,18 @@ document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
     const tab = button.dataset.mobileTab;
 
     if (tab === "life") {
+      closeMobileBagSheet();
       openMobileMoreSheet();
       return;
     }
 
+    if (tab === "inventory") {
+      openMobileBagSheet();
+      return;
+    }
+
     closeMobileMoreSheet();
+    closeMobileBagSheet();
 
     if (tab) {
       currentSideTab = tab;

@@ -1470,3 +1470,30 @@ body {
     margin-bottom: 4px;
   }
 }
+
+
+/* HCSiM stabilization phase 3: bag sheet */
+@media (max-width: 760px) {
+  #mobile-bag-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .mobile-bag-item {
+    background: rgba(255,255,255,0.88);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+
+  .mobile-bag-item strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .mobile-bag-item small {
+    display: block;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+}
