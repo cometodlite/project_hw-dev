@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260412i" />
+  <link rel="stylesheet" href="./style.css?v=20260412j" />
 </head>
 <body>
   <div id="app">
@@ -35,34 +35,45 @@
       </div>
     </header>
 
+    <div id="mobile-jump-tabs" class="mobile-jump-tabs">
+      <button class="mobile-jump-button" data-mobile-panel="scene">메인</button>
+      <button class="mobile-jump-button" data-mobile-panel="actions">행동</button>
+      <button class="mobile-jump-button" data-mobile-panel="inventory">가방</button>
+      <button class="mobile-jump-button" data-mobile-panel="shop">상점</button>
+    </div>
+
     <main class="dashboard-grid">
       <aside class="left-panel card">
-        <section class="quick-section">
-          <div class="section-head compact">
-            <h2>빠른 행동</h2>
+        <details class="mobile-fold" open>
+          <summary class="mobile-fold-summary">
+            <span>빠른 행동</span>
             <span class="section-tip">자주 쓰는 행동</span>
-          </div>
-          <div class="stack">
-            <button id="btn-gather">숲에서 채집하기</button>
-            <button id="btn-fish">연못에서 낚시하기</button>
-            <button id="btn-sell-all">수집품 판매하기</button>
-          </div>
-        </section>
-
-        <section class="quick-section">
-          <div class="section-head compact">
-            <h3>농사</h3>
-            <span class="section-tip">심기와 수확</span>
-          </div>
-          <div class="stack">
-            <select id="farm-seed-select"></select>
-            <div class="grid-2">
-              <button id="btn-plant-seed">씨앗 심기</button>
-              <button id="btn-farm-harvest">수확하기</button>
+          </summary>
+          <section class="quick-section">
+            <div class="stack">
+              <button id="btn-gather">숲에서 채집하기</button>
+              <button id="btn-fish">연못에서 낚시하기</button>
+              <button id="btn-sell-all">수집품 판매하기</button>
             </div>
-            <div id="farm-status" class="mini-note">밭 상태를 불러오는 중입니다.</div>
-          </div>
-        </section>
+          </section>
+        </details>
+
+        <details class="mobile-fold" open>
+          <summary class="mobile-fold-summary">
+            <span>농사</span>
+            <span class="section-tip">심기와 수확</span>
+          </summary>
+          <section class="quick-section">
+            <div class="stack">
+              <select id="farm-seed-select"></select>
+              <div class="grid-2">
+                <button id="btn-plant-seed">씨앗 심기</button>
+                <button id="btn-farm-harvest">수확하기</button>
+              </div>
+              <div id="farm-status" class="mini-note">밭 상태를 불러오는 중입니다.</div>
+            </div>
+          </section>
+        </details>
 
         <details class="utility-group">
           <summary>시스템</summary>
@@ -160,7 +171,7 @@
 
         <details class="bottom-log card compact-log" id="log-panel">
           <summary class="log-summary">
-            <span><strong>알림</strong> <span class="section-tip">최근 기록</span></span>
+            <span><strong>알림</strong> <span class="section-tip">모바일에서는 접어서 확인</span></span>
             <span class="summary-hint">펼치기</span>
           </summary>
           <div id="log-list" class="log-list compact"></div>
@@ -221,6 +232,6 @@
     </main>
   </div>
 
-  <script type="module" src="./main.js?v=20260412i"></script>
+  <script type="module" src="./main.js?v=20260412j"></script>
 </body>
 </html>

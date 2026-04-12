@@ -146,6 +146,26 @@ function syncSceneButtons() {
 }
 
 function syncSideTabs() {
+
+  document.querySelectorAll(".mobile-jump-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.mobilePanel;
+      if (target === "scene") {
+        document.querySelector(".center-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (target === "actions") {
+        document.querySelector(".left-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (target === "inventory") {
+        currentSideTab = "inventory";
+        syncSideTabs();
+        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (target === "shop") {
+        currentSideTab = "shop";
+        syncSideTabs();
+        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+
   document.querySelectorAll(".side-tab").forEach((button) => {
     button.classList.toggle("active", button.dataset.sideTab === currentSideTab);
   });
@@ -164,6 +184,26 @@ export function bindUIEvents() {
       syncSceneButtons();
       syncSideTabs();
       renderAll();
+    });
+  });
+
+
+  document.querySelectorAll(".mobile-jump-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.mobilePanel;
+      if (target === "scene") {
+        document.querySelector(".center-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (target === "actions") {
+        document.querySelector(".left-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (target === "inventory") {
+        currentSideTab = "inventory";
+        syncSideTabs();
+        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (target === "shop") {
+        currentSideTab = "shop";
+        syncSideTabs();
+        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
   });
 

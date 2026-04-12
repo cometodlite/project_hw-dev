@@ -911,3 +911,301 @@ body {
     padding-bottom: 0;
   }
 }
+
+
+/* Mobile layout refresh */
+.mobile-jump-tabs {
+  display: none;
+}
+
+.mobile-fold {
+  border-radius: 18px;
+  background: rgba(255,255,255,0.48);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.mobile-fold-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+}
+
+.mobile-fold-summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-fold-summary::before {
+  content: "▾ ";
+  margin-right: 4px;
+}
+
+.mobile-fold:not([open]) .quick-section {
+  display: none;
+}
+
+.mobile-fold:not([open]) .mobile-fold-summary::before {
+  content: "▸ ";
+}
+
+#mobile-jump-tabs {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  body {
+    overflow: auto !important;
+  }
+
+  #app {
+    height: auto !important;
+    overflow: visible !important;
+    padding: 10px;
+  }
+
+  .topbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .brand-block {
+    margin-bottom: 2px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .status-card {
+    padding: 10px 12px;
+    border-radius: 20px;
+  }
+
+  #mobile-jump-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(245, 241, 234, 0.96);
+    padding: 6px 0 8px;
+    backdrop-filter: blur(8px);
+  }
+
+  .mobile-jump-button {
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 0.92rem;
+    box-shadow: none;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .left-panel,
+  .center-panel,
+  .right-panel {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 12px;
+  }
+
+  .left-panel {
+    order: 1;
+  }
+
+  .center-panel {
+    order: 2;
+  }
+
+  .right-panel {
+    order: 3;
+    display: block !important;
+  }
+
+  .mobile-fold {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+  }
+
+  .utility-group {
+    margin-top: 10px;
+  }
+
+  .hero {
+    overflow: visible !important;
+    min-height: 0 !important;
+    padding: 12px;
+  }
+
+  .hero-top {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .hero-title-block h2 {
+    font-size: 1.25rem;
+    margin: 8px 0 6px;
+  }
+
+  .hero-title-block p {
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .time-visual-badge {
+    font-size: 0.88rem;
+    padding: 8px 10px;
+  }
+
+  .view-switch {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+
+  .tab-button {
+    min-height: 42px;
+  }
+
+  .hero-highlight {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .hero-highlight-main p {
+    font-size: 0.95rem;
+  }
+
+  .badge-chip {
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .scene-visual.upgraded {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .scene-panel,
+  .scene-panel.large,
+  .scene-panel.radio-panel {
+    min-height: 0 !important;
+    padding: 12px;
+  }
+
+  .panel-head {
+    margin-bottom: 6px;
+  }
+
+  .panel-head strong {
+    font-size: 1rem;
+  }
+
+  .radio-controls {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  .radio-controls button {
+    flex: none;
+    min-height: 54px;
+    padding: 12px;
+  }
+
+  .compact-log {
+    margin-top: 10px;
+    padding: 10px 12px;
+  }
+
+  .log-summary {
+    min-height: 20px;
+  }
+
+  .tab-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    position: sticky;
+    top: 54px;
+    z-index: 10;
+    background: rgba(245,241,234,0.96);
+    padding-bottom: 8px;
+  }
+
+  .side-tab {
+    min-height: 46px;
+  }
+
+  .side-panel {
+    display: none;
+    margin-top: 6px;
+  }
+
+  .side-panel.active {
+    display: block !important;
+  }
+
+  #inventory-list.compact,
+  #activity-list,
+  #shop-list,
+  [data-side-panel="housing"] {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  .inventory-list.compact .inventory-item {
+    padding: 10px 12px;
+  }
+
+  .inventory-item,
+  .shop-item,
+  .log-item,
+  .stat-row,
+  .housing-slot,
+  .mini-note {
+    padding: 10px 12px;
+    border-radius: 18px;
+  }
+
+  .inventory-item div,
+  .shop-item div {
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  .inventory-item small,
+  .shop-item small {
+    font-size: 0.86rem;
+  }
+
+  .housing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .summary-hint {
+    font-size: 0.82rem;
+  }
+}
