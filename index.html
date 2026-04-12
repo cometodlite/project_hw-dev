@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260412e" />
+  <link rel="stylesheet" href="./style.css?v=20260412f" />
 </head>
 <body>
   <div id="app">
     <header class="topbar">
-      <div>
+      <div class="brand-block">
         <p class="eyebrow">Healing World</p>
         <h1>PROJECT: HW</h1>
         <p class="subtitle">단일 화면 대시보드형 힐링 생활형 RPG 프로토타입</p>
@@ -37,96 +37,138 @@
 
     <main class="dashboard-grid">
       <aside class="left-panel card">
-        <h2>빠른 행동</h2>
-        <div class="stack">
-          <button id="btn-gather">숲에서 채집하기</button>
-          <button id="btn-fish">연못에서 낚시하기</button>
-          <button id="btn-sell-all">수집품 판매하기</button>
-        </div>
+        <section class="quick-section">
+          <div class="section-head compact">
+            <h2>빠른 행동</h2>
+            <span class="section-tip">자주 쓰는 행동</span>
+          </div>
+          <div class="stack">
+            <button id="btn-gather">숲에서 채집하기</button>
+            <button id="btn-fish">연못에서 낚시하기</button>
+            <button id="btn-sell-all">수집품 판매하기</button>
+          </div>
+        </section>
 
-        <h3>농사</h3>
-        <div class="stack">
-          <select id="farm-seed-select"></select>
-          <button id="btn-plant-seed">씨앗 심기</button>
-          <button id="btn-farm-harvest">수확하기</button>
-          <div id="farm-status" class="mini-note">밭 상태를 불러오는 중입니다.</div>
-        </div>
+        <section class="quick-section">
+          <div class="section-head compact">
+            <h3>농사</h3>
+            <span class="section-tip">심기와 수확</span>
+          </div>
+          <div class="stack">
+            <select id="farm-seed-select"></select>
+            <div class="grid-2">
+              <button id="btn-plant-seed">씨앗 심기</button>
+              <button id="btn-farm-harvest">수확하기</button>
+            </div>
+            <div id="farm-status" class="mini-note">밭 상태를 불러오는 중입니다.</div>
+          </div>
+        </section>
 
-        <h3>시스템</h3>
-        <div class="stack">
-          <button id="btn-save">저장</button>
-          <button id="btn-load">불러오기</button>
-          <button id="btn-open-inventory">인벤토리 새로고침</button>
-          <button id="btn-reset" class="danger">새 게임</button>
-        </div>
+        <details class="utility-group" open>
+          <summary>시스템</summary>
+          <div class="stack top-gap">
+            <button id="btn-save">저장</button>
+            <button id="btn-load">불러오기</button>
+            <button id="btn-open-inventory">인벤토리 새로고침</button>
+            <button id="btn-reset" class="danger">새 게임</button>
+          </div>
+        </details>
 
-        <h3>설정</h3>
-        <label class="toggle">
-          <input type="checkbox" id="bgm-enabled" checked />
-          <span>시간대별 BGM 시스템 사용</span>
-        </label>
-
-        <div class="grid-2">
-          <button id="btn-add-coin">코인 +100</button>
-          <button id="btn-add-bling">블링 +10</button>
-        </div>
+        <details class="utility-group" open>
+          <summary>설정</summary>
+          <div class="top-gap">
+            <label class="toggle">
+              <input type="checkbox" id="bgm-enabled" checked />
+              <span>시간대별 BGM 시스템 사용</span>
+            </label>
+            <div class="grid-2">
+              <button id="btn-add-coin">코인 +100</button>
+              <button id="btn-add-bling">블링 +10</button>
+            </div>
+          </div>
+        </details>
       </aside>
 
       <section class="center-panel">
         <section class="hero card">
           <div id="scene-background-layer" class="scene-background-layer"></div>
+
           <div class="hero-top">
-            <div class="hero-badges">
-            <div id="time-visual-badge" class="time-visual-badge">시간대 시각 효과를 불러오는 중입니다.</div>
-          </div>
-            <div>
+            <div class="hero-title-block">
+              <div id="time-visual-badge" class="time-visual-badge">시간대 시각 효과를 불러오는 중입니다.</div>
               <h2 id="scene-title">마을 광장</h2>
               <p id="time-period-text">시간대를 불러오는 중입니다.</p>
               <p id="weather-text">오늘도 편안한 하루를 보낼 수 있을 것 같습니다.</p>
             </div>
+
             <div class="view-switch">
               <button class="tab-button active" data-view="town">마을</button>
               <button class="tab-button" data-view="farm">밭</button>
               <button class="tab-button" data-view="home">집</button>
             </div>
           </div>
-          <div id="scene-visual" class="scene-visual">
-            <div id="scene-mood-banner" class="scene-banner">시간대 분위기를 불러오는 중입니다.</div>
-            <div class="scene-card">
-              <strong>현재 공간</strong>
-              <div id="scene-description">사람들이 천천히 오가는 평온한 마을 광장입니다.</div>
-              <div id="scene-detail" class="scene-detail">공간 상세 정보를 불러오는 중입니다.</div>
+
+          <div class="hero-highlight">
+            <div class="hero-highlight-main">
+              <strong id="scene-description">사람들이 천천히 오가는 평온한 마을 광장입니다.</strong>
+              <p id="scene-detail">공간 상세 정보를 불러오는 중입니다.</p>
             </div>
-            <div class="scene-card">
-              <strong>생활 요약</strong>
-              <div id="life-summary">생활 숙련도 정보를 불러오는 중입니다.</div>
-              <div id="farm-visual-status" class="scene-detail">밭 상태를 불러오는 중입니다.</div>
+            <div class="hero-highlight-side">
+              <div class="badge-chip" id="farm-visual-status">밭 상태를 불러오는 중입니다.</div>
+              <div class="badge-chip" id="home-visual-status">집 안 정보를 불러오는 중입니다.</div>
             </div>
-            <div class="scene-card">
-              <strong>집 분위기</strong>
-              <div id="home-visual-status">집 안 정보를 불러오는 중입니다.</div>
+          </div>
+
+          <div id="scene-visual" class="scene-visual upgraded">
+            <article class="scene-panel large">
+              <div class="panel-head">
+                <strong>현재 공간</strong>
+                <span class="muted">메인 장면</span>
+              </div>
+              <p id="scene-spotlight-text">생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다.</p>
+            </article>
+
+            <article class="scene-panel">
+              <div class="panel-head">
+                <strong>생활 요약</strong>
+                <span class="muted">현재 상태</span>
+              </div>
+              <p id="life-summary">생활 숙련도 정보를 불러오는 중입니다.</p>
+            </article>
+
+            <article class="scene-panel">
+              <div class="panel-head">
+                <strong>집 분위기</strong>
+                <span class="muted">하우징</span>
+              </div>
               <div class="mini-chip-row" id="home-item-chips"></div>
-            </div>
-            <div class="scene-card">
-              <strong>라디오</strong>
-              <div id="radio-track-title">현재 라디오: 꺼짐</div>
-              <div class="grid-2">
+            </article>
+
+            <article class="scene-panel radio-panel">
+              <div class="panel-head">
+                <strong>라디오</strong>
+                <span class="muted">휴식 음악</span>
+              </div>
+              <p id="radio-track-title">현재 라디오: 꺼짐</p>
+              <div class="radio-controls">
                 <button id="btn-radio-play">DIVE DIVERS 재생</button>
                 <button id="btn-radio-stop">라디오 정지</button>
               </div>
-            </div>
+            </article>
           </div>
         </section>
 
-        <section class="bottom-log card">
-          <h3>알림</h3>
-          <div id="log-list" class="log-list"></div>
+        <section class="bottom-log card compact-log">
+          <div class="section-head">
+            <h3>알림</h3>
+            <span class="section-tip">최근 기록</span>
+          </div>
+          <div id="log-list" class="log-list compact"></div>
         </section>
       </section>
 
       <aside class="right-panel card">
         <div class="tab-row">
-          <div id="mobile-tab-hint" class="mobile-tab-hint">탭을 눌러 인벤토리, 생활, 하우징, 상점을 전환할 수 있습니다.</div>
           <button class="side-tab active" data-side-tab="inventory">인벤토리</button>
           <button class="side-tab" data-side-tab="life">생활</button>
           <button class="side-tab" data-side-tab="housing">하우징</button>
@@ -134,17 +176,26 @@
         </div>
 
         <section class="side-panel active" data-side-panel="inventory">
-          <h3>인벤토리</h3>
-          <div id="inventory-list" class="inventory-list"></div>
+          <div class="section-head">
+            <h3>인벤토리</h3>
+            <span class="section-tip">보유 중인 아이템</span>
+          </div>
+          <div id="inventory-list" class="inventory-list compact"></div>
         </section>
 
         <section class="side-panel" data-side-panel="life">
-          <h3>활동 기록</h3>
+          <div class="section-head">
+            <h3>활동 기록</h3>
+            <span class="section-tip">생활 성장</span>
+          </div>
           <div id="activity-list" class="inventory-list"></div>
         </section>
 
         <section class="side-panel" data-side-panel="housing">
-          <h3>하우징</h3>
+          <div class="section-head">
+            <h3>하우징</h3>
+            <span class="section-tip">가구 배치</span>
+          </div>
           <div id="housing-slots" class="housing-grid"></div>
           <div class="stack">
             <select id="housing-item-select"></select>
@@ -160,13 +211,16 @@
         </section>
 
         <section class="side-panel" data-side-panel="shop">
-          <h3>상점</h3>
+          <div class="section-head">
+            <h3>상점</h3>
+            <span class="section-tip">구매 가능한 아이템</span>
+          </div>
           <div id="shop-list" class="stack"></div>
         </section>
       </aside>
     </main>
   </div>
 
-  <script type="module" src="./main.js?v=20260412e"></script>
+  <script type="module" src="./main.js?v=20260412f"></script>
 </body>
 </html>

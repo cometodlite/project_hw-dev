@@ -101,6 +101,7 @@ export function initUI() {
   el.homeItemChips = document.getElementById("home-item-chips");
   el.sceneBackgroundLayer = document.getElementById("scene-background-layer");
   el.timeVisualBadge = document.getElementById("time-visual-badge");
+  el.sceneSpotlightText = document.getElementById("scene-spotlight-text");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -351,6 +352,34 @@ function renderScene() {
     el.homeVisualStatus.textContent = placedNames.length
       ? `현재 집 분위기: ${placedNames.join(", ")}`
       : "현재 집 분위기: 배치된 가구가 없습니다.";
+  }
+
+  if (el.sceneSpotlightText) {
+    if (currentScene === "town") {
+      el.sceneSpotlightText.textContent = mood.key === "evening"
+        ? "노을빛이 천천히 마을에 내려앉고 있습니다. 광장 전체가 따뜻한 주황빛으로 물들고 있습니다."
+        : mood.key === "night"
+          ? "고요한 밤공기가 마을을 감싸며 차분한 푸른빛이 광장에 번지고 있습니다."
+          : mood.key === "dawn"
+            ? "아침 햇살이 광장 가장자리를 부드럽게 밝히며 하루를 깨우고 있습니다."
+            : "햇살이 넓게 퍼지며 광장 전체를 맑고 환하게 비추고 있습니다.";
+    } else if (currentScene === "farm") {
+      el.sceneSpotlightText.textContent = mood.key === "evening"
+        ? "밭 주변이 노을빛으로 물들며 오늘의 수확을 정리하기 좋은 시간입니다."
+        : mood.key === "night"
+          ? "밭은 조용한 밤공기 아래 잠시 쉬어가고 있습니다."
+          : mood.key === "dawn"
+            ? "서늘한 아침 공기와 함께 밭이 천천히 빛을 받기 시작합니다."
+            : "작물이 햇빛을 받으며 자라기 좋은 밝은 시간입니다.";
+    } else {
+      el.sceneSpotlightText.textContent = mood.key === "evening"
+        ? "실내가 포근한 주황빛으로 물들며 쉬어가기 좋은 분위기가 만들어지고 있습니다."
+        : mood.key === "night"
+          ? "집 안이 차분하고 고요한 밤 분위기로 바뀌며 휴식에 더 잘 어울립니다."
+          : mood.key === "dawn"
+            ? "은은한 아침빛이 집 안을 부드럽게 비추기 시작합니다."
+            : "실내가 따뜻하고 환한 낮 분위기로 유지되고 있습니다.";
+    }
   }
 
   if (el.homeItemChips) {
