@@ -101,6 +101,7 @@ export function initUI() {
   el.homeItemChips = document.getElementById("home-item-chips");
   el.sceneBackgroundLayer = document.getElementById("scene-background-layer");
   el.timeVisualBadge = document.getElementById("time-visual-badge");
+  el.backgroundDebugText = document.getElementById("background-debug-text");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -259,6 +260,39 @@ export function bindUIEvents() {
   document.getElementById("btn-radio-stop")?.addEventListener("click", () => { stopRadio(); renderAll(); });
 }
 
+
+function getSceneBackgroundStyle(sceneKey, timeKey) {
+  const map = {
+    town: {
+      dawn: "radial-gradient(circle at 16% 18%, rgba(255,220,148,0.95) 0%, rgba(255,220,148,0.65) 12%, transparent 24%), linear-gradient(180deg, #ffe9cb 0%, #f7d8bb 55%, #eadcc9 100%)",
+      day: "radial-gradient(circle at 18% 16%, rgba(255,244,150,0.98) 0%, rgba(255,244,150,0.72) 12%, transparent 24%), linear-gradient(180deg, #bfe3ff 0%, #d7f0ff 38%, #f2eadc 100%)",
+      evening: "radial-gradient(circle at 82% 18%, rgba(255,151,88,0.98) 0%, rgba(255,151,88,0.70) 12%, transparent 24%), linear-gradient(180deg, #ffbe8a 0%, #ffccb3 42%, #ead8ca 100%)",
+      night: "radial-gradient(circle at 82% 18%, rgba(219,227,255,0.36) 0%, rgba(219,227,255,0.20) 10%, transparent 22%), linear-gradient(180deg, #24324f 0%, #3a4d70 45%, #59657d 100%)"
+    },
+    farm: {
+      dawn: "radial-gradient(circle at 16% 18%, rgba(255,220,148,0.92) 0%, rgba(255,220,148,0.60) 12%, transparent 24%), linear-gradient(180deg, #e9f3c9 0%, #d8e8b8 48%, #c6d4a8 100%)",
+      day: "radial-gradient(circle at 18% 16%, rgba(255,244,150,0.96) 0%, rgba(255,244,150,0.70) 12%, transparent 24%), linear-gradient(180deg, #bfe7b8 0%, #d9f1c9 38%, #c8dfb9 100%)",
+      evening: "radial-gradient(circle at 82% 18%, rgba(255,151,88,0.94) 0%, rgba(255,151,88,0.66) 12%, transparent 24%), linear-gradient(180deg, #efc182 0%, #e2d09f 42%, #cfc2a3 100%)",
+      night: "radial-gradient(circle at 82% 18%, rgba(219,227,255,0.24) 0%, rgba(219,227,255,0.12) 10%, transparent 22%), linear-gradient(180deg, #2d3f42 0%, #40584f 45%, #5a665d 100%)"
+    },
+    home: {
+      dawn: "radial-gradient(circle at 16% 18%, rgba(255,220,148,0.90) 0%, rgba(255,220,148,0.58) 12%, transparent 24%), linear-gradient(180deg, #f8e3d2 0%, #eed4c2 52%, #e2cbbd 100%)",
+      day: "radial-gradient(circle at 18% 16%, rgba(255,244,150,0.94) 0%, rgba(255,244,150,0.66) 12%, transparent 24%), linear-gradient(180deg, #f7eadb 0%, #f2e1d3 38%, #ead7c9 100%)",
+      evening: "radial-gradient(circle at 82% 18%, rgba(255,151,88,0.92) 0%, rgba(255,151,88,0.64) 12%, transparent 24%), linear-gradient(180deg, #efc4a9 0%, #e6c6b7 42%, #dcc4bc 100%)",
+      night: "radial-gradient(circle at 82% 18%, rgba(219,227,255,0.22) 0%, rgba(219,227,255,0.10) 10%, transparent 22%), linear-gradient(180deg, #4a4054 0%, #63556a 45%, #7b6f72 100%)"
+    }
+  };
+  return map[sceneKey]?.[timeKey] || map.town.day;
+}
+
+function applySceneBackground(sceneKey, timeKey) {
+  if (!el.sceneBackgroundLayer) return;
+  const background = getSceneBackgroundStyle(sceneKey, timeKey);
+  el.sceneBackgroundLayer.style.background = background;
+  el.sceneBackgroundLayer.dataset.scene = sceneKey;
+  el.sceneBackgroundLayer.dataset.time = timeKey;
+}
+
 function renderActivityStats() {
   if (!el.activityList) return;
   const stats = state.player.activityStats;
@@ -290,8 +324,9 @@ function renderScene() {
     el.timeVisualBadge.textContent = `${mood.label} 분위기 · ${scene.title}`;
     el.timeVisualBadge.className = `time-visual-badge time-${mood.key}`;
   }
-  if (el.sceneBackgroundLayer) {
-    el.sceneBackgroundLayer.className = `scene-background-layer time-${mood.key}`;
+  applySceneBackground(currentScene, mood.key);
+  if (el.backgroundDebugText) {
+    el.backgroundDebugText.textContent = `DEBUG · scene=${currentScene} / time=${mood.key}`;
   }
 
   if (el.sceneDetail) {

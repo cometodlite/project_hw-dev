@@ -745,3 +745,59 @@ h3 {
     background: rgba(255, 255, 255, 0.88) !important;
   }
 }
+
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.debug-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.78);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #f8fafc;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.scene-background-layer {
+  opacity: 1 !important;
+  z-index: 0 !important;
+  background: linear-gradient(180deg, #d7f0ff 0%, #f2eadc 100%);
+  transition: background 0.35s ease;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero .scene-card,
+.hero .scene-banner,
+.hero .time-visual-badge {
+  background: rgba(255,255,255,0.82) !important;
+  color: var(--text) !important;
+  border-color: rgba(120, 105, 90, 0.16) !important;
+}
+
+@media (max-width: 700px) {
+  .hero-badges {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .debug-badge,
+  .time-visual-badge {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+  }
+}
