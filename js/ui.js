@@ -1,3 +1,30 @@
+
+function isMobileLayout() {
+  return window.innerWidth <= 760;
+}
+
+function openMobileMoreSheet() {
+  if (!isMobileLayout() || !el.mobileMoreSheet) return;
+  el.mobileMoreSheet.classList.add("open");
+  el.mobileMoreSheet.setAttribute("aria-hidden", "false");
+  if (el.mobileMoreBackdrop) el.mobileMoreBackdrop.hidden = false;
+
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTab === "life");
+  });
+}
+
+function closeMobileMoreSheet() {
+  if (!el.mobileMoreSheet) return;
+  el.mobileMoreSheet.classList.remove("open");
+  el.mobileMoreSheet.setAttribute("aria-hidden", "true");
+  if (el.mobileMoreBackdrop) el.mobileMoreBackdrop.hidden = true;
+
+  document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
+    entry.classList.toggle("active", entry.dataset.mobileTarget === "#mobile-scene-anchor" && !entry.dataset.mobileTab);
+  });
+}
+
 import { state, addLog, updateCurrency, setBgmEnabled } from "./state.js";
 import {
   renderInventory,
@@ -103,6 +130,12 @@ export function initUI() {
   el.timeVisualBadge = document.getElementById("time-visual-badge");
   el.sceneSpotlightText = document.getElementById("scene-spotlight-text");
   el.logPanel = document.getElementById("log-panel");
+  el.mobileMoreSheet = document.getElementById("mobile-more-sheet");
+  el.mobileMoreBackdrop = document.getElementById("mobile-more-backdrop");
+  el.mobileMoreLifeSummary = document.getElementById("mobile-more-life-summary");
+  el.mobileMoreHomeSummary = document.getElementById("mobile-more-home-summary");
+  el.mobileMoreRadioSummary = document.getElementById("mobile-more-radio-summary");
+  el.mobileMoreLogList = document.getElementById("mobile-more-log-list");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -156,10 +189,45 @@ function syncSideTabs() {
 
 export function bindUIEvents() {
 
+document.getElementById("mobile-more-close")?.addEventListener("click", () => {
+  closeMobileMoreSheet();
+});
+
+el.mobileMoreBackdrop?.addEventListener("click", () => {
+  closeMobileMoreSheet();
+});
+
+document.getElementById("mobile-more-save")?.addEventListener("click", () => {
+  document.getElementById("btn-save")?.click();
+});
+
+document.getElementById("mobile-more-load")?.addEventListener("click", () => {
+  document.getElementById("btn-load")?.click();
+});
+
+document.getElementById("mobile-more-reset")?.addEventListener("click", () => {
+  document.getElementById("btn-reset")?.click();
+});
+
+document.getElementById("mobile-more-radio-play")?.addEventListener("click", () => {
+  document.getElementById("btn-radio-play")?.click();
+});
+
+document.getElementById("mobile-more-radio-stop")?.addEventListener("click", () => {
+  document.getElementById("btn-radio-stop")?.click();
+});
+
 document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
   button.addEventListener("click", () => {
     const target = button.dataset.mobileTarget;
     const tab = button.dataset.mobileTab;
+
+    if (tab === "life") {
+      openMobileMoreSheet();
+      return;
+    }
+
+    closeMobileMoreSheet();
 
     if (tab) {
       currentSideTab = tab;
@@ -431,6 +499,33 @@ export function renderStatus() {
 
   renderScene();
   refreshHousingUI();
+
+if (el.mobileMoreLifeSummary) {
+  const life = state.player.lifeSkills;
+  el.mobileMoreLifeSummary.textContent = `채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+}
+
+if (el.mobileMoreHomeSummary) {
+  const placed = (state.player.housing?.slots || []).filter(Boolean);
+  el.mobileMoreHomeSummary.textContent = placed.length
+    ? placed.map((id) => state.data.items.find((item) => item.id === id)?.name || id).join(", ")
+    : "배치된 가구가 없습니다.";
+}
+
+if (el.mobileMoreRadioSummary) {
+  const radio = getRadioState();
+  el.mobileMoreRadioSummary.textContent = radio.isRadioPlaying
+    ? `현재 재생: ${radio.title}`
+    : "현재 라디오: 꺼짐";
+}
+
+if (el.mobileMoreLogList) {
+  const rows = (state.player.log || []).slice(0, 6);
+  el.mobileMoreLogList.innerHTML = rows.length
+    ? rows.map((row) => `<div class="mobile-more-log-item"><small>${row.time}</small><div>${row.text}</div></div>`).join("")
+    : '<div class="mobile-more-log-item">최근 알림이 없습니다.</div>';
+}
+
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;

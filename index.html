@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260412h1" />
+  <link rel="stylesheet" href="./style.css?v=20260412h2" />
 </head>
 <body>
   <div id="app">
@@ -220,6 +220,47 @@
       </aside>
     </main>
 
+    <section id="mobile-more-sheet" class="mobile-more-sheet" aria-hidden="true">
+      <div class="mobile-more-sheet-card">
+        <div class="mobile-more-sheet-handle"></div>
+        <div class="mobile-more-sheet-head">
+          <strong>더보기</strong>
+          <button type="button" id="mobile-more-close" class="mobile-more-close">닫기</button>
+        </div>
+        <div class="mobile-more-sheet-body">
+          <div class="mobile-more-block">
+            <strong>생활 요약</strong>
+            <div id="mobile-more-life-summary">불러오는 중입니다.</div>
+          </div>
+          <div class="mobile-more-block">
+            <strong>집 분위기</strong>
+            <div id="mobile-more-home-summary">불러오는 중입니다.</div>
+          </div>
+          <div class="mobile-more-block">
+            <strong>라디오</strong>
+            <div id="mobile-more-radio-summary">현재 라디오: 꺼짐</div>
+            <div class="grid-2 mobile-more-radio-actions">
+              <button id="mobile-more-radio-play">재생</button>
+              <button id="mobile-more-radio-stop">정지</button>
+            </div>
+          </div>
+          <details class="utility-group" open>
+            <summary>시스템</summary>
+            <div class="stack top-gap">
+              <button id="mobile-more-save">저장</button>
+              <button id="mobile-more-load">불러오기</button>
+              <button id="mobile-more-reset" class="danger">새 게임</button>
+            </div>
+          </details>
+          <details class="utility-group">
+            <summary>최근 알림</summary>
+            <div id="mobile-more-log-list" class="mobile-more-log-list top-gap">불러오는 중입니다.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+    <div id="mobile-more-backdrop" class="mobile-more-backdrop" hidden></div>
+
     <nav class="mobile-hcsim-nav" aria-label="모바일 바로가기">
       <button class="mobile-hcsim-button active" data-mobile-target="#mobile-scene-anchor" data-mobile-tab="">장면</button>
       <button class="mobile-hcsim-button" data-mobile-target="#mobile-actions-anchor" data-mobile-tab="">행동</button>
@@ -229,6 +270,6 @@
     </nav>
   </div>
 
-  <script type="module" src="./main.js?v=20260412h1"></script>
+  <script type="module" src="./main.js?v=20260412h2"></script>
 </body>
 </html>
