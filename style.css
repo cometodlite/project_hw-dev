@@ -412,3 +412,150 @@ h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.2rem); }
     min-height: 46px;
   }
 }
+
+
+/* Panel scroll/collapse refinement */
+.dashboard-grid {
+  align-items: stretch;
+}
+
+.left-panel,
+.center-panel,
+.right-panel {
+  min-height: calc(100vh - 180px);
+}
+
+.left-panel {
+  max-height: calc(100vh - 180px);
+  overflow: auto;
+}
+
+.right-panel {
+  max-height: calc(100vh - 180px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.side-panel.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+#inventory-list.compact,
+#activity-list,
+#shop-list {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+[data-side-panel="inventory"] #inventory-list.compact,
+[data-side-panel="life"] #activity-list,
+[data-side-panel="shop"] #shop-list {
+  max-height: calc(100vh - 360px);
+}
+
+[data-side-panel="housing"] {
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.compact-log {
+  margin-top: 16px;
+}
+
+.log-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.log-summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary-hint {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+#log-panel:not([open]) .summary-hint::after {
+  content: " ▼";
+}
+
+#log-panel[open] .summary-hint::after {
+  content: " ▲";
+}
+
+#log-panel:not([open]) #log-list {
+  display: none;
+}
+
+#log-panel[open] #log-list {
+  margin-top: 12px;
+}
+
+#log-panel .log-list.compact {
+  max-height: 180px;
+  overflow: auto;
+}
+
+.utility-group {
+  overflow: hidden;
+}
+
+.utility-group:not([open]) .top-gap {
+  display: none;
+}
+
+.utility-group summary {
+  user-select: none;
+}
+
+.utility-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.utility-group summary::before {
+  content: "▸ ";
+}
+
+.utility-group[open] summary::before {
+  content: "▾ ";
+}
+
+@media (max-width: 1120px) {
+  .left-panel,
+  .right-panel,
+  .center-panel {
+    min-height: 0;
+    max-height: none;
+  }
+
+  .left-panel,
+  .right-panel {
+    overflow: visible;
+  }
+
+  .right-panel {
+    display: block;
+  }
+
+  [data-side-panel="inventory"] #inventory-list.compact,
+  [data-side-panel="life"] #activity-list,
+  [data-side-panel="shop"] #shop-list,
+  [data-side-panel="housing"] {
+    max-height: none;
+  }
+}

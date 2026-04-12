@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
-  <link rel="stylesheet" href="./style.css?v=20260412f" />
+  <link rel="stylesheet" href="./style.css?v=20260412g" />
 </head>
 <body>
   <div id="app">
@@ -64,7 +64,7 @@
           </div>
         </section>
 
-        <details class="utility-group" open>
+        <details class="utility-group">
           <summary>시스템</summary>
           <div class="stack top-gap">
             <button id="btn-save">저장</button>
@@ -74,7 +74,7 @@
           </div>
         </details>
 
-        <details class="utility-group" open>
+        <details class="utility-group">
           <summary>설정</summary>
           <div class="top-gap">
             <label class="toggle">
@@ -158,13 +158,13 @@
           </div>
         </section>
 
-        <section class="bottom-log card compact-log">
-          <div class="section-head">
-            <h3>알림</h3>
-            <span class="section-tip">최근 기록</span>
-          </div>
+        <details class="bottom-log card compact-log" id="log-panel">
+          <summary class="log-summary">
+            <span><strong>알림</strong> <span class="section-tip">최근 기록</span></span>
+            <span class="summary-hint">펼치기</span>
+          </summary>
           <div id="log-list" class="log-list compact"></div>
-        </section>
+        </details>
       </section>
 
       <aside class="right-panel card">
@@ -221,6 +221,6 @@
     </main>
   </div>
 
-  <script type="module" src="./main.js?v=20260412f"></script>
+  <script type="module" src="./main.js?v=20260412g"></script>
 </body>
 </html>

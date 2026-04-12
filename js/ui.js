@@ -102,11 +102,13 @@ export function initUI() {
   el.sceneBackgroundLayer = document.getElementById("scene-background-layer");
   el.timeVisualBadge = document.getElementById("time-visual-badge");
   el.sceneSpotlightText = document.getElementById("scene-spotlight-text");
+  el.logPanel = document.getElementById("log-panel");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
   syncSceneButtons();
   syncSideTabs();
+  if (el.logPanel) el.logPanel.open = false;
 }
 
 function populateSeedSelect() {
@@ -411,6 +413,7 @@ export function renderStatus() {
   refreshHousingUI();
   syncSceneButtons();
   syncSideTabs();
+  if (el.logPanel) el.logPanel.open = false;
 }
 
 export function renderLog() {

@@ -65,7 +65,7 @@ export function renderInventory(container) {
     div.innerHTML = `
       <strong>${itemData?.name || itemId}</strong>
       <div>${itemData?.description || "설명 없음"}</div>
-      <small>보유 수량: ${count} · 판매가: ${itemData?.sellPrice ?? 0} 코인</small>
+      <small>수량 ${count} · 판매가 ${itemData?.sellPrice ?? 0} 코인</small>
     `;
     container.appendChild(div);
   }
