@@ -850,3 +850,64 @@ body {
     margin-top: 8px;
   }
 }
+
+
+/* Layout clipping fix */
+.center-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hero {
+  min-height: 0 !important;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 16px;
+}
+
+.scene-visual.upgraded {
+  align-content: start;
+}
+
+.scene-panel,
+.scene-panel.large,
+.scene-panel.radio-panel {
+  min-height: 0;
+}
+
+.scene-panel.radio-panel {
+  padding-bottom: 14px;
+}
+
+.radio-controls {
+  align-items: stretch;
+}
+
+.radio-controls button {
+  min-height: 42px;
+  white-space: normal;
+}
+
+.compact-log {
+  flex: 0 0 auto;
+  margin-top: 8px;
+}
+
+#log-panel {
+  min-height: 0;
+}
+
+#log-panel .log-list.compact {
+  max-height: 110px;
+}
+
+@media (max-width: 1120px) {
+  .center-panel {
+    overflow: visible;
+  }
+
+  .hero {
+    overflow: visible;
+    padding-bottom: 0;
+  }
+}
