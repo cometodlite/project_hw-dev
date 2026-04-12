@@ -103,6 +103,9 @@ export function initUI() {
   el.timeVisualBadge = document.getElementById("time-visual-badge");
   el.sceneSpotlightText = document.getElementById("scene-spotlight-text");
   el.logPanel = document.getElementById("log-panel");
+  el.mobileSheet = document.getElementById("mobile-sheet");
+  el.mobileSheetContent = document.getElementById("mobile-sheet-content");
+  el.mobileSheetBackdrop = document.getElementById("mobile-sheet-backdrop");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
@@ -146,26 +149,6 @@ function syncSceneButtons() {
 }
 
 function syncSideTabs() {
-
-  document.querySelectorAll(".mobile-jump-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = button.dataset.mobilePanel;
-      if (target === "scene") {
-        document.querySelector(".center-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (target === "actions") {
-        document.querySelector(".left-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (target === "inventory") {
-        currentSideTab = "inventory";
-        syncSideTabs();
-        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (target === "shop") {
-        currentSideTab = "shop";
-        syncSideTabs();
-        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
-  });
-
   document.querySelectorAll(".side-tab").forEach((button) => {
     button.classList.toggle("active", button.dataset.sideTab === currentSideTab);
   });
@@ -174,7 +157,240 @@ function syncSideTabs() {
   });
 }
 
+
+function isMobileLayout() {
+  return window.innerWidth <= 760;
+}
+
+function getItemName(itemId) {
+  return state.data.items.find((item) => item.id === itemId)?.name || itemId;
+}
+
+function renderMobileInventoryList() {
+  const entries = Object.entries(state.player.inventory);
+  if (!entries.length) return '<div class="mobile-list-item">보유 중인 아이템이 없습니다.</div>';
+  return entries.map(([itemId, count]) => {
+    const item = state.data.items.find((entry) => entry.id === itemId);
+    return `
+      <div class="mobile-list-item">
+        <strong>${item?.name || itemId}</strong>
+        <div>${item?.description || "설명 없음"}</div>
+        <div class="mobile-compact-row"><span>수량 ${count}</span><span>판매 ${item?.sellPrice ?? 0} 코인</span></div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderMobileActivityList() {
+  const stats = state.player.activityStats;
+  const skills = state.player.lifeSkills;
+  const unlocks = state.player.unlocks;
+  return `
+    <div class="mobile-list-item"><strong>생활 숙련도</strong><div>채집 ${skills.gathering} / 낚시 ${skills.fishing} / 농사 ${skills.farming}</div></div>
+    <div class="mobile-list-item"><strong>활동 횟수</strong><div>채집 ${stats.gatheringCount} / 낚시 ${stats.fishingCount} / 수확 ${stats.farmingCount}</div></div>
+    <div class="mobile-list-item"><strong>해금 상태</strong><div>사과 묘목: ${unlocks.appleSeedUnlocked ? "완료" : "농사 5 필요"}<br/>황금 씨앗: ${unlocks.goldenSeedUnlocked ? "완료" : "농사 10 필요"}</div></div>
+  `;
+}
+
+function renderMobileHousing() {
+  const owned = state.data.items.filter((item) => item.type === "housing" && (state.player.inventory[item.id] || 0) > 0);
+  const slots = (state.player.housing?.slots || []).map((id, idx) => `
+    <div class="mobile-list-item"><strong>${idx + 1}번 칸</strong><div>${id ? getItemName(id) : "비어 있음"}</div></div>
+  `).join("");
+  const options = owned.length
+    ? owned.map((item) => `<option value="${item.id}">${item.name}</option>`).join("")
+    : '<option value="">보유 가구 없음</option>';
+  return `
+    <div class="mobile-list">${slots}</div>
+    <select id="mobile-housing-item-select">${options}</select>
+    <div class="grid-2">
+      <button data-mobile-place-slot="0">1번 칸</button>
+      <button data-mobile-place-slot="1">2번 칸</button>
+      <button data-mobile-place-slot="2">3번 칸</button>
+      <button data-mobile-place-slot="3">4번 칸</button>
+    </div>
+    <button id="mobile-clear-housing">배치 초기화</button>
+  `;
+}
+
+function renderMobileShop() {
+  const visible = state.data.shop.filter((item) => {
+    if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
+    if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
+    return true;
+  });
+  if (!visible.length) return '<div class="mobile-list-item">구매 가능한 아이템이 없습니다.</div>';
+  return visible.map((item) => `
+    <div class="mobile-list-item">
+      <strong>${item.name}</strong>
+      <div>${item.description}</div>
+      <div class="mobile-compact-row"><span>${item.currency === "bling" ? "블링" : "코인"} ${item.price}</span><button data-mobile-buy-id="${item.id}">구매</button></div>
+    </div>
+  `).join("");
+}
+
+function renderMobileActions() {
+  return `
+    <div class="mobile-action-grid">
+      <button id="mobile-btn-gather">숲에서 채집하기</button>
+      <button id="mobile-btn-fish">연못에서 낚시하기</button>
+      <button id="mobile-btn-sell-all">수집품 판매하기</button>
+      <select id="mobile-farm-seed-select">${(getSeedItems() || []).map((seed) => `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`).join("")}</select>
+      <div class="grid-2">
+        <button id="mobile-btn-plant">씨앗 심기</button>
+        <button id="mobile-btn-harvest">수확하기</button>
+      </div>
+      <div class="mini-note">${getFarmStatus().text}</div>
+    </div>
+  `;
+}
+
+function renderMobileMore() {
+  return `
+    <details class="utility-group" open>
+      <summary>시스템</summary>
+      <div class="top-gap stack">
+        <button id="mobile-btn-save">저장</button>
+        <button id="mobile-btn-load">불러오기</button>
+        <button id="mobile-btn-reset" class="danger">새 게임</button>
+      </div>
+    </details>
+    <details class="utility-group" open>
+      <summary>설정</summary>
+      <div class="top-gap stack">
+        <label class="toggle"><input type="checkbox" id="mobile-bgm-enabled" ${state.player.settings.bgmEnabled ? "checked" : ""} /><span>시간대별 BGM 시스템 사용</span></label>
+        <div class="grid-2">
+          <button id="mobile-btn-add-coin">코인 +100</button>
+          <button id="mobile-btn-add-bling">블링 +10</button>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+function bindMobileSheetEvents(kind) {
+  document.getElementById("mobile-btn-gather")?.addEventListener("click", () => { document.getElementById("btn-gather")?.click(); closeMobileSheet(); });
+  document.getElementById("mobile-btn-fish")?.addEventListener("click", () => { document.getElementById("btn-fish")?.click(); closeMobileSheet(); });
+  document.getElementById("mobile-btn-sell-all")?.addEventListener("click", () => { document.getElementById("btn-sell-all")?.click(); closeMobileSheet(); });
+  document.getElementById("mobile-btn-plant")?.addEventListener("click", () => {
+    const source = document.getElementById("mobile-farm-seed-select");
+    if (source && el.farmSeedSelect) el.farmSeedSelect.value = source.value;
+    document.getElementById("btn-plant-seed")?.click();
+  });
+  document.getElementById("mobile-btn-harvest")?.addEventListener("click", () => { document.getElementById("btn-farm-harvest")?.click(); });
+
+  document.getElementById("mobile-btn-save")?.addEventListener("click", () => { document.getElementById("btn-save")?.click(); closeMobileSheet(); });
+  document.getElementById("mobile-btn-load")?.addEventListener("click", () => { document.getElementById("btn-load")?.click(); closeMobileSheet(); });
+  document.getElementById("mobile-btn-reset")?.addEventListener("click", () => { document.getElementById("btn-reset")?.click(); closeMobileSheet(); });
+  document.getElementById("mobile-bgm-enabled")?.addEventListener("change", (event) => {
+    if (el.bgmEnabled) el.bgmEnabled.checked = event.target.checked;
+    el.bgmEnabled?.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  document.getElementById("mobile-btn-add-coin")?.addEventListener("click", () => { document.getElementById("btn-add-coin")?.click(); });
+  document.getElementById("mobile-btn-add-bling")?.addEventListener("click", () => { document.getElementById("btn-add-bling")?.click(); });
+
+  document.querySelectorAll("[data-mobile-buy-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelector(`[data-buy-id="${button.dataset.mobileBuyId}"]`)?.click();
+      openMobileSheet("shop");
+    });
+  });
+
+  document.querySelectorAll("[data-mobile-place-slot]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const select = document.getElementById("mobile-housing-item-select");
+      if (select && el.housingItemSelect) el.housingItemSelect.value = select.value;
+      document.getElementById(`btn-place-slot-${Number(button.dataset.mobilePlaceSlot) + 1}`)?.click();
+      openMobileSheet("more");
+    });
+  });
+
+  document.getElementById("mobile-clear-housing")?.addEventListener("click", () => {
+    document.getElementById("btn-clear-housing")?.click();
+    openMobileSheet("more");
+  });
+}
+
+function openMobileSheet(kind) {
+  if (!isMobileLayout() || !el.mobileSheet || !el.mobileSheetContent) return;
+
+  document.querySelectorAll(".mobile-nav-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mobileSheet === kind);
+  });
+
+  if (kind === "scene") {
+    closeMobileSheet();
+    return;
+  }
+
+  let title = "";
+  let content = "";
+  if (kind === "actions") {
+    title = "행동";
+    content = renderMobileActions();
+  } else if (kind === "inventory") {
+    title = "가방";
+    content = renderMobileInventoryList();
+  } else if (kind === "shop") {
+    title = "상점";
+    content = renderMobileShop();
+  } else {
+    title = "더보기";
+    content = `
+      <div class="mobile-sheet-section">
+        <button id="mobile-open-life">생활 보기</button>
+        <button id="mobile-open-housing">하우징 보기</button>
+        ${renderMobileMore()}
+      </div>
+    `;
+  }
+
+  el.mobileSheetContent.innerHTML = `
+    <div class="mobile-sheet-title"><strong>${title}</strong><span class="section-tip">하단 패널</span></div>
+    <div class="mobile-list">${content}</div>
+  `;
+
+  el.mobileSheet.classList.add("open");
+  if (el.mobileSheetBackdrop) el.mobileSheetBackdrop.hidden = false;
+  bindMobileSheetEvents(kind);
+
+  document.getElementById("mobile-open-life")?.addEventListener("click", () => {
+    el.mobileSheetContent.innerHTML = `
+      <div class="mobile-sheet-title"><strong>생활</strong><span class="section-tip">하단 패널</span></div>
+      <div class="mobile-list">${renderMobileActivityList()}</div>
+    `;
+  });
+
+  document.getElementById("mobile-open-housing")?.addEventListener("click", () => {
+    el.mobileSheetContent.innerHTML = `
+      <div class="mobile-sheet-title"><strong>하우징</strong><span class="section-tip">하단 패널</span></div>
+      <div class="mobile-list">${renderMobileHousing()}</div>
+    `;
+    bindMobileSheetEvents("housing");
+  });
+}
+
+function closeMobileSheet() {
+  if (!el.mobileSheet) return;
+  el.mobileSheet.classList.remove("open");
+  if (el.mobileSheetBackdrop) el.mobileSheetBackdrop.hidden = true;
+  document.querySelectorAll(".mobile-nav-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mobileSheet === "scene");
+  });
+}
+
 export function bindUIEvents() {
+
+document.querySelectorAll(".mobile-nav-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    openMobileSheet(button.dataset.mobileSheet);
+  });
+});
+
+el.mobileSheetBackdrop?.addEventListener("click", () => {
+  closeMobileSheet();
+});
+
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
       currentScene = button.dataset.view;
@@ -184,26 +400,6 @@ export function bindUIEvents() {
       syncSceneButtons();
       syncSideTabs();
       renderAll();
-    });
-  });
-
-
-  document.querySelectorAll(".mobile-jump-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = button.dataset.mobilePanel;
-      if (target === "scene") {
-        document.querySelector(".center-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (target === "actions") {
-        document.querySelector(".left-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (target === "inventory") {
-        currentSideTab = "inventory";
-        syncSideTabs();
-        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (target === "shop") {
-        currentSideTab = "shop";
-        syncSideTabs();
-        document.querySelector(".right-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
     });
   });
 
