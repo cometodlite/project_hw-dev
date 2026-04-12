@@ -17,10 +17,10 @@ async function loadJson(path) {
 async function bootstrap() {
   try {
     const [items, shop, bgmSchedule, lifeTables] = await Promise.all([
-      loadJson("./data/items.json?v=20260412l"),
-      loadJson("./data/shop.json?v=20260412l"),
-      loadJson("./data/bgmSchedule.json?v=20260412l"),
-      loadJson("./data/lifeTables.json?v=20260412l")
+      loadJson("./data/items.json?v=20260412m"),
+      loadJson("./data/shop.json?v=20260412m"),
+      loadJson("./data/bgmSchedule.json?v=20260412m"),
+      loadJson("./data/lifeTables.json?v=20260412m")
     ]);
 
     state.data.items = items;
