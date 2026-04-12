@@ -1159,3 +1159,40 @@ body {
     margin-bottom: 0;
   }
 }
+
+
+/* Mobile sheet close interaction improvements */
+@media (max-width: 760px) {
+  .mobile-sheet {
+    touch-action: pan-y;
+    will-change: transform;
+  }
+
+  .mobile-sheet.dragging {
+    transition: none !important;
+  }
+
+  .mobile-sheet-handle {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .mobile-sheet-handle::after {
+    content: "아래로 내려 닫기";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10px;
+    font-size: 0.74rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .mobile-sheet-content {
+    padding-top: 20px;
+  }
+
+  .mobile-nav-button[data-mobile-sheet="scene"] {
+    font-weight: 700;
+  }
+}

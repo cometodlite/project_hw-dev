@@ -74,6 +74,71 @@ function getPlacedHousingNames() {
   return ids.map((id) => state.data.items.find((item) => item.id === id)?.name || id);
 }
 
+
+let mobileSheetDragState = {
+  active: false,
+  startY: 0,
+  currentY: 0
+};
+
+function attachMobileSheetGesture() {
+  if (!el.mobileSheet) return;
+
+  const start = (clientY) => {
+    if (!isMobileLayout() || !el.mobileSheet.classList.contains("open")) return;
+    mobileSheetDragState.active = true;
+    mobileSheetDragState.startY = clientY;
+    mobileSheetDragState.currentY = clientY;
+    el.mobileSheet.classList.add("dragging");
+  };
+
+  const move = (clientY) => {
+    if (!mobileSheetDragState.active || !el.mobileSheet) return;
+    mobileSheetDragState.currentY = clientY;
+    const delta = Math.max(0, clientY - mobileSheetDragState.startY);
+    el.mobileSheet.style.transform = `translateY(${delta}px)`;
+  };
+
+  const end = () => {
+    if (!mobileSheetDragState.active || !el.mobileSheet) return;
+    const delta = Math.max(0, mobileSheetDragState.currentY - mobileSheetDragState.startY);
+    mobileSheetDragState.active = false;
+    el.mobileSheet.classList.remove("dragging");
+
+    if (delta > 90) {
+      el.mobileSheet.style.transform = "";
+      closeMobileSheet();
+      return;
+    }
+
+    el.mobileSheet.style.transform = "";
+  };
+
+  el.mobileSheet.addEventListener("touchstart", (event) => {
+    start(event.touches[0].clientY);
+  }, { passive: true });
+
+  el.mobileSheet.addEventListener("touchmove", (event) => {
+    move(event.touches[0].clientY);
+  }, { passive: true });
+
+  el.mobileSheet.addEventListener("touchend", () => {
+    end();
+  });
+
+  el.mobileSheet.addEventListener("mousedown", (event) => {
+    start(event.clientY);
+  });
+
+  window.addEventListener("mousemove", (event) => {
+    move(event.clientY);
+  });
+
+  window.addEventListener("mouseup", () => {
+    end();
+  });
+}
+
 export function initUI() {
   el.currentTime = document.getElementById("current-time");
   el.coinValue = document.getElementById("coin-value");
@@ -106,12 +171,14 @@ export function initUI() {
   el.mobileSheet = document.getElementById("mobile-sheet");
   el.mobileSheetContent = document.getElementById("mobile-sheet-content");
   el.mobileSheetBackdrop = document.getElementById("mobile-sheet-backdrop");
+  el.mobileSheetHandle = document.getElementById("mobile-sheet-handle");
 
   populateSeedSelect();
   populateHousingItemSelect(el.housingItemSelect);
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
+  attachMobileSheetGesture();
 }
 
 function populateSeedSelect() {
@@ -313,6 +380,7 @@ function bindMobileSheetEvents(kind) {
 
 function openMobileSheet(kind) {
   if (!isMobileLayout() || !el.mobileSheet || !el.mobileSheetContent) return;
+  el.mobileSheet.style.transform = "";
 
   document.querySelectorAll(".mobile-nav-button").forEach((button) => {
     button.classList.toggle("active", button.dataset.mobileSheet === kind);
@@ -351,6 +419,7 @@ function openMobileSheet(kind) {
   `;
 
   el.mobileSheet.classList.add("open");
+  el.mobileSheet.setAttribute("aria-hidden", "false");
   if (el.mobileSheetBackdrop) el.mobileSheetBackdrop.hidden = false;
   bindMobileSheetEvents(kind);
 
@@ -372,7 +441,9 @@ function openMobileSheet(kind) {
 
 function closeMobileSheet() {
   if (!el.mobileSheet) return;
+  el.mobileSheet.style.transform = "";
   el.mobileSheet.classList.remove("open");
+  el.mobileSheet.setAttribute("aria-hidden", "true");
   if (el.mobileSheetBackdrop) el.mobileSheetBackdrop.hidden = true;
   document.querySelectorAll(".mobile-nav-button").forEach((button) => {
     button.classList.toggle("active", button.dataset.mobileSheet === "scene");
@@ -650,6 +721,7 @@ export function renderStatus() {
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
+  attachMobileSheetGesture();
 }
 
 export function renderLog() {
