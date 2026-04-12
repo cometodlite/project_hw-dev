@@ -7,8 +7,13 @@ function isFivePanelMobile() {
 }
 
 function syncMobilePanels() {
+  const app = document.getElementById("mobile-5panel-app");
+  if (!app) return;
+
   document.querySelectorAll(".mobile-panel").forEach((panel) => {
-    panel.classList.toggle("active", panel.dataset.mobilePanel === currentMobilePanel);
+    const isActive = panel.dataset.mobilePanel === currentMobilePanel;
+    panel.classList.toggle("active", isActive);
+    panel.style.display = isActive ? "block" : "none";
   });
 
   document.querySelectorAll(".mobile-hcsim-reset-button").forEach((button) => {
@@ -22,8 +27,19 @@ function syncMobileBagTabs() {
     button.classList.toggle("active", button.dataset.mobileBagTab === currentMobileBagTab);
   });
   document.querySelectorAll(".mobile-bag-view").forEach((panel) => {
-    panel.classList.toggle("active", panel.dataset.mobileBagView === currentMobileBagTab);
+    const isActive = panel.dataset.mobileBagView === currentMobileBagTab;
+    panel.classList.toggle("active", isActive);
+    panel.style.display = isActive ? "grid" : "none";
   });
+}
+
+
+function setMobilePanel(panel) {
+  currentMobilePanel = panel || "status";
+  syncMobilePanels();
+  if (currentMobilePanel === "bag") {
+    syncMobileBagTabs();
+  }
 }
 
 function renderMobileStatusPanel() {
@@ -223,6 +239,8 @@ export function initUI() {
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
+  currentMobilePanel = "status";
+  currentMobileBagTab = "inventory";
   renderMobileStatusPanel();
   renderMobileActionPanel();
   renderMobileBagPanel();
@@ -606,9 +624,18 @@ export function renderStatus() {
 
   renderScene();
   refreshHousingUI();
+  renderMobileStatusPanel();
+  renderMobileActionPanel();
+  renderMobileBagPanel();
+  renderMobileShopPanel();
+  renderMobileLogPanel();
+  syncMobilePanels();
+  syncMobileBagTabs();
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
+  currentMobilePanel = "status";
+  currentMobileBagTab = "inventory";
   renderMobileStatusPanel();
   renderMobileActionPanel();
   renderMobileBagPanel();

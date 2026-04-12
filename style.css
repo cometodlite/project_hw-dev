@@ -1632,3 +1632,21 @@ body {
     max-width: 360px;
   }
 }
+
+
+/* Phase1 fix: explicit panel visibility */
+.mobile-panel {
+  display: none;
+}
+
+.mobile-panel.active {
+  display: block;
+}
+
+.mobile-bag-view {
+  display: none;
+}
+
+.mobile-bag-view.active {
+  display: grid;
+}
