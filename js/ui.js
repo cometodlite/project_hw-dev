@@ -1,8 +1,3 @@
-
-function isMobileLayout() {
-  return window.innerWidth <= 760;
-}
-
 import { state, addLog, updateCurrency, setBgmEnabled } from "./state.js";
 import {
   renderInventory,
@@ -160,36 +155,6 @@ function syncSideTabs() {
 }
 
 export function bindUIEvents() {
-
-document.querySelectorAll("[data-mobile-jump]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const selector = button.dataset.mobileJump;
-    document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    document.querySelectorAll(".mobile-safe-button").forEach((entry) => entry.classList.remove("active"));
-    button.classList.add("active");
-  });
-});
-
-document.querySelectorAll("[data-mobile-open-tab]").forEach((button) => {
-  button.addEventListener("click", () => {
-    currentSideTab = button.dataset.mobileOpenTab;
-    syncSideTabs();
-    document.querySelector("#mobile-bag-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    document.querySelectorAll(".mobile-safe-button").forEach((entry) => entry.classList.remove("active"));
-    button.classList.add("active");
-  });
-});
-
-document.querySelectorAll("[data-mobile-open-more]").forEach((button) => {
-  button.addEventListener("click", () => {
-    currentSideTab = "life";
-    syncSideTabs();
-    document.querySelector("#mobile-bag-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    document.querySelectorAll(".mobile-safe-button").forEach((entry) => entry.classList.remove("active"));
-    button.classList.add("active");
-  });
-});
-
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
       currentScene = button.dataset.view;
