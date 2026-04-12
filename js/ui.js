@@ -1,10 +1,10 @@
 
 function openMobileBagSheet() {
   if (!isMobileLayout() || !el.mobileBagSheet) return;
-  closeMobileMoreSheet();
+  forceCloseMobileSheets();
   el.mobileBagSheet.classList.add("open");
   el.mobileBagSheet.setAttribute("aria-hidden", "false");
-  if (el.mobileBagBackdrop) el.mobileBagBackdrop.hidden = false;
+  if (el.mobileMoreBackdrop) el.mobileMoreBackdrop.hidden = false;
 
   document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
     entry.classList.toggle("active", entry.dataset.mobileTab === "inventory");
@@ -13,9 +13,7 @@ function openMobileBagSheet() {
 
 function closeMobileBagSheet() {
   if (!el.mobileBagSheet) return;
-  el.mobileBagSheet.classList.remove("open");
-  el.mobileBagSheet.setAttribute("aria-hidden", "true");
-  if (el.mobileBagBackdrop) el.mobileBagBackdrop.hidden = true;
+  forceCloseMobileSheets();
 
   document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
     entry.classList.toggle("active", entry.dataset.mobileTarget === "#mobile-scene-anchor" && !entry.dataset.mobileTab);
@@ -28,8 +26,24 @@ function isMobileLayout() {
     (window.innerWidth <= 1024 && window.matchMedia("(orientation: portrait)").matches);
 }
 
+
+function forceCloseMobileSheets() {
+  if (el.mobileMoreSheet) {
+    el.mobileMoreSheet.classList.remove("open");
+    el.mobileMoreSheet.setAttribute("aria-hidden", "true");
+  }
+  if (el.mobileBagSheet) {
+    el.mobileBagSheet.classList.remove("open");
+    el.mobileBagSheet.setAttribute("aria-hidden", "true");
+  }
+  if (el.mobileMoreBackdrop) {
+    el.mobileMoreBackdrop.hidden = true;
+  }
+}
+
 function openMobileMoreSheet() {
   if (!isMobileLayout() || !el.mobileMoreSheet) return;
+  forceCloseMobileSheets();
   el.mobileMoreSheet.classList.add("open");
   el.mobileMoreSheet.setAttribute("aria-hidden", "false");
   if (el.mobileMoreBackdrop) el.mobileMoreBackdrop.hidden = false;
@@ -41,9 +55,7 @@ function openMobileMoreSheet() {
 
 function closeMobileMoreSheet() {
   if (!el.mobileMoreSheet) return;
-  el.mobileMoreSheet.classList.remove("open");
-  el.mobileMoreSheet.setAttribute("aria-hidden", "true");
-  if (el.mobileMoreBackdrop) el.mobileMoreBackdrop.hidden = true;
+  forceCloseMobileSheets();
 
   document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
     entry.classList.toggle("active", entry.dataset.mobileTarget === "#mobile-scene-anchor" && !entry.dataset.mobileTab);
@@ -170,6 +182,7 @@ export function initUI() {
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
+  forceCloseMobileSheets();
 }
 
 function populateSeedSelect() {
@@ -216,6 +229,12 @@ function syncSideTabs() {
 }
 
 export function bindUIEvents() {
+
+window.addEventListener("resize", () => {
+  if (!isMobileLayout()) {
+    forceCloseMobileSheets();
+  }
+});
 
 document.getElementById("mobile-bag-close")?.addEventListener("click", () => {
   closeMobileBagSheet();
@@ -572,6 +591,7 @@ if (el.mobileMoreLogList) {
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
+  forceCloseMobileSheets();
 }
 
 export function renderLog() {
