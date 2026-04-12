@@ -1,0 +1,9 @@
+배포 안내
+- 이 버전은 캐시 무효화를 위해 index.html이 style.v3.css, main.v3.js를 참조합니다.
+- GitHub Pages에 업로드할 때는 기존 파일 덮어쓰기 후 함께 업로드해 주세요.
+- 특히 아래 파일들이 모두 올라가야 합니다:
+  1) index.html
+  2) style.v3.css
+  3) main.v3.js
+  4) js/ 폴더 전체
+  5) data/ 폴더 전체
