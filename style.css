@@ -1230,3 +1230,104 @@ body {
     pointer-events: none;
   }
 }
+
+
+/* Stronger mobile HCSiM compaction */
+@media (max-width: 760px) {
+  .hero {
+    padding: 10px !important;
+  }
+
+  .hero-top {
+    margin-bottom: 8px !important;
+  }
+
+  .hero-title-block p#weather-text {
+    display: none;
+  }
+
+  .hero-highlight {
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .hero-highlight-side {
+    display: none !important;
+  }
+
+  .scene-visual.upgraded {
+    display: block !important;
+  }
+
+  .scene-visual.upgraded > .scene-panel {
+    display: none !important;
+  }
+
+  .scene-visual.upgraded > .scene-panel.large {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 10px 12px !important;
+  }
+
+  .scene-visual.upgraded > .scene-panel.large .panel-head {
+    margin-bottom: 6px !important;
+  }
+
+  .compact-log {
+    display: none !important;
+  }
+
+  .hero-highlight-main strong {
+    font-size: 1rem !important;
+  }
+
+  .hero-highlight-main p {
+    font-size: 0.92rem !important;
+    line-height: 1.42 !important;
+  }
+
+  #scene-spotlight-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .mobile-sheet {
+    max-height: 78vh;
+  }
+
+  .mobile-sheet-content {
+    max-height: calc(78vh - 24px);
+  }
+
+  .mobile-sheet-title {
+    margin-bottom: 6px !important;
+  }
+
+  .mobile-list-item {
+    padding: 10px 12px !important;
+  }
+
+  .mobile-list-item div {
+    line-height: 1.35;
+  }
+
+  .mobile-list-item strong {
+    font-size: 1rem;
+  }
+
+  .mobile-compact-row {
+    font-size: 0.84rem;
+  }
+
+  .mobile-bottom-nav {
+    gap: 6px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .mobile-nav-button {
+    font-size: 0.82rem !important;
+    min-height: 40px !important;
+    padding: 6px 4px !important;
+  }
+}

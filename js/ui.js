@@ -248,26 +248,61 @@ function renderMobileActions() {
   `;
 }
 
+
+function renderMobileLogs() {
+  const rows = (state.player.log || []).slice(0, 10);
+  if (!rows.length) return '<div class="mobile-list-item">최근 알림이 없습니다.</div>';
+  return rows.map((row) => `
+    <div class="mobile-list-item">
+      <strong>${row.time}</strong>
+      <div>${row.text}</div>
+    </div>
+  `).join("");
+}
+
+function renderMobileRadio() {
+  const radio = getRadioState();
+  return `
+    <div class="mobile-list-item">
+      <strong>라디오</strong>
+      <div>${radio.isRadioPlaying ? `현재 재생: ${radio.title}` : "현재 라디오: 꺼짐"}</div>
+      <div class="grid-2" style="margin-top:8px;">
+        <button id="mobile-radio-play">재생</button>
+        <button id="mobile-radio-stop">정지</button>
+      </div>
+    </div>
+  `;
+}
+
 function renderMobileMore() {
   return `
-    <details class="utility-group" open>
-      <summary>시스템</summary>
-      <div class="top-gap stack">
-        <button id="mobile-btn-save">저장</button>
-        <button id="mobile-btn-load">불러오기</button>
-        <button id="mobile-btn-reset" class="danger">새 게임</button>
-      </div>
-    </details>
-    <details class="utility-group" open>
-      <summary>설정</summary>
-      <div class="top-gap stack">
-        <label class="toggle"><input type="checkbox" id="mobile-bgm-enabled" ${state.player.settings.bgmEnabled ? "checked" : ""} /><span>시간대별 BGM 시스템 사용</span></label>
-        <div class="grid-2">
-          <button id="mobile-btn-add-coin">코인 +100</button>
-          <button id="mobile-btn-add-bling">블링 +10</button>
+    <div class="mobile-sheet-section">
+      <div class="mobile-list-item"><strong>생활</strong><div>채집 ${state.player.lifeSkills.gathering} / 낚시 ${state.player.lifeSkills.fishing} / 농사 ${state.player.lifeSkills.farming}</div></div>
+      <div class="mobile-list-item"><strong>집 분위기</strong><div>${(state.player.housing?.slots || []).some(Boolean) ? (state.player.housing.slots.filter(Boolean).map((id) => getItemName(id)).join(", ")) : "배치된 가구가 없습니다."}</div></div>
+      ${renderMobileRadio()}
+      <details class="utility-group" open>
+        <summary>시스템</summary>
+        <div class="top-gap stack">
+          <button id="mobile-btn-save">저장</button>
+          <button id="mobile-btn-load">불러오기</button>
+          <button id="mobile-btn-reset" class="danger">새 게임</button>
         </div>
-      </div>
-    </details>
+      </details>
+      <details class="utility-group">
+        <summary>설정</summary>
+        <div class="top-gap stack">
+          <label class="toggle"><input type="checkbox" id="mobile-bgm-enabled" ${state.player.settings.bgmEnabled ? "checked" : ""} /><span>시간대별 BGM 시스템 사용</span></label>
+          <div class="grid-2">
+            <button id="mobile-btn-add-coin">코인 +100</button>
+            <button id="mobile-btn-add-bling">블링 +10</button>
+          </div>
+        </div>
+      </details>
+      <details class="utility-group">
+        <summary>최근 알림</summary>
+        <div class="top-gap mobile-list">${renderMobileLogs()}</div>
+      </details>
+    </div>
   `;
 }
 
@@ -291,6 +326,8 @@ function bindMobileSheetEvents(kind) {
   });
   document.getElementById("mobile-btn-add-coin")?.addEventListener("click", () => { document.getElementById("btn-add-coin")?.click(); });
   document.getElementById("mobile-btn-add-bling")?.addEventListener("click", () => { document.getElementById("btn-add-bling")?.click(); });
+  document.getElementById("mobile-radio-play")?.addEventListener("click", () => { document.getElementById("btn-radio-play")?.click(); });
+  document.getElementById("mobile-radio-stop")?.addEventListener("click", () => { document.getElementById("btn-radio-stop")?.click(); });
 
   document.querySelectorAll("[data-mobile-buy-id]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -347,13 +384,7 @@ function openMobileSheet(kind) {
     content = renderMobileShop();
   } else {
     title = "더보기";
-    content = `
-      <div class="mobile-sheet-section">
-        <button id="mobile-open-life">생활 보기</button>
-        <button id="mobile-open-housing">하우징 보기</button>
-        ${renderMobileMore()}
-      </div>
-    `;
+    content = renderMobileMore();
   }
 
   el.mobileSheetContent.innerHTML = `
@@ -373,32 +404,6 @@ function openMobileSheet(kind) {
   document.getElementById("mobile-sheet-close")?.addEventListener("click", () => {
     closeMobileSheet();
   });
-
-  document.getElementById("mobile-open-life")?.addEventListener("click", () => {
-    el.mobileSheetContent.innerHTML = `
-      <div class="mobile-sheet-title">
-        <strong>생활</strong>
-        <button type="button" class="mobile-sheet-close" id="mobile-sheet-close">닫기</button>
-      </div>
-      <div class="mobile-list">${renderMobileActivityList()}</div>
-    `;
-    document.getElementById("mobile-sheet-close")?.addEventListener("click", () => {
-      closeMobileSheet();
-    });
-  });
-
-  document.getElementById("mobile-open-housing")?.addEventListener("click", () => {
-    el.mobileSheetContent.innerHTML = `
-      <div class="mobile-sheet-title">
-        <strong>하우징</strong>
-        <button type="button" class="mobile-sheet-close" id="mobile-sheet-close">닫기</button>
-      </div>
-      <div class="mobile-list">${renderMobileHousing()}</div>
-    `;
-    bindMobileSheetEvents("housing");
-    document.getElementById("mobile-sheet-close")?.addEventListener("click", () => {
-      closeMobileSheet();
-    });
   });
 }
 
