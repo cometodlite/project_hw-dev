@@ -91,6 +91,9 @@ function setMobilePanel(panel) {
     node.classList.toggle("active", active);
     node.style.display = active ? "block" : "none";
   });
+  document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.m5Panel === currentMobilePanel);
+  });
 }
 
 function setMobileBagTab(tab) {
@@ -299,8 +302,6 @@ document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
   });
 });
 
-});
-
 document.querySelectorAll(".mobile-subtab").forEach((button) => {
   button.addEventListener("click", () => {
     setMobileBagTab(button.dataset.mobileBagTab);
@@ -343,11 +344,6 @@ document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () =>
   document.getElementById("btn-clear-housing")?.click();
   renderAllM5Panels();
 });
-  });
-});
-  });
-});
-
 
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -610,12 +606,6 @@ export function renderStatus() {
   setMobileBagTab(currentMobileBagTab);
   syncSceneButtons();
   syncSideTabs();
-  if (el.logPanel) el.logPanel.open = false;
-  currentMobilePanel = "status";
-  currentMobileBagTab = "inventory";
-  renderAllM5Panels();
-  setMobilePanel(currentMobilePanel);
-  setMobileBagTab(currentMobileBagTab);
 }
 
 export function renderLog() {
