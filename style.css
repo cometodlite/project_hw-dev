@@ -1622,7 +1622,7 @@ body {
   }
 
   .status-grid {
-    grid-template-columns: repeat(4, minmax(120px, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(120px, 1fr)) !important;
   }
 
   .mobile-panel-card {
