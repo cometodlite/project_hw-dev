@@ -260,3 +260,12 @@ GitHub Pages에 그대로 올릴 수 있는 정적 웹 구조입니다.
 
 ## 개발 방향 참고
 - 힐링 생활형 RPG 핵심 시스템 및 개발 로드맵 방향은 별도 설계 문서를 참고
+
+
+## 2026-04-15b 구조 정리 필수 수정
+- 구형 모바일 코드(`mobile-hcsim-*`, `mobile-hcsim-reset-*`)를 비활성화가 아닌 실제 제거 대상으로 정리
+- 모바일/데스크톱 장면 전환 선택자를 분리
+  - 모바일: `data-m5-view`
+  - 데스크톱: `data-desktop-view`
+- 모바일 STATUS 패널 렌더가 데스크톱 DOM 텍스트(`sceneDetail`, `lifeSummary`, `homeVisualStatus`)를 참조하지 않도록 수정
+- 모바일 전용 렌더 데이터는 상태값과 계산 함수(`getSceneDetailText`, `getLifeSummaryText`, `getHomeSummaryText`, `getBgmLabelText`)로 직접 생성

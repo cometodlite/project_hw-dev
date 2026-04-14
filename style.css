@@ -1136,9 +1136,6 @@ body {
 
 
 /* HCSiM stabilization phase 1: safe bottom nav only */
-.mobile-hcsim-nav {
-  display: none;
-}
 
 @media (max-width: 760px) {
   body {
@@ -1336,7 +1333,6 @@ body {
     font-size: 0.8rem !important;
   }
 
-  .mobile-hcsim-nav {
     position: fixed;
     left: 0;
     right: 0;
@@ -1351,7 +1347,6 @@ body {
     z-index: 40;
   }
 
-  .mobile-hcsim-button {
     min-height: 40px;
     padding: 6px 4px;
     font-size: 0.82rem;
@@ -1361,7 +1356,6 @@ body {
     border: 1px solid var(--border);
   }
 
-  .mobile-hcsim-button.active {
     background: var(--accent);
     color: #203329;
   }
@@ -1369,9 +1363,6 @@ body {
 
 
 /* HCSiM safe reset: bottom nav only */
-.mobile-hcsim-reset-nav {
-  display: none;
-}
 
 @media (max-width: 760px), (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
   body {
@@ -1379,7 +1370,6 @@ body {
     padding-bottom: 84px !important;
   }
 
-  .mobile-hcsim-reset-nav {
     position: fixed;
     left: 0;
     right: 0;
@@ -1394,7 +1384,6 @@ body {
     z-index: 40;
   }
 
-  .mobile-hcsim-reset-button {
     min-height: 40px;
     padding: 6px 4px;
     font-size: 0.82rem;
@@ -1404,7 +1393,6 @@ body {
     border: 1px solid var(--border);
   }
 
-  .mobile-hcsim-reset-button.active {
     background: var(--accent);
     color: #203329;
   }
@@ -1525,7 +1513,6 @@ body {
   }
 
   .dashboard-grid,
-  .mobile-hcsim-reset-nav {
     display: none !important;
   }
 
@@ -1636,14 +1623,8 @@ body {
 
 
 /* 2026-04-15 mobile 5-panel cleanup */
-.mobile-hcsim-nav,
-.mobile-hcsim-reset-nav {
-  display: none !important;
-}
 
 @media (max-width: 760px), (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
-  .mobile-hcsim-nav,
-  .mobile-hcsim-reset-nav {
     display: none !important;
   }
   .mobile-5panel-app {
@@ -1667,4 +1648,11 @@ body {
   .mobile-bag-view.active {
     display: grid !important;
   }
+}
+
+
+/* 2026-04-15b 구조 정리: 모바일/데스크톱 선택자 및 렌더 분리 */
+.mobile-scene-switch [data-m5-view],
+.view-switch [data-desktop-view] {
+  touch-action: manipulation;
 }

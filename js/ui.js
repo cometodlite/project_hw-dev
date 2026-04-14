@@ -74,6 +74,36 @@ function getTimeMood() {
 function getPlacedHousingNames() {
   const ids = state.player.housing?.slots?.filter(Boolean) || [];
   return ids.map((id) => state.data.items.find((item) => item.id === id)?.name || id);
+
+function getSceneDetailText(sceneKey = currentScene) {
+  if (sceneKey === "town") {
+    return "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다. 시간대가 바뀌면 광장의 하늘빛과 전체 배경 톤도 함께 달라집니다.";
+  }
+  if (sceneKey === "farm") {
+    return `밭 풍경 · ${getFarmStatus().text} 시간대에 따라 밭의 색감도 달라집니다.`;
+  }
+  const placedNames = getPlacedHousingNames();
+  return placedNames.length
+    ? `현재 집 안에는 ${placedNames.join(", ")}이(가) 배치되어 있습니다.`
+    : "아직 집 안이 비어 있습니다. 가구를 배치하면 시간대에 따라 더 다른 집 분위기를 느낄 수 있습니다.";
+}
+
+function getLifeSummaryText() {
+  const life = state.player.lifeSkills;
+  return `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+}
+
+function getHomeSummaryText() {
+  const placedNames = getPlacedHousingNames();
+  return placedNames.length
+    ? `현재 집 분위기: ${placedNames.join(", ")}`
+    : "현재 집 분위기: 배치된 가구가 없습니다.";
+}
+
+function getBgmLabelText() {
+  return state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
+}
+
 }
 
 
@@ -108,13 +138,15 @@ function setMobileBagTab(tab) {
   });
 }
 
+
 function renderM5Status() {
   if (el.m5StatusSceneTitle) el.m5StatusSceneTitle.textContent = SCENE_META[currentScene]?.title || "마을 광장";
-  if (el.m5StatusSceneDetail) el.m5StatusSceneDetail.textContent = el.sceneDetail?.textContent || "공간 정보를 불러오는 중입니다.";
-  if (el.m5StatusLife) el.m5StatusLife.textContent = el.lifeSummary?.textContent || "불러오는 중입니다.";
-  if (el.m5StatusHome) el.m5StatusHome.textContent = el.homeVisualStatus?.textContent || "불러오는 중입니다.";
-  if (el.m5StatusBgm) el.m5StatusBgm.textContent = state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
+  if (el.m5StatusSceneDetail) el.m5StatusSceneDetail.textContent = getSceneDetailText(currentScene);
+  if (el.m5StatusLife) el.m5StatusLife.textContent = getLifeSummaryText();
+  if (el.m5StatusHome) el.m5StatusHome.textContent = getHomeSummaryText();
+  if (el.m5StatusBgm) el.m5StatusBgm.textContent = getBgmLabelText();
 }
+
 
 function renderM5Action() {
   if (!el.m5SeedSelect) return;
@@ -274,8 +306,11 @@ function bindHousingPlacementButton(buttonId, slotIndex) {
 }
 
 function syncSceneButtons() {
-  document.querySelectorAll("[data-view]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.view === currentScene);
+  document.querySelectorAll("[data-desktop-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.desktopView === currentScene);
+  });
+  document.querySelectorAll("[data-m5-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.m5View === currentScene);
   });
   document.body.classList.remove("scene-town", "scene-farm", "scene-home");
   document.body.classList.add(`scene-${currentScene}`);
@@ -344,10 +379,9 @@ document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () =>
   document.getElementById("btn-clear-housing")?.click();
   renderAllM5Panels();
 });
-
-  document.querySelectorAll("[data-view]").forEach((button) => {
+  document.querySelectorAll("[data-desktop-view]").forEach((button) => {
     button.addEventListener("click", () => {
-      currentScene = button.dataset.view;
+      currentScene = button.dataset.desktopView;
       if (currentScene === "farm") currentSideTab = "life";
       if (currentScene === "home") currentSideTab = "housing";
       if (currentScene === "town") currentSideTab = currentSideTab === "housing" ? "inventory" : currentSideTab;
@@ -355,6 +389,15 @@ document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () =>
       syncSideTabs();
       renderAll();
     });
+  });
+
+  document.querySelectorAll("[data-m5-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentScene = button.dataset.m5View;
+      syncSceneButtons();
+      renderAll();
+    });
+  });
   });
 
   document.querySelectorAll(".side-tab").forEach((button) => {
@@ -521,9 +564,9 @@ function renderScene() {
 
   if (el.sceneDetail) {
     if (currentScene === "town") {
-      el.sceneDetail.textContent = "생활 활동을 시작하거나, 상점과 인벤토리를 둘러보기에 좋은 중심 공간입니다. 시간대가 바뀌면 광장의 하늘빛과 전체 배경 톤도 함께 달라집니다.";
+      el.sceneDetail.textContent = getSceneDetailText("town");
     } else if (currentScene === "farm") {
-      el.sceneDetail.textContent = `밭 풍경 · ${getFarmStatus().text} 시간대에 따라 밭의 색감도 달라집니다.`;
+      el.sceneDetail.textContent = getSceneDetailText("farm");
     } else {
       const placedNames = getPlacedHousingNames();
       el.sceneDetail.textContent = placedNames.length
@@ -541,9 +584,7 @@ function renderScene() {
 
   if (el.homeVisualStatus) {
     const placedNames = getPlacedHousingNames();
-    el.homeVisualStatus.textContent = placedNames.length
-      ? `현재 집 분위기: ${placedNames.join(", ")}`
-      : "현재 집 분위기: 배치된 가구가 없습니다.";
+    el.homeVisualStatus.textContent = getHomeSummaryText();
   }
 
   if (el.sceneSpotlightText) {
@@ -586,12 +627,12 @@ export function renderStatus() {
   el.currentTime.textContent = state.ui.currentTime || "--:--";
   el.coinValue.textContent = `${state.player.coin}`;
   el.blingValue.textContent = `${state.player.bling}`;
-  el.bgmTitle.textContent = state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
+  el.bgmTitle.textContent = getBgmLabelText();
   el.timePeriodText.textContent = state.player.currentPeriodLabel || "시간대를 계산하는 중입니다.";
   el.bgmEnabled.checked = Boolean(state.player.settings.bgmEnabled);
 
   const life = state.player.lifeSkills;
-  if (el.lifeSummary) el.lifeSummary.textContent = `생활 숙련도 · 채집 ${life.gathering} / 낚시 ${life.fishing} / 농사 ${life.farming}`;
+  if (el.lifeSummary) el.lifeSummary.textContent = getLifeSummaryText();
   if (el.farmStatus) el.farmStatus.textContent = getFarmStatus().text;
 
   if (el.radioTrackTitle) {
