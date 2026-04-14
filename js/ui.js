@@ -91,9 +91,6 @@ function setMobilePanel(panel) {
     node.classList.toggle("active", active);
     node.style.display = active ? "block" : "none";
   });
-  document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.m5Panel === currentMobilePanel);
-  });
 }
 
 function setMobileBagTab(tab) {
@@ -243,6 +240,8 @@ export function initUI() {
   currentMobilePanel = "status";
   currentMobileBagTab = "inventory";
   renderAllM5Panels();
+  setMobilePanel(currentMobilePanel);
+  setMobileBagTab(currentMobileBagTab);
 }
 
 function populateSeedSelect() {
@@ -295,7 +294,11 @@ document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
     const panel = button.dataset.m5Panel || "status";
     setMobilePanel(panel);
     renderAllM5Panels();
+    setMobilePanel(currentMobilePanel);
+    setMobileBagTab(currentMobileBagTab);
   });
+});
+
 });
 
 document.querySelectorAll(".mobile-subtab").forEach((button) => {
@@ -340,43 +343,8 @@ document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () =>
   document.getElementById("btn-clear-housing")?.click();
   renderAllM5Panels();
 });
-
-
-document.querySelectorAll(".mobile-hcsim-reset-button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const target = button.dataset.mobileTarget;
-    const tab = button.dataset.mobileTab;
-
-    if (tab) {
-      currentSideTab = tab;
-      syncSideTabs();
-    }
-
-    document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    document.querySelectorAll(".mobile-hcsim-reset-button").forEach((entry) => {
-      entry.classList.toggle("active", entry === button);
-    });
   });
 });
-
-
-
-document.querySelectorAll(".mobile-hcsim-button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const target = button.dataset.mobileTarget;
-    const tab = button.dataset.mobileTab;
-
-    if (tab) {
-      currentSideTab = tab;
-      syncSideTabs();
-    }
-
-    document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    document.querySelectorAll(".mobile-hcsim-button").forEach((entry) => {
-      entry.classList.toggle("active", entry === button);
-    });
   });
 });
 
@@ -638,12 +606,16 @@ export function renderStatus() {
   renderScene();
   refreshHousingUI();
   renderAllM5Panels();
+  setMobilePanel(currentMobilePanel);
+  setMobileBagTab(currentMobileBagTab);
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
   currentMobilePanel = "status";
   currentMobileBagTab = "inventory";
   renderAllM5Panels();
+  setMobilePanel(currentMobilePanel);
+  setMobileBagTab(currentMobileBagTab);
 }
 
 export function renderLog() {

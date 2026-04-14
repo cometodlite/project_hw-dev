@@ -1633,3 +1633,38 @@ body {
     max-width: 360px;
   }
 }
+
+
+/* 2026-04-15 mobile 5-panel cleanup */
+.mobile-hcsim-nav,
+.mobile-hcsim-reset-nav {
+  display: none !important;
+}
+
+@media (max-width: 760px), (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
+  .mobile-hcsim-nav,
+  .mobile-hcsim-reset-nav {
+    display: none !important;
+  }
+  .mobile-5panel-app {
+    display: block !important;
+  }
+  .mobile-5panel-nav {
+    display: grid !important;
+  }
+  .dashboard-grid {
+    display: none !important;
+  }
+  .mobile-panel {
+    display: none !important;
+  }
+  .mobile-panel.active {
+    display: block !important;
+  }
+  .mobile-bag-view {
+    display: none !important;
+  }
+  .mobile-bag-view.active {
+    display: grid !important;
+  }
+}
