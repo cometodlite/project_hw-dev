@@ -9,7 +9,8 @@ GitHub Pages 배포 안내
   4) js/ 폴더 전체
   5) data/ 폴더 전체
   6) assets/ 폴더 전체
-  7) README.md
+  7) docs/ 폴더 전체
+  8) README.md
 
 배포 전 확인
 - index.html이 style.css?v=20260416a, main.js?v=20260416a를 참조하는지 확인합니다.

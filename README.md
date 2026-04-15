@@ -372,3 +372,15 @@ GitHub Pages 배포 기준:
   - GitHub Pages 배포 캐시 확인을 위해 `20260416a` 버전 쿼리로 갱신
 - 남은 문제
   - 실제 GitHub Pages URL에서 iPhone / iPad 세로 / iPad 가로 확인 필요
+
+
+## 2026-04-16b 결제 선행 설계 문서화
+- 수정 목적: 결제 구현 전에 계정, 서버 저장, 재화, 상품, 환불, 복원, 운영 기준을 문서와 스키마로 고정
+- 수정 파일: `docs/`, `data/products/`, `README.md`
+- 해결한 문제
+  - `payment-foundation`, `auth-spec`, `storage-scope`, `currency-spec`로 결제 도입 전제를 정리
+  - `data-model`, `product-spec`, `payment-api-spec`로 서버 모델과 결제 API 초안을 정의
+  - `refund-policy-draft`, `restore-policy-draft`, `admin-tools-spec`로 운영/CS 기준 초안을 분리
+  - 상품 JSON Schema와 예시 상품 데이터를 추가
+- 남은 문제
+  - 실제 서버 기술 스택, PG 제공자, 약관/법무 검토 후 필드와 정책 확정 필요
