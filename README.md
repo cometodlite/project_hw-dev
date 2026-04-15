@@ -358,3 +358,17 @@ GitHub Pages 배포 기준:
   - `zip 재배포` 표현을 `GitHub Pages 재배포`로 정리
 - 남은 문제
   - GitHub Pages 실제 URL에서 iPhone / iPad 세로 / iPad 가로 확인 필요
+
+
+## 2026-04-16a 모바일 5패널 완성도 보강
+- 수정 목적: 안정화된 모바일 5패널 구조를 실제 사용하기 편한 정보 밀도와 버튼 배치로 개선
+- 수정 파일: `index.html`, `main.js`, `style.css`, `js/ui.js`, `DEPLOY_NOTE.txt`, `README.md`
+- 해결한 문제
+  - `STATUS` 패널에 재화 / 밭 상태 / 가방 요약을 추가해 첫 진입 정보량 보강
+  - `ACTION` 패널을 생활 행동과 농사 영역으로 분리하고 iPhone / iPad 세로 버튼 배치를 조정
+  - `BAG` 패널에 보유 수량 / 예상 판매가 / 하우징 배치 수 요약 추가
+  - `SHOP` 패널에 보유 재화, 상품 타입, 보유 수량, 구매 가능 상태를 표시
+  - `LOG` 패널에 기록 유형 배지와 최근 기록 요약을 추가해 가독성 개선
+  - GitHub Pages 배포 캐시 확인을 위해 `20260416a` 버전 쿼리로 갱신
+- 남은 문제
+  - 실제 GitHub Pages URL에서 iPhone / iPad 세로 / iPad 가로 확인 필요

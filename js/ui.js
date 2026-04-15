@@ -108,6 +108,82 @@ function getBgmLabelText() {
   return state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function findItemById(itemId) {
+  return state.data.items.find((item) => item.id === itemId);
+}
+
+function getInventoryEntries() {
+  return Object.entries(state.player.inventory || {}).map(([itemId, count]) => ({
+    itemId,
+    count,
+    item: findItemById(itemId)
+  }));
+}
+
+function getInventoryTotals(entries = getInventoryEntries()) {
+  return entries.reduce((totals, entry) => {
+    totals.count += entry.count;
+    totals.value += (entry.item?.sellPrice || 0) * entry.count;
+    return totals;
+  }, { count: 0, value: 0 });
+}
+
+function getPlacedHousingCount() {
+  return (state.player.housing?.slots || []).filter(Boolean).length;
+}
+
+function getFarmStateLabel() {
+  const farm = getFarmStatus();
+  if (farm.state === "ready") return "수확 가능";
+  if (farm.state === "growing") return "성장 중";
+  return "비어 있음";
+}
+
+function getItemTypeLabel(item) {
+  const labels = {
+    gather: "채집",
+    fish: "낚시",
+    farm: "작물",
+    seed: "씨앗",
+    housing: "가구"
+  };
+  return labels[item?.type] || "아이템";
+}
+
+function getInventoryMeta(entry) {
+  const item = entry.item;
+  if (!item) return `수량 ${entry.count}`;
+  if (item.type === "seed") {
+    return `수량 ${entry.count} · 성장 ${item.growthSeconds || 0}초`;
+  }
+  if (item.type === "housing") {
+    const placed = (state.player.housing?.slots || []).filter((id) => id === entry.itemId).length;
+    return `보유 ${entry.count} · 배치 ${placed}`;
+  }
+  return `수량 ${entry.count} · 판매 ${item.sellPrice || 0} 코인`;
+}
+
+function getLogKind(text = "") {
+  if (text.includes("구매")) return "구매";
+  if (text.includes("판매")) return "판매";
+  if (text.includes("수확") || text.includes("심었습니다") || text.includes("밭")) return "농사";
+  if (text.includes("채집")) return "채집";
+  if (text.includes("낚시")) return "낚시";
+  if (text.includes("배경음") || text.includes("BGM") || text.includes("라디오")) return "음악";
+  if (text.includes("저장") || text.includes("불러오기") || text.includes("초기화")) return "시스템";
+  return "알림";
+}
+
 function normalizeMobilePanel(panel) {
   return MOBILE_PANELS.has(panel) ? panel : "status";
 }
@@ -150,30 +226,59 @@ function setActiveBagTab(tab) {
 
 
 function renderM5Status() {
+  const entries = getInventoryEntries();
+  const totals = getInventoryTotals(entries);
   if (el.m5StatusSceneTitle) el.m5StatusSceneTitle.textContent = SCENE_META[currentScene]?.title || "마을 광장";
   if (el.m5StatusSceneDetail) el.m5StatusSceneDetail.textContent = getSceneDetailText(currentScene);
   if (el.m5StatusLife) el.m5StatusLife.textContent = getLifeSummaryText();
   if (el.m5StatusHome) el.m5StatusHome.textContent = getHomeSummaryText();
   if (el.m5StatusBgm) el.m5StatusBgm.textContent = getBgmLabelText();
+  if (el.m5StatusCurrency) el.m5StatusCurrency.textContent = `코인 ${state.player.coin} · 블링 ${state.player.bling}`;
+  if (el.m5StatusFarm) el.m5StatusFarm.textContent = getFarmStateLabel();
+  if (el.m5StatusBag) el.m5StatusBag.textContent = `${entries.length}종 · ${totals.count}개`;
 }
 
 
 function renderM5Action() {
   if (!el.m5SeedSelect) return;
   const seeds = getSeedItems();
+  const life = state.player.lifeSkills;
+  if (el.m5ActionScene) el.m5ActionScene.textContent = SCENE_META[currentScene]?.title || "마을 광장";
+  if (el.m5ActionSkill) el.m5ActionSkill.textContent = `채집 ${life.gathering} · 낚시 ${life.fishing} · 농사 ${life.farming}`;
   el.m5SeedSelect.innerHTML = seeds.length
-    ? seeds.map((seed) => `<option value="${seed.id}">${seed.name} · 성장 ${seed.growthSeconds}초</option>`).join("")
+    ? seeds.map((seed) => `<option value="${escapeHtml(seed.id)}">${escapeHtml(seed.name)} · 성장 ${seed.growthSeconds}초</option>`).join("")
     : '<option value="">사용 가능한 씨앗이 없습니다</option>';
   if (el.m5FarmStatus) el.m5FarmStatus.textContent = getFarmStatus().text;
 }
 
 function renderM5Bag() {
+  const entries = getInventoryEntries();
+  const totals = getInventoryTotals(entries);
+  const placedHousingCount = getPlacedHousingCount();
+
+  if (el.m5BagSummary) {
+    el.m5BagSummary.textContent = entries.length
+      ? `${entries.length}종 · ${totals.count}개 보유 · 예상 판매가 ${totals.value} 코인`
+      : "보유 중인 아이템이 없습니다.";
+  }
+  if (el.m5BagInventoryCount) el.m5BagInventoryCount.textContent = `${entries.length}종`;
+  if (el.m5BagHousingCount) el.m5BagHousingCount.textContent = `${placedHousingCount}/4`;
+
   if (el.m5BagInventoryList) {
-    const entries = Object.entries(state.player.inventory || {});
     el.m5BagInventoryList.innerHTML = entries.length
-      ? entries.map(([itemId, count]) => {
-          const item = state.data.items.find((entry) => entry.id === itemId);
-          return `<div class="mobile-bag-item"><strong>${item?.name || itemId}</strong><div>${item?.description || "설명 없음"}</div><small>수량 ${count} · 판매 ${item?.sellPrice ?? 0} 코인</small></div>`;
+      ? entries.map((entry) => {
+          const name = entry.item?.name || entry.itemId;
+          const description = entry.item?.description || "설명 없음";
+          return `
+            <div class="mobile-bag-item">
+              <div class="mobile-item-head">
+                <strong>${escapeHtml(name)}</strong>
+                <span class="mobile-pill">${escapeHtml(getItemTypeLabel(entry.item))}</span>
+              </div>
+              <div>${escapeHtml(description)}</div>
+              <small>${escapeHtml(getInventoryMeta(entry))}</small>
+            </div>
+          `;
         }).join("")
       : '<div class="mobile-bag-item">보유 중인 아이템이 없습니다.</div>';
   }
@@ -191,18 +296,30 @@ function renderM5Shop() {
     if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
     return true;
   });
+  if (el.m5ShopSummary) {
+    el.m5ShopSummary.textContent = `${visible.length}개 상품 · 보유 코인 ${state.player.coin} · 블링 ${state.player.bling}`;
+  }
 
   el.m5ShopList.innerHTML = visible.length
-    ? visible.map((item) => `
+    ? visible.map((item) => {
+      const balanceKey = item.currency === "bling" ? "bling" : "coin";
+      const canBuy = state.player[balanceKey] >= item.price;
+      const owned = state.player.inventory[item.id] || 0;
+      const itemData = findItemById(item.id);
+      return `
       <div class="mobile-shop-item">
-        <div>
-          <strong>${item.name}</strong>
-          <div>${item.description}</div>
-          <small>${item.currency === "coin" ? "코인" : "블링"} ${item.price}</small>
+        <div class="mobile-shop-copy">
+          <div class="mobile-item-head">
+            <strong>${escapeHtml(item.name)}</strong>
+            <span class="mobile-pill">${escapeHtml(getItemTypeLabel(itemData))}</span>
+          </div>
+          <div>${escapeHtml(item.description)}</div>
+          <small>${item.currency === "coin" ? "코인" : "블링"} ${item.price} · 보유 ${owned}</small>
         </div>
-        <button data-m5-buy-id="${item.id}">구매</button>
+        <button data-m5-buy-id="${escapeHtml(item.id)}" ${canBuy ? "" : "disabled"}>${canBuy ? "구매" : "부족"}</button>
       </div>
-    `).join("")
+    `;
+    }).join("")
     : '<div class="mobile-shop-item"><div>구매 가능한 아이템이 없습니다.</div></div>';
 
 }
@@ -210,8 +327,21 @@ function renderM5Shop() {
 function renderM5Log() {
   if (!el.m5LogList) return;
   const rows = (state.player.log || []).slice(0, 12);
+  if (el.m5LogSummary) {
+    el.m5LogSummary.textContent = rows.length
+      ? `최근 ${rows.length}개 기록 · 가장 최근 ${rows[0].time}`
+      : "최근 기록이 없습니다.";
+  }
   el.m5LogList.innerHTML = rows.length
-    ? rows.map((row) => `<div class="mobile-log-item"><strong>${row.time}</strong><div>${row.text}</div></div>`).join("")
+    ? rows.map((row) => `
+      <div class="mobile-log-item">
+        <span class="mobile-log-kind">${escapeHtml(getLogKind(row.text))}</span>
+        <div>
+          <strong>${escapeHtml(row.text)}</strong>
+          <small>${escapeHtml(row.time)}</small>
+        </div>
+      </div>
+    `).join("")
     : '<div class="mobile-log-item">최근 알림이 없습니다.</div>';
 }
 
@@ -259,13 +389,23 @@ export function initUI() {
   el.m5StatusLife = document.getElementById("m5-status-life");
   el.m5StatusHome = document.getElementById("m5-status-home");
   el.m5StatusBgm = document.getElementById("m5-status-bgm");
+  el.m5StatusCurrency = document.getElementById("m5-status-currency");
+  el.m5StatusFarm = document.getElementById("m5-status-farm");
+  el.m5StatusBag = document.getElementById("m5-status-bag");
+  el.m5ActionScene = document.getElementById("m5-action-scene");
+  el.m5ActionSkill = document.getElementById("m5-action-skill");
   el.m5SeedSelect = document.getElementById("m5-seed-select");
   el.m5FarmStatus = document.getElementById("m5-farm-status");
+  el.m5BagSummary = document.getElementById("m5-bag-summary");
+  el.m5BagInventoryCount = document.getElementById("m5-bag-inventory-count");
+  el.m5BagHousingCount = document.getElementById("m5-bag-housing-count");
   el.m5BagInventoryList = document.getElementById("m5-bag-inventory-list");
   el.m5HousingSlots = document.getElementById("m5-housing-slots");
   el.m5HousingItemSelect = document.getElementById("m5-housing-item-select");
   el.m5HousingSummary = document.getElementById("m5-housing-summary");
+  el.m5ShopSummary = document.getElementById("m5-shop-summary");
   el.m5ShopList = document.getElementById("m5-shop-list");
+  el.m5LogSummary = document.getElementById("m5-log-summary");
   el.m5LogList = document.getElementById("m5-log-list");
 
   populateSeedSelect();

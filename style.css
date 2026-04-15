@@ -1451,6 +1451,80 @@ body {
   gap: 10px;
 }
 
+.mobile-panel-card {
+  display: grid;
+  gap: 12px;
+}
+
+.mobile-panel-summary,
+.mobile-action-summary,
+.mobile-metric-row {
+  display: grid;
+  gap: 8px;
+}
+
+.mobile-panel-summary,
+.mobile-action-summary > div,
+.mobile-metric {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.mobile-panel-summary {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.mobile-metric-row,
+.mobile-action-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mobile-action-summary {
+  grid-template-columns: 0.9fr 1.4fr;
+}
+
+.mobile-metric span,
+.mobile-action-summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+}
+
+.mobile-metric strong,
+.mobile-action-summary strong {
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.mobile-action-section {
+  display: grid;
+  gap: 8px;
+}
+
+.mobile-action-section h4 {
+  margin: 2px 0 0;
+  font-size: 0.96rem;
+}
+
+.mobile-action-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.mobile-action-section-life .mobile-action-grid {
+  grid-template-columns: 1fr;
+}
+
+.mobile-action-section-farm .mobile-action-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .mobile-list-card strong,
 .mobile-shop-item strong,
 .mobile-bag-item strong,
@@ -1476,14 +1550,26 @@ body {
 }
 
 .mobile-subtab {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
   background: rgba(255,255,255,0.88);
   color: var(--text);
   border: 1px solid var(--border);
   box-shadow: none;
 }
 
+.mobile-subtab small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .mobile-subtab.active {
   background: var(--accent);
+  color: #203329;
+}
+
+.mobile-subtab.active small {
   color: #203329;
 }
 
@@ -1501,6 +1587,51 @@ body {
   grid-template-columns: 1fr auto;
   gap: 10px;
   align-items: center;
+}
+
+.mobile-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.mobile-pill,
+.mobile-log-kind {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(246,239,225,0.9);
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1;
+  min-height: 24px;
+  padding: 4px 7px;
+  white-space: nowrap;
+}
+
+.mobile-shop-copy,
+.mobile-bag-item {
+  min-width: 0;
+}
+
+.mobile-shop-item button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mobile-log-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.mobile-log-item strong {
+  line-height: 1.35;
 }
 
 .mobile-5panel-nav {
@@ -1549,6 +1680,23 @@ body {
 
   .mobile-panel-card {
     padding: 12px;
+    border-radius: 8px;
+  }
+
+  .mobile-list-card,
+  .mobile-shop-item,
+  .mobile-bag-item,
+  .mobile-log-item {
+    border-radius: 8px;
+  }
+
+  .mobile-action-section-life .mobile-action-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mobile-action-section-life button,
+  .mobile-action-section-farm button {
+    min-height: 46px !important;
   }
 
   .mobile-only-scene-switch {
@@ -1604,7 +1752,35 @@ body {
   }
 
   .mobile-panel-card {
-    border-radius: 16px;
+    border-radius: 8px;
+  }
+
+  .mobile-metric-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-action-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-action-section-life .mobile-action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-shop-item {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-shop-item button {
+    width: 100%;
+  }
+
+  .mobile-item-head {
+    align-items: flex-start;
+  }
+
+  .mobile-pill {
+    margin-top: 1px;
   }
 }
 
@@ -1620,6 +1796,28 @@ body {
 
   .mobile-panel-card {
     padding: 14px;
+  }
+
+  .mobile-5panel-app {
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mobile-metric-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mobile-action-section-life .mobile-action-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mobile-list {
+    gap: 12px;
+  }
+
+  .mobile-shop-item {
+    grid-template-columns: 1fr 96px;
   }
 
   .mobile-only-scene-switch {

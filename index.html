@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT: HW</title>
   <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="./style.css?v=20260415c" />
+  <link rel="stylesheet" href="./style.css?v=20260416a" />
 </head>
 <body>
   <div id="app">
@@ -63,6 +63,20 @@
           <div id="m5-status-bgm">불러오는 중입니다.</div>
         </div>
       </div>
+      <div class="mobile-metric-row">
+        <div class="mobile-metric">
+          <span>재화</span>
+          <strong id="m5-status-currency">코인 0 · 블링 0</strong>
+        </div>
+        <div class="mobile-metric">
+          <span>밭</span>
+          <strong id="m5-status-farm">확인 중</strong>
+        </div>
+        <div class="mobile-metric">
+          <span>가방</span>
+          <strong id="m5-status-bag">0종</strong>
+        </div>
+      </div>
       <div class="mobile-scene-switch view-switch mobile-only-scene-switch">
         <button class="tab-button active" data-m5-view="town">마을</button>
         <button class="tab-button" data-m5-view="farm">밭</button>
@@ -77,12 +91,28 @@
         <h3>행동</h3>
         <span class="section-tip">즉시 실행</span>
       </div>
-      <div class="stack">
-        <button id="m5-btn-gather">숲에서 채집하기</button>
-        <button id="m5-btn-fish">연못에서 낚시하기</button>
-        <button id="m5-btn-sell">수집품 판매하기</button>
+      <div class="mobile-action-summary">
+        <div>
+          <span>현재 공간</span>
+          <strong id="m5-action-scene">마을 광장</strong>
+        </div>
+        <div>
+          <span>생활 숙련도</span>
+          <strong id="m5-action-skill">채집 1 · 낚시 1 · 농사 1</strong>
+        </div>
+      </div>
+      <div class="mobile-action-section mobile-action-section-life">
+        <h4>생활 행동</h4>
+        <div class="mobile-action-grid">
+          <button id="m5-btn-gather">숲에서 채집하기</button>
+          <button id="m5-btn-fish">연못에서 낚시하기</button>
+          <button id="m5-btn-sell">수집품 판매하기</button>
+        </div>
+      </div>
+      <div class="mobile-action-section mobile-action-section-farm">
+        <h4>농사</h4>
         <select id="m5-seed-select"></select>
-        <div class="grid-2">
+        <div class="mobile-action-grid">
           <button id="m5-btn-plant">씨앗 심기</button>
           <button id="m5-btn-harvest">수확하기</button>
         </div>
@@ -97,9 +127,16 @@
         <h3>가방</h3>
         <span class="section-tip">보유 자산 관리</span>
       </div>
+      <div id="m5-bag-summary" class="mobile-panel-summary">보유 아이템을 불러오는 중입니다.</div>
       <div class="mobile-subtabs">
-        <button class="mobile-subtab active" data-mobile-bag-tab="inventory">인벤토리</button>
-        <button class="mobile-subtab" data-mobile-bag-tab="housing">하우징</button>
+        <button class="mobile-subtab active" data-mobile-bag-tab="inventory">
+          <span>인벤토리</span>
+          <small id="m5-bag-inventory-count">0종</small>
+        </button>
+        <button class="mobile-subtab" data-mobile-bag-tab="housing">
+          <span>하우징</span>
+          <small id="m5-bag-housing-count">0/4</small>
+        </button>
       </div>
 
       <div class="mobile-bag-view active" data-mobile-bag-view="inventory">
@@ -129,6 +166,7 @@
         <h3>상점</h3>
         <span class="section-tip">구매 가능한 아이템</span>
       </div>
+      <div id="m5-shop-summary" class="mobile-panel-summary">상점 정보를 불러오는 중입니다.</div>
       <div id="m5-shop-list" class="mobile-list"></div>
     </div>
   </section>
@@ -139,6 +177,7 @@
         <h3>기록</h3>
         <span class="section-tip">최근 알림</span>
       </div>
+      <div id="m5-log-summary" class="mobile-panel-summary">최근 기록을 불러오는 중입니다.</div>
       <div id="m5-log-list" class="mobile-list"></div>
     </div>
   </section>
@@ -330,7 +369,7 @@
     </main>
 </div>
 
-  <script type="module" src="./main.js?v=20260415c"></script>
+  <script type="module" src="./main.js?v=20260416a"></script>
 
   <nav class="mobile-5panel-nav" aria-label="모바일 5패널 네비게이션">
     <button class="mobile-5panel-button active" data-m5-panel="status">상태</button>
