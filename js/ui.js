@@ -9,7 +9,7 @@ import {
   harvestFarm,
   sellForagedItems
 } from "./inventory.js";
-import { renderShop, buyItem } from "./shop.js";
+import { renderShop, buyItem, buyServerProduct } from "./shop.js";
 import { saveGame, loadGame, resetGame } from "./save.js";
 import { playRadio, stopRadio, getRadioState } from "./audio.js";
 import {
@@ -296,11 +296,12 @@ function renderM5Shop() {
     if (item.id === "golden_seed") return state.player.unlocks.goldenSeedUnlocked;
     return true;
   });
+  const webProducts = state.data.products || [];
   if (el.m5ShopSummary) {
-    el.m5ShopSummary.textContent = `${visible.length}개 상품 · 보유 코인 ${state.player.coin} · 블링 ${state.player.bling}`;
+    el.m5ShopSummary.textContent = `${visible.length}개 게임 상품 · 웹 상품 ${webProducts.length}개 · 코인 ${state.player.coin} · 블링 ${state.player.bling}`;
   }
 
-  el.m5ShopList.innerHTML = visible.length
+  const gameItemsHtml = visible.length
     ? visible.map((item) => {
       const balanceKey = item.currency === "bling" ? "bling" : "coin";
       const canBuy = state.player[balanceKey] >= item.price;
@@ -321,6 +322,27 @@ function renderM5Shop() {
     `;
     }).join("")
     : '<div class="mobile-shop-item"><div>구매 가능한 아이템이 없습니다.</div></div>';
+
+  const webItemsHtml = webProducts.length
+    ? `
+      <div class="mobile-panel-summary">웹 결제 상품</div>
+      ${webProducts.map((product) => `
+        <div class="mobile-shop-item">
+          <div class="mobile-shop-copy">
+            <div class="mobile-item-head">
+              <strong>${escapeHtml(product.name)}</strong>
+              <span class="mobile-pill">${escapeHtml(product.type)}</span>
+            </div>
+            <div>${escapeHtml(product.description)}</div>
+            <small>${escapeHtml(product.currency)} ${Number(product.price).toLocaleString("ko-KR")}</small>
+          </div>
+          <button data-m5-product-id="${escapeHtml(product.productId)}">Mock 결제</button>
+        </div>
+      `).join("")}
+    `
+    : "";
+
+  el.m5ShopList.innerHTML = gameItemsHtml + webItemsHtml;
 
 }
 
@@ -556,8 +578,14 @@ export function bindUIEvents() {
 
   el.m5ShopList?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-m5-buy-id]");
-    if (!button) return;
-    buyItem(button.dataset.m5BuyId);
+    if (button) {
+      buyItem(button.dataset.m5BuyId);
+      return;
+    }
+    const productButton = event.target.closest("[data-m5-product-id]");
+    if (productButton) {
+      buyServerProduct(productButton.dataset.m5ProductId);
+    }
   });
 
   document.querySelectorAll("[data-desktop-view]").forEach((button) => {
@@ -588,8 +616,8 @@ export function bindUIEvents() {
     });
   });
 
-  document.getElementById("btn-save")?.addEventListener("click", () => { saveGame(); renderAll(); });
-  document.getElementById("btn-load")?.addEventListener("click", () => { loadGame(); populateSeedSelect(); refreshHousingUI(); renderAll(); });
+  document.getElementById("btn-save")?.addEventListener("click", async () => { await saveGame(); renderAll(); });
+  document.getElementById("btn-load")?.addEventListener("click", async () => { await loadGame(); populateSeedSelect(); refreshHousingUI(); renderAll(); });
   document.getElementById("btn-reset")?.addEventListener("click", () => {
     const confirmed = window.confirm("정말 새 게임 상태로 초기화하시겠습니까?");
     if (!confirmed) return;

@@ -23,6 +23,21 @@ GitHub Pages 배포 기준:
 
 로컬 실행은 필수 운영 방식이 아니라, 배포 전 임시 확인이 필요할 때만 사용합니다.
 
+## 서버 개발 실행
+결제 선행 서버는 Node.js 20 LTS, Express, SQLite 기준으로 분리되어 있습니다.
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+클라이언트가 서버 API를 사용하게 하려면 브라우저 콘솔에서 아래 값을 설정합니다. 값이 없거나 서버가 실패하면 기존 로컬 저장으로 fallback합니다.
+
+```js
+localStorage.setItem("project-hw-api-base", "http://localhost:3000");
+```
+
 ## 다음 확장 추천
 - 실제 오디오 파일 연결
 - 하우징 배치 시스템
@@ -384,3 +399,19 @@ GitHub Pages 배포 기준:
   - 상품 JSON Schema와 예시 상품 데이터를 추가
 - 남은 문제
   - 실제 서버 기술 스택, PG 제공자, 약관/법무 검토 후 필드와 정책 확정 필요
+
+
+## 2026-04-16c 계정/저장/재화/상품/Mock 결제 서버 골격
+- 수정 목적: 문서로 확정한 결제 선행 구조를 실제 개발 가능한 서버와 클라이언트 API 토글로 구현
+- 수정 파일: `package.json`, `.env.example`, `.gitignore`, `server/`, `js/api.js`, `js/save.js`, `js/shop.js`, `js/state.js`, `js/ui.js`, `main.js`, `README.md`, `DEPLOY_NOTE.txt`
+- 해결한 문제
+  - Express + SQLite 서버 앱과 초기 스키마 자동 생성 구조 추가
+  - 회원가입 / 로그인 / 로그아웃 / 세션 확인 API 구현
+  - 계정별 서버 저장 / 불러오기 API와 클라이언트 fallback 연결
+  - `coin`, `freeBling`, `paidBling`, `currency_ledger` 및 유료 블링 우선 차감 구현
+  - 서버 상품 조회, 구매 기록, 지급 기록, entitlement, Mock 결제 완료 API 구현
+  - 복원 이벤트와 관리자용 구매 / 지급 / 장부 조회 및 수동 지급 / 회수 API 추가
+  - 최소 API 테스트 초안 추가
+- 남은 문제
+  - 실제 Node 의존성 설치 후 `npm test` 검증 필요
+  - 실제 PG 연동, 이메일 비밀번호 재설정, 운영용 관리자 UI는 다음 배치에서 구현

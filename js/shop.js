@@ -1,5 +1,6 @@
 import { state, addLog } from "./state.js";
 import { renderAll } from "./ui.js";
+import { checkoutServerProduct, completeMockPurchase, listServerProducts, restoreServerState } from "./api.js";
 
 function isVisibleInShop(item) {
   if (item.id === "apple_seed") return state.player.unlocks.appleSeedUnlocked;
@@ -8,6 +9,15 @@ function isVisibleInShop(item) {
 }
 
 export function initShop() {}
+
+export async function syncServerProducts() {
+  try {
+    state.data.products = await listServerProducts();
+  } catch (error) {
+    console.warn(error);
+    state.data.products = [];
+  }
+}
 
 export function renderShop(container) {
   container.innerHTML = "";
@@ -26,9 +36,36 @@ export function renderShop(container) {
     container.appendChild(row);
   }
 
+  if (state.data.products?.length) {
+    const header = document.createElement("div");
+    header.className = "mini-note";
+    header.textContent = "웹 결제 상품";
+    container.appendChild(header);
+
+    for (const product of state.data.products) {
+      const row = document.createElement("div");
+      row.className = "shop-item";
+      row.innerHTML = `
+        <div>
+          <strong>${product.name}</strong>
+          <div>${product.description}</div>
+          <small>${product.currency} ${product.price.toLocaleString("ko-KR")} · ${product.type}</small>
+        </div>
+        <button data-product-id="${product.productId}">Mock 결제</button>
+      `;
+      container.appendChild(row);
+    }
+  }
+
   container.querySelectorAll("[data-buy-id]").forEach((button) => {
     button.addEventListener("click", () => {
       buyItem(button.dataset.buyId);
+    });
+  });
+
+  container.querySelectorAll("[data-product-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      buyServerProduct(button.dataset.productId);
     });
   });
 }
@@ -43,8 +80,34 @@ export function buyItem(itemId) {
     return;
   }
 
-  state.player[balanceKey] -= item.price;
+  if (item.currency === "bling") {
+    spendLocalBling(item.price);
+  } else {
+    state.player.coin -= item.price;
+  }
   state.player.inventory[item.id] = (state.player.inventory[item.id] || 0) + 1;
   addLog(`${item.name}을(를) 구매했습니다.`);
   renderAll();
+}
+
+function spendLocalBling(amount) {
+  const paidSpend = Math.min(state.player.paidBling || 0, amount);
+  const freeSpend = amount - paidSpend;
+  state.player.paidBling = Math.max(0, (state.player.paidBling || 0) - paidSpend);
+  state.player.freeBling = Math.max(0, (state.player.freeBling || 0) - freeSpend);
+  state.player.bling = state.player.freeBling + state.player.paidBling;
+}
+
+export async function buyServerProduct(productId) {
+  try {
+    const checkout = await checkoutServerProduct(productId);
+    const purchase = await completeMockPurchase(checkout);
+    await restoreServerState();
+    addLog(`웹 상품 지급 완료: ${purchase.productId}`);
+    renderAll();
+  } catch (error) {
+    console.warn(error);
+    addLog("웹 상품 구매를 완료하지 못했습니다. 로그인과 서버 연결을 확인해 주세요.");
+    renderAll();
+  }
 }

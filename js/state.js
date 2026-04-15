@@ -1,6 +1,8 @@
 export const DEFAULT_PLAYER_STATE = {
   coin: 500,
   bling: 30,
+  freeBling: 30,
+  paidBling: 0,
   inventory: {
     herb: 2,
     fish: 1,
@@ -55,6 +57,7 @@ export const state = {
   data: {
     items: [],
     shop: [],
+    products: [],
     bgmSchedule: [],
     lifeTables: {}
   },
@@ -77,7 +80,8 @@ export function addLog(text) {
 
 export function updateCurrency({ coin = 0, bling = 0 }) {
   state.player.coin += coin;
-  state.player.bling += bling;
+  state.player.freeBling = (state.player.freeBling || 0) + bling;
+  state.player.bling = (state.player.freeBling || 0) + (state.player.paidBling || 0);
 }
 
 export function setHousingNote(note) {

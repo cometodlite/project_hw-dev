@@ -1,13 +1,31 @@
 import { state, DEFAULT_PLAYER_STATE, addLog, syncUnlocks } from "./state.js";
+import { loadServerPlayerState, saveServerPlayerState } from "./api.js";
 
 const SAVE_KEY = "project-hw-save-v4";
 
-export function saveGame() {
+export async function saveGame() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state.player));
-  addLog("저장이 완료되었습니다.");
+  try {
+    const savedToServer = await saveServerPlayerState();
+    addLog(savedToServer ? "서버 저장이 완료되었습니다." : "저장이 완료되었습니다.");
+  } catch (error) {
+    console.warn(error);
+    addLog("서버 저장에 실패해 로컬에 저장했습니다.");
+  }
 }
 
-export function loadGame() {
+export async function loadGame() {
+  try {
+    const loadedFromServer = await loadServerPlayerState();
+    if (loadedFromServer) {
+      syncUnlocks();
+      addLog("서버 저장 데이터를 불러왔습니다.");
+      return;
+    }
+  } catch (error) {
+    console.warn(error);
+  }
+
   const raw = localStorage.getItem(SAVE_KEY);
   if (!raw) {
     syncUnlocks();
@@ -52,6 +70,12 @@ export function loadGame() {
         ...(parsed.farmPlot || {})
       }
     };
+    if (parsed.freeBling == null && Number.isFinite(parsed.bling)) {
+      state.player.freeBling = parsed.bling;
+    }
+    state.player.freeBling = Number(state.player.freeBling || 0);
+    state.player.paidBling = Number(state.player.paidBling || 0);
+    state.player.bling = state.player.freeBling + state.player.paidBling;
     syncUnlocks();
     addLog("저장 데이터를 불러왔습니다.");
   } catch (error) {

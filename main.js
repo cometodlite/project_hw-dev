@@ -4,7 +4,7 @@ import { loadGame } from "./js/save.js";
 import { startClock } from "./js/time.js";
 import { initAudio } from "./js/audio.js";
 import { initInventory } from "./js/inventory.js";
-import { initShop } from "./js/shop.js";
+import { initShop, syncServerProducts } from "./js/shop.js";
 
 async function loadJson(path) {
   const response = await fetch(path);
@@ -29,7 +29,8 @@ async function bootstrap() {
     state.data.lifeTables = lifeTables;
     setDataFilesLoaded(true);
 
-    loadGame();
+    await loadGame();
+    await syncServerProducts();
     initUI();
     initInventory();
     initShop();
