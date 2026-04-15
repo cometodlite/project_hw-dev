@@ -1,9 +1,25 @@
-배포 안내
-- 이 버전은 캐시 무효화를 위해 index.html이 style.v3.css, main.v3.js를 참조합니다.
-- GitHub Pages에 업로드할 때는 기존 파일 덮어쓰기 후 함께 업로드해 주세요.
-- 특히 아래 파일들이 모두 올라가야 합니다:
+GitHub Pages 배포 안내
+
+- PROJECT: HW는 GitHub Pages에서 구동하는 정적 웹게임 기준으로 관리합니다.
+- 저장소 루트에는 현재 파일명을 그대로 유지합니다.
+- 업로드 / 커밋 대상:
   1) index.html
-  2) style.v3.css
-  3) main.v3.js
+  2) style.css
+  3) main.js
   4) js/ 폴더 전체
   5) data/ 폴더 전체
+  6) assets/ 폴더 전체
+  7) README.md
+
+배포 전 확인
+- index.html이 style.css?v=20260415c, main.js?v=20260415c를 참조하는지 확인합니다.
+- main.js의 data JSON 경로가 ?v=20260415c를 사용하는지 확인합니다.
+- 구형 모바일 네비(mobile-hcsim-nav, mobile-hcsim-reset-nav)가 다시 추가되지 않았는지 확인합니다.
+- 모바일은 STATUS / ACTION / BAG / SHOP / LOG 5패널 구조로 유지합니다.
+- iPad 가로와 PC / Mac 웹은 기존 데스크톱 대시보드 구조를 유지합니다.
+
+배포 후 확인
+- GitHub Pages 실제 URL에서 첫 로딩 시 시간 / 코인 / 블링 / BGM 제목이 표시되는지 확인합니다.
+- iPhone 세로에서 하단 5패널 탭이 전환되는지 확인합니다.
+- iPad 세로에서 모바일 5패널 구조가 유지되는지 확인합니다.
+- iPad 가로에서 데스크톱 대시보드 구조가 유지되는지 확인합니다.

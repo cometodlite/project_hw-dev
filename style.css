@@ -1135,7 +1135,7 @@ body {
 }
 
 
-/* HCSiM stabilization phase 1: safe bottom nav only */
+/* Mobile 5-panel safety rules */
 
 @media (max-width: 760px) {
   body {
@@ -1333,6 +1333,7 @@ body {
     font-size: 0.8rem !important;
   }
 
+  .mobile-5panel-nav {
     position: fixed;
     left: 0;
     right: 0;
@@ -1347,6 +1348,7 @@ body {
     z-index: 40;
   }
 
+  .mobile-5panel-button {
     min-height: 40px;
     padding: 6px 4px;
     font-size: 0.82rem;
@@ -1356,13 +1358,14 @@ body {
     border: 1px solid var(--border);
   }
 
+  .mobile-5panel-button.active {
     background: var(--accent);
     color: #203329;
   }
 }
 
 
-/* HCSiM safe reset: bottom nav only */
+/* Mobile 5-panel portrait reset */
 
 @media (max-width: 760px), (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
   body {
@@ -1370,6 +1373,7 @@ body {
     padding-bottom: 84px !important;
   }
 
+  .mobile-5panel-nav {
     position: fixed;
     left: 0;
     right: 0;
@@ -1384,6 +1388,7 @@ body {
     z-index: 40;
   }
 
+  .mobile-5panel-button {
     min-height: 40px;
     padding: 6px 4px;
     font-size: 0.82rem;
@@ -1393,6 +1398,7 @@ body {
     border: 1px solid var(--border);
   }
 
+  .mobile-5panel-button.active {
     background: var(--accent);
     color: #203329;
   }
@@ -1512,7 +1518,7 @@ body {
     margin-bottom: 10px;
   }
 
-  .dashboard-grid,
+  .dashboard-grid {
     display: none !important;
   }
 
@@ -1625,6 +1631,7 @@ body {
 /* 2026-04-15 mobile 5-panel cleanup */
 
 @media (max-width: 760px), (min-width: 761px) and (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
+  .dashboard-grid {
     display: none !important;
   }
   .mobile-5panel-app {

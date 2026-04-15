@@ -4,7 +4,7 @@ PROJECT: HW는 Healing World의 약자로, 전투보다 생활과 꾸미기, 시
 
 ## 포함된 기능
 - 코인 / 블링 재화 표시
-- 로컬 저장 / 불러오기
+- 브라우저 저장 / 불러오기
 - 채집 / 낚시 / 농사 수확 버튼
 - 간단한 인벤토리
 - 상점 구매
@@ -12,21 +12,16 @@ PROJECT: HW는 Healing World의 약자로, 전투보다 생활과 꾸미기, 시
 - 실제 시간 기반 시간대 표시
 - 시간대별 BGM 제목 전환 구조
 
-## 실행 방법
-정적 웹서버에서 프로젝트 루트를 열어 실행하는 방식을 권장합니다.
+## 실행 / 배포 기준
+PROJECT: HW는 GitHub Pages에서 구동하는 정적 웹게임을 기준으로 관리합니다.
 
-예시:
-- VS Code Live Server
-- Python 간이 서버
+GitHub Pages 배포 기준:
+- 저장소 루트에 `index.html`, `style.css`, `main.js`를 둔다.
+- `js/`, `data/`, `assets/` 폴더를 그대로 함께 배포한다.
+- GitHub Pages 설정에서 배포 브랜치와 루트 경로를 선택한다.
+- 배포 후에는 브라우저 캐시를 피하기 위해 `index.html`의 CSS/JS 버전 쿼리를 갱신한다.
 
-```bash
-python -m http.server 8000
-```
-
-그 다음 브라우저에서 `http://localhost:8000` 접속
-
-## 배포
-GitHub Pages에 그대로 올릴 수 있는 정적 웹 구조입니다.
+로컬 실행은 필수 운영 방식이 아니라, 배포 전 임시 확인이 필요할 때만 사용합니다.
 
 ## 다음 확장 추천
 - 실제 오디오 파일 연결
@@ -269,3 +264,97 @@ GitHub Pages에 그대로 올릴 수 있는 정적 웹 구조입니다.
   - 데스크톱: `data-desktop-view`
 - 모바일 STATUS 패널 렌더가 데스크톱 DOM 텍스트(`sceneDetail`, `lifeSummary`, `homeVisualStatus`)를 참조하지 않도록 수정
 - 모바일 전용 렌더 데이터는 상태값과 계산 함수(`getSceneDetailText`, `getLifeSummaryText`, `getHomeSummaryText`, `getBgmLabelText`)로 직접 생성
+
+
+## PROJECT: HW 협업 작업 규칙
+
+### 공통 목표
+- 모바일 구조는 하단 탭 기반 5패널 시스템을 기준으로 개발한다.
+- 모바일 패널은 `STATUS`, `ACTION`, `BAG`, `SHOP`, `LOG`로 유지한다.
+- 데스크톱은 기존 대시보드형 구조를 유지한다.
+
+### 플랫폼 기준
+- iPhone / Android 세로: 모바일 5패널 구조
+- iPadOS 세로: 모바일 5패널 구조
+- iPadOS 가로: 데스크톱 레이아웃
+- PC / Mac 웹: 데스크톱 레이아웃
+
+### 절대 원칙
+- 구형 모바일 네비(`mobile-hcsim-nav`, `mobile-hcsim-reset-nav`)는 사용하지 않는다.
+- 모바일에서는 신형 5패널 네비만 사용한다.
+- 기존 데스크톱 대시보드 DOM을 모바일에 억지로 덧씌우지 않는다.
+- 모바일 5패널은 가능한 한 별도 렌더 흐름으로 유지한다.
+- 상태 관리 값은 한 곳에서만 관리한다.
+- 같은 역할의 네비를 2개 이상 공존시키지 않는다.
+- 렌더 함수 안에서 `activePanel`을 강제로 다른 값으로 덮어쓰지 않는다.
+- 모바일용 임시 패치 코드를 누적시키지 않는다.
+- README 변경 기록 없이 구조를 바꾸지 않는다.
+
+### 상태값 규칙
+- 모바일 패널 전환은 `activePanel`만 변경한다.
+- 가방 내부 전환은 `activeBagTab`만 변경한다.
+- 패널 값은 `status`, `action`, `bag`, `shop`, `log`만 사용한다.
+- 가방 탭 값은 `inventory`, `housing`만 사용한다.
+- 렌더 함수는 상태를 읽고 DOM을 동기화하되, 임의로 패널 상태를 바꾸지 않는다.
+
+### 파일별 역할
+- `index.html`: 모바일 5패널 컨테이너, 하단 탭 버튼, 불필요한 구형 모바일 네비 제거
+- `style.css`: 모바일 5패널 표시 규칙, iPhone / iPad 세로 반응형, 데스크톱/모바일 표시 분리
+- `js/ui.js`: 패널 전환 로직, 모바일 상태 동기화, 5패널 렌더 함수 연결
+- `README.md`: 수정 내역, 해결한 문제, 구조 변경 기록
+
+### 작업 순서
+1. 구형 모바일 코드 제거
+2. 모바일 5패널 네비 단일화
+3. `STATUS` / `ACTION` / `BAG` / `SHOP` / `LOG` 전환 확인
+4. `BAG` 서브탭 확인
+5. iPhone 세로 확인
+6. iPad 세로 확인
+7. iPad 가로 데스크톱 유지 확인
+8. README 기록
+9. GitHub Pages 재배포
+
+### 테스트 체크리스트
+- 첫 로딩 시 시간 / 코인 / 블링 / BGM 정상 표시
+- 콘솔 오류 없음
+- 패널 첫 진입 시 빈 화면 없음
+- 장면 탭에서 `STATUS` 표시
+- 행동 탭에서 `ACTION` 표시
+- 가방 탭에서 `BAG` 표시
+- 상점 탭에서 `SHOP` 표시
+- 기록 탭에서 `LOG` 표시
+- BAG의 인벤토리 / 하우징 전환 정상
+- 하우징 배치 버튼 정상 동작
+- iPhone 세로 정상
+- iPad 세로 정상
+- iPad 가로 데스크톱 유지
+
+### 최종 협업 원칙
+- 모바일은 5패널 단일 구조로, 데스크톱은 기존 대시보드 구조로 유지하며, 구형 모바일 코드와 임시 패치는 남기지 않는다.
+
+
+## 2026-04-15c 모바일 5패널 협업 규칙 반영
+- 수정 목적: 모바일 5패널 단일 구조와 협업 규칙을 실제 코드 기준으로 정리
+- 수정 파일: `index.html`, `main.js`, `style.css`, `js/ui.js`, `js/shop.js`, `data/bgmSchedule.json`, `README.md`
+- 해결한 문제
+  - `js/ui.js`의 함수 닫힘 오류와 모바일 이벤트 블록 중괄호 오류 수정
+  - 모바일 상태명을 `activePanel`, `activeBagTab`으로 단일화
+  - 렌더 함수가 패널 상태를 덮어쓰지 않고 현재 상태를 DOM에 적용하도록 정리
+  - 모바일 행동 / 농사 / 하우징 / 상점 버튼이 데스크톱 DOM 버튼을 대신 클릭하지 않고 기능 로직을 직접 호출하도록 변경
+  - 모바일 CSS의 선택자 누락 구간을 `mobile-5panel-*` 기준으로 복구
+  - 실제 BGM 파일이 없는 프로토타입 상태에 맞춰 시간대별 BGM 파일 경로를 `null`로 정리해 404 요청을 방지
+  - 빈 favicon 링크를 추가해 기본 `/favicon.ico` 404 요청을 방지
+  - 배포 캐시 확인을 위해 `20260415c` 버전 쿼리로 갱신
+- 남은 문제
+  - 실제 iPhone / iPad 세로 / iPad 가로 실기기 캡처 확인 필요
+
+
+## 2026-04-16 GitHub Pages 실행 기준 정리
+- 수정 목적: 로컬 서버 실행이 아니라 GitHub Pages 배포본을 기준으로 웹게임을 구동하도록 문서 기준 정리
+- 수정 파일: `README.md`, `DEPLOY_NOTE.txt`
+- 해결한 문제
+  - 실행 방법을 로컬 서버 중심 안내에서 GitHub Pages 배포 기준 안내로 변경
+  - 오래된 `style.v3.css`, `main.v3.js` 배포 안내를 현재 파일 구조에 맞게 갱신
+  - `zip 재배포` 표현을 `GitHub Pages 재배포`로 정리
+- 남은 문제
+  - GitHub Pages 실제 URL에서 iPhone / iPad 세로 / iPad 가로 확인 필요

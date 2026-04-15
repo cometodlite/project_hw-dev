@@ -33,7 +33,7 @@ export function renderShop(container) {
   });
 }
 
-function buyItem(itemId) {
+export function buyItem(itemId) {
   const item = state.data.shop.find((entry) => entry.id === itemId);
   if (!item) return;
 

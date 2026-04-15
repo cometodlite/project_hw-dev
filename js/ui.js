@@ -9,7 +9,7 @@ import {
   harvestFarm,
   sellForagedItems
 } from "./inventory.js";
-import { renderShop } from "./shop.js";
+import { renderShop, buyItem } from "./shop.js";
 import { saveGame, loadGame, resetGame } from "./save.js";
 import { playRadio, stopRadio, getRadioState } from "./audio.js";
 import {
@@ -23,8 +23,11 @@ import {
 const el = {};
 let currentScene = "town";
 let currentSideTab = "inventory";
-let currentMobilePanel = "status";
-let currentMobileBagTab = "inventory";
+let activePanel = "status";
+let activeBagTab = "inventory";
+
+const MOBILE_PANELS = new Set(["status", "action", "bag", "shop", "log"]);
+const MOBILE_BAG_TABS = new Set(["inventory", "housing"]);
 
 const SCENE_META = {
   town: {
@@ -74,6 +77,7 @@ function getTimeMood() {
 function getPlacedHousingNames() {
   const ids = state.player.housing?.slots?.filter(Boolean) || [];
   return ids.map((id) => state.data.items.find((item) => item.id === id)?.name || id);
+}
 
 function getSceneDetailText(sceneKey = currentScene) {
   if (sceneKey === "town") {
@@ -104,38 +108,44 @@ function getBgmLabelText() {
   return state.player.settings.bgmEnabled ? (state.player.currentTrackTitle || "없음") : "사용 안 함";
 }
 
+function normalizeMobilePanel(panel) {
+  return MOBILE_PANELS.has(panel) ? panel : "status";
 }
 
-
-function isFivePanelMobile() {
-  return window.innerWidth <= 760 ||
-    (window.innerWidth <= 1024 &&
-     window.matchMedia("(orientation: portrait)").matches &&
-     window.matchMedia("(pointer: coarse)").matches);
+function normalizeMobileBagTab(tab) {
+  return MOBILE_BAG_TABS.has(tab) ? tab : "inventory";
 }
 
-function setMobilePanel(panel) {
-  currentMobilePanel = panel || "status";
+function applyMobilePanel() {
   document.querySelectorAll(".mobile-panel").forEach((node) => {
-    const active = node.dataset.mobilePanel === currentMobilePanel;
+    const active = node.dataset.mobilePanel === activePanel;
     node.classList.toggle("active", active);
     node.style.display = active ? "block" : "none";
   });
   document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.m5Panel === currentMobilePanel);
+    button.classList.toggle("active", button.dataset.m5Panel === activePanel);
   });
 }
 
-function setMobileBagTab(tab) {
-  currentMobileBagTab = tab || "inventory";
+function setActivePanel(panel) {
+  activePanel = normalizeMobilePanel(panel);
+  applyMobilePanel();
+}
+
+function applyMobileBagTab() {
   document.querySelectorAll(".mobile-subtab").forEach((button) => {
-    button.classList.toggle("active", button.dataset.mobileBagTab === currentMobileBagTab);
+    button.classList.toggle("active", button.dataset.mobileBagTab === activeBagTab);
   });
   document.querySelectorAll(".mobile-bag-view").forEach((node) => {
-    const active = node.dataset.mobileBagView === currentMobileBagTab;
+    const active = node.dataset.mobileBagView === activeBagTab;
     node.classList.toggle("active", active);
     node.style.display = active ? "grid" : "none";
   });
+}
+
+function setActiveBagTab(tab) {
+  activeBagTab = normalizeMobileBagTab(tab);
+  applyMobileBagTab();
 }
 
 
@@ -171,7 +181,7 @@ function renderM5Bag() {
   renderHousingSlots(el.m5HousingSlots);
   populateHousingItemSelect(el.m5HousingItemSelect);
   if (el.m5HousingSummary) el.m5HousingSummary.textContent = getHousingSummary();
-  setMobileBagTab(currentMobileBagTab);
+  applyMobileBagTab();
 }
 
 function renderM5Shop() {
@@ -195,15 +205,6 @@ function renderM5Shop() {
     `).join("")
     : '<div class="mobile-shop-item"><div>구매 가능한 아이템이 없습니다.</div></div>';
 
-  document.querySelectorAll("[data-m5-buy-id]").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelector(`[data-buy-id="${button.dataset.m5BuyId}"]`)?.click();
-      renderM5Shop();
-      renderM5Bag();
-      renderM5Log();
-      renderM5Status();
-    });
-  });
 }
 
 function renderM5Log() {
@@ -220,8 +221,8 @@ function renderAllM5Panels() {
   renderM5Bag();
   renderM5Shop();
   renderM5Log();
-  setMobilePanel(currentMobilePanel);
-  setMobileBagTab(currentMobileBagTab);
+  applyMobilePanel();
+  applyMobileBagTab();
 }
 
 export function initUI() {
@@ -272,11 +273,11 @@ export function initUI() {
   syncSceneButtons();
   syncSideTabs();
   if (el.logPanel) el.logPanel.open = false;
-  currentMobilePanel = "status";
-  currentMobileBagTab = "inventory";
+  activePanel = "status";
+  activeBagTab = "inventory";
   renderAllM5Panels();
-  setMobilePanel(currentMobilePanel);
-  setMobileBagTab(currentMobileBagTab);
+  applyMobilePanel();
+  applyMobileBagTab();
 }
 
 function populateSeedSelect() {
@@ -293,16 +294,74 @@ function refreshHousingUI() {
   if (el.housingSummary) el.housingSummary.textContent = getHousingSummary();
 }
 
+function handleGatherAction() {
+  currentScene = "town";
+  const reward = gatherReward();
+  addLog(`채집 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
+  populateSeedSelect();
+  syncSceneButtons();
+  renderAll();
+}
+
+function handleFishAction() {
+  currentScene = "town";
+  const reward = fishReward();
+  addLog(`낚시 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
+  syncSceneButtons();
+  renderAll();
+}
+
+function handleSellAllAction() {
+  const result = sellForagedItems();
+  if (result.earned <= 0) addLog("판매할 생활 수집품이 없습니다.");
+  else addLog(`수집품 판매 완료: ${result.sold.join(", ")} · 총 ${result.earned} 코인`);
+  renderAll();
+}
+
+function handlePlantSeedAction(seedId = el.farmSeedSelect?.value) {
+  currentScene = "farm";
+  if (el.farmSeedSelect) el.farmSeedSelect.value = seedId || "";
+  const result = plantSeed(seedId);
+  addLog(result.message);
+  populateSeedSelect();
+  syncSceneButtons();
+  renderAll();
+}
+
+function handleHarvestAction() {
+  currentScene = "farm";
+  const result = harvestFarm();
+  addLog(result.message);
+  populateSeedSelect();
+  syncSceneButtons();
+  renderAll();
+}
+
+function handleClearHousingAction() {
+  currentScene = "home";
+  currentSideTab = "housing";
+  const result = clearHousingSlots();
+  addLog(result.message);
+  syncSceneButtons();
+  syncSideTabs();
+  renderAll();
+}
+
+function handlePlaceHousingAction(slotIndex, itemId = el.housingItemSelect?.value) {
+  if (el.housingItemSelect) el.housingItemSelect.value = itemId || "";
+  const result = placeHousingItem(slotIndex, itemId);
+  addLog(result.message);
+  currentScene = "home";
+  currentSideTab = "housing";
+  syncSceneButtons();
+  syncSideTabs();
+  renderAll();
+}
+
 function bindHousingPlacementButton(buttonId, slotIndex) {
   const button = document.getElementById(buttonId);
   if (!button) return;
-  button.addEventListener("click", () => {
-    const result = placeHousingItem(slotIndex, el.housingItemSelect?.value);
-    addLog(result.message);
-    currentScene = "home";
-    currentSideTab = "housing";
-    renderAll();
-  });
+  button.addEventListener("click", () => handlePlaceHousingAction(slotIndex));
 }
 
 function syncSceneButtons() {
@@ -326,59 +385,41 @@ function syncSideTabs() {
 }
 
 export function bindUIEvents() {
-
-document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const panel = button.dataset.m5Panel || "status";
-    setMobilePanel(panel);
-    renderAllM5Panels();
-    setMobilePanel(currentMobilePanel);
-    setMobileBagTab(currentMobileBagTab);
+  document.querySelectorAll(".mobile-5panel-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      setActivePanel(button.dataset.m5Panel);
+      renderAllM5Panels();
+    });
   });
-});
 
-document.querySelectorAll(".mobile-subtab").forEach((button) => {
-  button.addEventListener("click", () => {
-    setMobileBagTab(button.dataset.mobileBagTab);
+  document.querySelectorAll(".mobile-subtab").forEach((button) => {
+    button.addEventListener("click", () => {
+      setActiveBagTab(button.dataset.mobileBagTab);
+    });
   });
-});
 
-document.getElementById("m5-btn-gather")?.addEventListener("click", () => {
-  document.getElementById("btn-gather")?.click();
-  renderAllM5Panels();
-});
-document.getElementById("m5-btn-fish")?.addEventListener("click", () => {
-  document.getElementById("btn-fish")?.click();
-  renderAllM5Panels();
-});
-document.getElementById("m5-btn-sell")?.addEventListener("click", () => {
-  document.getElementById("btn-sell-all")?.click();
-  renderAllM5Panels();
-});
-document.getElementById("m5-btn-plant")?.addEventListener("click", () => {
-  if (el.m5SeedSelect && el.farmSeedSelect) el.farmSeedSelect.value = el.m5SeedSelect.value;
-  document.getElementById("btn-plant-seed")?.click();
-  renderAllM5Panels();
-});
-document.getElementById("m5-btn-harvest")?.addEventListener("click", () => {
-  document.getElementById("btn-farm-harvest")?.click();
-  renderAllM5Panels();
-});
-
-document.querySelectorAll("[data-m5-place-slot]").forEach((button) => {
-  button.addEventListener("click", () => {
-    if (el.m5HousingItemSelect && el.housingItemSelect) {
-      el.housingItemSelect.value = el.m5HousingItemSelect.value;
-    }
-    document.getElementById(`btn-place-slot-${button.dataset.m5PlaceSlot}`)?.click();
-    renderAllM5Panels();
+  document.getElementById("m5-btn-gather")?.addEventListener("click", handleGatherAction);
+  document.getElementById("m5-btn-fish")?.addEventListener("click", handleFishAction);
+  document.getElementById("m5-btn-sell")?.addEventListener("click", handleSellAllAction);
+  document.getElementById("m5-btn-plant")?.addEventListener("click", () => {
+    handlePlantSeedAction(el.m5SeedSelect?.value);
   });
-});
+  document.getElementById("m5-btn-harvest")?.addEventListener("click", handleHarvestAction);
 
-document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () => {
-  document.getElementById("btn-clear-housing")?.click();
-  renderAllM5Panels();
-});
+  document.querySelectorAll("[data-m5-place-slot]").forEach((button) => {
+    button.addEventListener("click", () => {
+      handlePlaceHousingAction(Number(button.dataset.m5PlaceSlot) - 1, el.m5HousingItemSelect?.value);
+    });
+  });
+
+  document.getElementById("m5-btn-clear-housing")?.addEventListener("click", handleClearHousingAction);
+
+  el.m5ShopList?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-m5-buy-id]");
+    if (!button) return;
+    buyItem(button.dataset.m5BuyId);
+  });
+
   document.querySelectorAll("[data-desktop-view]").forEach((button) => {
     button.addEventListener("click", () => {
       currentScene = button.dataset.desktopView;
@@ -397,7 +438,6 @@ document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () =>
       syncSceneButtons();
       renderAll();
     });
-  });
   });
 
   document.querySelectorAll(".side-tab").forEach((button) => {
@@ -429,56 +469,12 @@ document.getElementById("m5-btn-clear-housing")?.addEventListener("click", () =>
   document.getElementById("btn-add-coin")?.addEventListener("click", () => { updateCurrency({ coin: 100 }); addLog("코인 100을 획득했습니다."); renderAll(); });
   document.getElementById("btn-add-bling")?.addEventListener("click", () => { updateCurrency({ bling: 10 }); addLog("블링 10을 획득했습니다."); renderAll(); });
 
-  document.getElementById("btn-gather")?.addEventListener("click", () => {
-    currentScene = "town";
-    const reward = gatherReward();
-    addLog(`채집 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
-    populateSeedSelect();
-    syncSceneButtons();
-    renderAll();
-  });
-
-  document.getElementById("btn-fish")?.addEventListener("click", () => {
-    currentScene = "town";
-    const reward = fishReward();
-    addLog(`낚시 성공: ${reward.label} ${reward.amount}개 (${reward.rarity === "rare" ? "희귀" : "일반"})`);
-    syncSceneButtons();
-    renderAll();
-  });
-
-  document.getElementById("btn-sell-all")?.addEventListener("click", () => {
-    const result = sellForagedItems();
-    if (result.earned <= 0) addLog("판매할 생활 수집품이 없습니다.");
-    else addLog(`수집품 판매 완료: ${result.sold.join(", ")} · 총 ${result.earned} 코인`);
-    renderAll();
-  });
-
-  document.getElementById("btn-plant-seed")?.addEventListener("click", () => {
-    currentScene = "farm";
-    const result = plantSeed(el.farmSeedSelect?.value);
-    addLog(result.message);
-    syncSceneButtons();
-    renderAll();
-  });
-
-  document.getElementById("btn-farm-harvest")?.addEventListener("click", () => {
-    currentScene = "farm";
-    const result = harvestFarm();
-    addLog(result.message);
-    populateSeedSelect();
-    syncSceneButtons();
-    renderAll();
-  });
-
-  document.getElementById("btn-clear-housing")?.addEventListener("click", () => {
-    currentScene = "home";
-    currentSideTab = "housing";
-    const result = clearHousingSlots();
-    addLog(result.message);
-    syncSceneButtons();
-    syncSideTabs();
-    renderAll();
-  });
+  document.getElementById("btn-gather")?.addEventListener("click", handleGatherAction);
+  document.getElementById("btn-fish")?.addEventListener("click", handleFishAction);
+  document.getElementById("btn-sell-all")?.addEventListener("click", handleSellAllAction);
+  document.getElementById("btn-plant-seed")?.addEventListener("click", () => handlePlantSeedAction());
+  document.getElementById("btn-farm-harvest")?.addEventListener("click", handleHarvestAction);
+  document.getElementById("btn-clear-housing")?.addEventListener("click", handleClearHousingAction);
 
   bindHousingPlacementButton("btn-place-slot-1", 0);
   bindHousingPlacementButton("btn-place-slot-2", 1);
@@ -643,8 +639,8 @@ export function renderStatus() {
   renderScene();
   refreshHousingUI();
   renderAllM5Panels();
-  setMobilePanel(currentMobilePanel);
-  setMobileBagTab(currentMobileBagTab);
+  applyMobilePanel();
+  applyMobileBagTab();
   syncSceneButtons();
   syncSideTabs();
 }
